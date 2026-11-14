@@ -1,0 +1,117 @@
+{
+  "source_sha256": "d2a706c7fbab442fdeb2ee0a1e0b8c619b400b71de44f7dfe48df5136d564f8a",
+  "timestamp_utc": "2026-11-14T10:36:45.287668+00:00",
+  "git_commit": "28fc80cc5458ac6323439b09d7ca332027b649cc",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "reference": "gt",
+    "auc_thresholds_deg": [
+      5,
+      10,
+      30
+    ],
+    "pointcloud": {
+      "max_points": 50000,
+      "fscore_tau_frac": 0.01
+    }
+  },
+  "method": "temple_colmap_final",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 13,
+    "total_images": 16,
+    "registration_rate": 0.8125,
+    "ate_rmse": 0.0012842519815338734,
+    "ate_percent_extent": 0.08126281528317393,
+    "median_rotation_deg": 0.24542626152446917,
+    "median_translation_deg": 0.14621865322724434,
+    "auc": {
+      "5": 0.6116118165916665,
+      "10": 0.6293353200605393,
+      "30": 0.6411509890397876
+    },
+    "pose_pairs": 119,
+    "undefined_reference_pairs": 1,
+    "alignment": {
+      "scale": 0.13479473928501726,
+      "rotation": [
+        [
+          0.023422137664012414,
+          0.9985567168839663,
+          0.048331011091872884
+        ],
+        [
+          0.9834464541430589,
+          -0.0143249730463453,
+          -0.18063185483370686
+        ],
+        [
+          -0.17967881149621376,
+          0.051761745653872336,
+          -0.9823625839709956
+        ]
+      ],
+      "translation": [
+        -0.1821105467833547,
+        0.16430242089917302,
+        0.043212229370452805
+      ]
+    },
+    "compared_images": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ],
+    "reprojection": {
+      "observations": 3964,
+      "invalid": 0,
+      "mean_px": 0.22887365688171896,
+      "median_px": 0.14304872105879962,
+      "resolution": "input images as processed, not original camera resolution"
+    }
+  },
+  "run": {
+    "source_sha256": "d2a706c7fbab442fdeb2ee0a1e0b8c619b400b71de44f7dfe48df5136d564f8a",
+    "timestamp_utc": "2026-11-14T10:12:01.307918+00:00",
+    "git_commit": "28fc80cc5458ac6323439b09d7ca332027b649cc",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "camera_model": "PINHOLE",
+      "fixed_intrinsics": true,
+      "device": "cpu"
+    },
+    "registered": 13,
+    "total_images": 16,
+    "points": 1183,
+    "runtime_seconds": 3.434138249998796,
+    "models": 1
+  }
+}

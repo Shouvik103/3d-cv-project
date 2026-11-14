@@ -17,7 +17,7 @@ def main():
     if not rows: raise ValueError('No evaluation result JSON files found')
     a.out.mkdir(parents=True, exist_ok=True)
     with (a.out/'results.csv').open('w', newline='') as f:
-        w = csv.DictWriter(f, fieldnames=rows[0].keys()); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=rows[0].keys(), lineterminator='\n'); w.writeheader(); w.writerows(rows)
     lines = ['\\begin{tabular}{lrrrr}', '\\hline', 'Run & Reg. & ATE & AUC@5 & AUC@30 \\\\', '\\hline']
     for r in rows:
         label = r['run'].replace('_', r'\_')

@@ -12,4 +12,12 @@ review notes, or assets before submission.
 | TBD | D — Baselines | TBD | TBD |
 | TBD | E — Evaluation, report and demo | TBD | TBD |
 
-All five members should validate a reproducible run and review the final report.
+These are five workstreams, not five required members; the assignment allows at most four members.
+
+Known Git identities: Shouvik103 and DagarMihir
+(`194290818+DagarMihir@users.noreply.github.com`). Names, roll numbers, emails,
+and actual student work remain to be recorded. Commit author metadata does not
+by itself establish who implemented or reviewed a component.
+
+The implementation and checks recorded in NOTES.md were executed with Codex.
+All actual group members should validate a reproducible run and review the final report.

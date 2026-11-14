@@ -1,0 +1,228 @@
+{
+  "source_sha256": "e0fa3901a708455a08e1bf6d538a7c6133f203ff48f85389bdc4d2573b62f954",
+  "timestamp_utc": "2026-11-14T10:00:39.874079+00:00",
+  "git_commit": "ac24571bb53e951c95fbec980171db08066e29a8",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": false
+    },
+    "matching": {
+      "ratio": 0.8,
+      "mutual": true,
+      "min_inliers": 30,
+      "ransac_thresh_px": 1.0,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 10,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 2.0,
+      "min_angle_deg": 1.5
+    },
+    "registration": {
+      "pnp_reproj_px": 4.0,
+      "pnp_iters": 2000,
+      "min_inliers": 20
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "method": "views_5_seed0",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 5,
+    "total_images": 5,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.0012821916712387864,
+    "ate_percent_extent": 0.08728775088685765,
+    "median_rotation_deg": 0.03274036245652132,
+    "median_translation_deg": 0.04632540531550801,
+    "auc": {
+      "5": 0.9751447339966349,
+      "10": 0.9875723669983175,
+      "30": 0.9958574556661058
+    },
+    "pose_pairs": 10,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 1.1017392785138624,
+      "rotation": [
+        [
+          0.9917521517700595,
+          0.008465398577727762,
+          0.12789060358907323
+        ],
+        [
+          0.001014445257873015,
+          0.997266749433846,
+          -0.07387828757130195
+        ],
+        [
+          -0.12816645567493873,
+          0.07339868868426361,
+          0.9890328569563067
+        ]
+      ],
+      "translation": [
+        -0.5518288843836028,
+        0.23991577026930477,
+        -4.264360046854393
+      ]
+    },
+    "compared_images": [
+      "view_01.png",
+      "view_02.png",
+      "view_03.png",
+      "view_04.png",
+      "view_05.png"
+    ]
+  },
+  "run": {
+    "source_sha256": "e0fa3901a708455a08e1bf6d538a7c6133f203ff48f85389bdc4d2573b62f954",
+    "timestamp_utc": "2026-11-14T10:00:39.818706+00:00",
+    "git_commit": "ac24571bb53e951c95fbec980171db08066e29a8",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": false
+      },
+      "matching": {
+        "ratio": 0.8,
+        "mutual": true,
+        "min_inliers": 30,
+        "ransac_thresh_px": 1.0,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 10,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 2.0,
+        "min_angle_deg": 1.5
+      },
+      "registration": {
+        "pnp_reproj_px": 4.0,
+        "pnp_iters": 2000,
+        "min_inliers": 20
+      },
+      "ba": {
+        "mode": "local_global",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    },
+    "registered": 5,
+    "points": 2039,
+    "median_reprojection_px": 0.10909857848787197,
+    "elapsed_seconds": 7.837610209004197,
+    "total_images": 5,
+    "runtime_seconds": 7.950252167000144,
+    "init_pair": [
+      "view_02.png",
+      "view_05.png"
+    ],
+    "image_names": [
+      "view_01.png",
+      "view_02.png",
+      "view_03.png",
+      "view_04.png",
+      "view_05.png"
+    ],
+    "history": [
+      {
+        "registered": 2,
+        "points": 604,
+        "median_reprojection_px": 0.06973699606529807,
+        "elapsed_seconds": 3.807049959003052
+      },
+      {
+        "registered": 3,
+        "points": 1187,
+        "median_reprojection_px": 0.0922447686227156,
+        "elapsed_seconds": 4.150462167002843
+      },
+      {
+        "registered": 4,
+        "points": 1689,
+        "median_reprojection_px": 0.10396647558689548,
+        "elapsed_seconds": 4.610419292002916
+      },
+      {
+        "registered": 5,
+        "points": 2039,
+        "median_reprojection_px": 0.10899136397303123,
+        "elapsed_seconds": 6.485830083998735
+      },
+      {
+        "registered": 5,
+        "points": 2039,
+        "median_reprojection_px": 0.10909857848787197,
+        "elapsed_seconds": 7.837610209004197
+      }
+    ],
+    "mean_track_length": 2.8881804806277587
+  }
+}

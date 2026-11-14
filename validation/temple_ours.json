@@ -1,0 +1,287 @@
+{
+  "source_sha256": "d2a706c7fbab442fdeb2ee0a1e0b8c619b400b71de44f7dfe48df5136d564f8a",
+  "timestamp_utc": "2026-11-14T10:36:45.306070+00:00",
+  "git_commit": "28fc80cc5458ac6323439b09d7ca332027b649cc",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "reference": "gt",
+    "auc_thresholds_deg": [
+      5,
+      10,
+      30
+    ],
+    "pointcloud": {
+      "max_points": 50000,
+      "fscore_tau_frac": 0.01
+    }
+  },
+  "method": "temple_relaxed_final",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 16,
+    "total_images": 16,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.006842756151966804,
+    "ate_percent_extent": 0.43298483257229353,
+    "median_rotation_deg": 0.9144420126555654,
+    "median_translation_deg": 0.5760461032163257,
+    "auc": {
+      "5": 0.7659904110445013,
+      "10": 0.8829952055222506,
+      "30": 0.9609984018407501
+    },
+    "pose_pairs": 119,
+    "undefined_reference_pairs": 1,
+    "alignment": {
+      "scale": 0.12060613836470435,
+      "rotation": [
+        [
+          -0.1295629315312833,
+          0.28840487779714075,
+          -0.9487023101246442
+        ],
+        [
+          0.9889803948217115,
+          -0.03153249233363085,
+          -0.144649509454823
+        ],
+        [
+          -0.07163257241863802,
+          -0.9569891997248691,
+          -0.2811413277670906
+        ]
+      ],
+      "translation": [
+        0.5162594721633443,
+        0.15935291136097582,
+        0.18276578118021566
+      ]
+    },
+    "compared_images": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0003.jpg",
+      "templeSR0004.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0014.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ],
+    "reprojection": {
+      "observations": 10174,
+      "invalid": 0,
+      "mean_px": 0.23234793560949635,
+      "median_px": 0.16390527126257798,
+      "resolution": "input images as processed, not original camera resolution"
+    }
+  },
+  "run": {
+    "source_sha256": "d2a706c7fbab442fdeb2ee0a1e0b8c619b400b71de44f7dfe48df5136d564f8a",
+    "timestamp_utc": "2026-11-14T10:12:56.505720+00:00",
+    "git_commit": "28fc80cc5458ac6323439b09d7ca332027b649cc",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": true,
+        "contrast_threshold": 0.01
+      },
+      "matching": {
+        "ratio": 0.85,
+        "mutual": true,
+        "min_inliers": 20,
+        "ransac_thresh_px": 1.5,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 20,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 3.0,
+        "min_angle_deg": 1.0
+      },
+      "registration": {
+        "pnp_reproj_px": 6.0,
+        "pnp_iters": 2000,
+        "min_inliers": 15
+      },
+      "ba": {
+        "mode": "local_global",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    },
+    "registered": 16,
+    "points": 3935,
+    "median_reprojection_px": 0.16390469503368185,
+    "elapsed_seconds": 58.37782816700201,
+    "total_images": 16,
+    "runtime_seconds": 58.55479395799921,
+    "init_pair": [
+      "templeSR0003.jpg",
+      "templeSR0014.jpg"
+    ],
+    "image_names": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0003.jpg",
+      "templeSR0004.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0014.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ],
+    "history": [
+      {
+        "registered": 2,
+        "points": 694,
+        "median_reprojection_px": 0.0987158092235827,
+        "elapsed_seconds": 42.5669900829962
+      },
+      {
+        "registered": 3,
+        "points": 855,
+        "median_reprojection_px": 0.11827868821267207,
+        "elapsed_seconds": 42.78526987499936
+      },
+      {
+        "registered": 4,
+        "points": 918,
+        "median_reprojection_px": 0.12588617312201117,
+        "elapsed_seconds": 43.03449945800094
+      },
+      {
+        "registered": 5,
+        "points": 950,
+        "median_reprojection_px": 0.13382818220453474,
+        "elapsed_seconds": 43.802963750000345
+      },
+      {
+        "registered": 6,
+        "points": 1455,
+        "median_reprojection_px": 0.15612882996883373,
+        "elapsed_seconds": 44.185717291999026
+      },
+      {
+        "registered": 7,
+        "points": 1541,
+        "median_reprojection_px": 0.1583642823820142,
+        "elapsed_seconds": 44.651340333002736
+      },
+      {
+        "registered": 8,
+        "points": 1847,
+        "median_reprojection_px": 0.15870965867698658,
+        "elapsed_seconds": 45.25838745800138
+      },
+      {
+        "registered": 9,
+        "points": 2015,
+        "median_reprojection_px": 0.16175903348267912,
+        "elapsed_seconds": 45.84546091700031
+      },
+      {
+        "registered": 10,
+        "points": 2260,
+        "median_reprojection_px": 0.1579116407721648,
+        "elapsed_seconds": 47.74736304199905
+      },
+      {
+        "registered": 11,
+        "points": 2507,
+        "median_reprojection_px": 0.1589609458515123,
+        "elapsed_seconds": 48.332392791999155
+      },
+      {
+        "registered": 12,
+        "points": 2691,
+        "median_reprojection_px": 0.16271461799782372,
+        "elapsed_seconds": 48.85396558300272
+      },
+      {
+        "registered": 13,
+        "points": 2963,
+        "median_reprojection_px": 0.1627971507876189,
+        "elapsed_seconds": 49.373692957997264
+      },
+      {
+        "registered": 14,
+        "points": 3274,
+        "median_reprojection_px": 0.1610516640832824,
+        "elapsed_seconds": 49.928022833002615
+      },
+      {
+        "registered": 15,
+        "points": 3608,
+        "median_reprojection_px": 0.1602880101468275,
+        "elapsed_seconds": 52.62719929200102
+      },
+      {
+        "registered": 16,
+        "points": 3939,
+        "median_reprojection_px": 0.16568192652768446,
+        "elapsed_seconds": 53.260321875000955
+      },
+      {
+        "registered": 16,
+        "points": 3935,
+        "median_reprojection_px": 0.16390469503368185,
+        "elapsed_seconds": 58.37782816700201
+      }
+    ],
+    "mean_track_length": 2.5855146124523505
+  }
+}

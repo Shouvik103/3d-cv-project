@@ -1,0 +1,176 @@
+I20261114 15:41:57.909852 0x16db27000 feature_extraction.cc:498] === Feature extraction ===
+I20261114 15:41:57.910307 0x16dde3000 sift.cc:764] Creating SIFT CPU feature extractor
+I20261114 15:41:57.910316 0x16de6f000 sift.cc:764] Creating SIFT CPU feature extractor
+I20261114 15:41:57.910328 0x16defb000 sift.cc:764] Creating SIFT CPU feature extractor
+I20261114 15:41:57.910331 0x16df87000 sift.cc:764] Creating SIFT CPU feature extractor
+I20261114 15:41:58.517867 0x16e013000 feature_extraction.cc:270] Processed file [1/16]
+I20261114 15:41:58.517959 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0004.jpg
+I20261114 15:41:58.517984 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:58.518003 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:58.518019 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:58.518038 0x16e013000 feature_extraction.cc:294]   Features:        1199 (SIFT)
+I20261114 15:41:58.574657 0x16e013000 feature_extraction.cc:270] Processed file [2/16]
+I20261114 15:41:58.574834 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0003.jpg
+I20261114 15:41:58.574848 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:58.574859 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:58.574868 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:58.574880 0x16e013000 feature_extraction.cc:294]   Features:        1449 (SIFT)
+I20261114 15:41:58.584432 0x16e013000 feature_extraction.cc:270] Processed file [3/16]
+I20261114 15:41:58.584491 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0002.jpg
+I20261114 15:41:58.584506 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:58.584522 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:58.584534 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:58.584547 0x16e013000 feature_extraction.cc:294]   Features:        1801 (SIFT)
+I20261114 15:41:58.593344 0x16e013000 feature_extraction.cc:270] Processed file [4/16]
+I20261114 15:41:58.593393 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0001.jpg
+I20261114 15:41:58.593409 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:58.593421 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:58.593433 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:58.593447 0x16e013000 feature_extraction.cc:294]   Features:        1649 (SIFT)
+I20261114 15:41:59.037600 0x16e013000 feature_extraction.cc:270] Processed file [5/16]
+I20261114 15:41:59.037660 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0005.jpg
+I20261114 15:41:59.037678 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.037691 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.037703 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.037717 0x16e013000 feature_extraction.cc:294]   Features:        1397 (SIFT)
+I20261114 15:41:59.093064 0x16e013000 feature_extraction.cc:270] Processed file [6/16]
+I20261114 15:41:59.093125 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0008.jpg
+I20261114 15:41:59.093141 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.093154 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.093167 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.093180 0x16e013000 feature_extraction.cc:294]   Features:        1227 (SIFT)
+I20261114 15:41:59.093985 0x16e013000 feature_extraction.cc:270] Processed file [7/16]
+I20261114 15:41:59.094010 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0007.jpg
+I20261114 15:41:59.094023 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.094061 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.094114 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.094126 0x16e013000 feature_extraction.cc:294]   Features:        1178 (SIFT)
+I20261114 15:41:59.109675 0x16e013000 feature_extraction.cc:270] Processed file [8/16]
+I20261114 15:41:59.109716 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0006.jpg
+I20261114 15:41:59.109730 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.109739 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.109747 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.109756 0x16e013000 feature_extraction.cc:294]   Features:        1544 (SIFT)
+I20261114 15:41:59.552486 0x16e013000 feature_extraction.cc:270] Processed file [9/16]
+I20261114 15:41:59.552562 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0009.jpg
+I20261114 15:41:59.552580 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.552591 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.552603 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.552615 0x16e013000 feature_extraction.cc:294]   Features:        1384 (SIFT)
+I20261114 15:41:59.625718 0x16e013000 feature_extraction.cc:270] Processed file [10/16]
+I20261114 15:41:59.625782 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0010.jpg
+I20261114 15:41:59.625800 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.625812 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.625823 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.625836 0x16e013000 feature_extraction.cc:294]   Features:        1537 (SIFT)
+I20261114 15:41:59.635106 0x16e013000 feature_extraction.cc:270] Processed file [11/16]
+I20261114 15:41:59.635161 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0011.jpg
+I20261114 15:41:59.635176 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.635187 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.635198 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.635211 0x16e013000 feature_extraction.cc:294]   Features:        1651 (SIFT)
+I20261114 15:41:59.643616 0x16e013000 feature_extraction.cc:270] Processed file [12/16]
+I20261114 15:41:59.643671 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0012.jpg
+I20261114 15:41:59.643687 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:41:59.643699 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:41:59.643710 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:41:59.643723 0x16e013000 feature_extraction.cc:294]   Features:        1586 (SIFT)
+I20261114 15:42:00.086452 0x16e013000 feature_extraction.cc:270] Processed file [13/16]
+I20261114 15:42:00.086519 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0013.jpg
+I20261114 15:42:00.086535 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:42:00.086547 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:42:00.086560 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:42:00.086572 0x16e013000 feature_extraction.cc:294]   Features:        1564 (SIFT)
+I20261114 15:42:00.161464 0x16e013000 feature_extraction.cc:270] Processed file [14/16]
+I20261114 15:42:00.161518 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0014.jpg
+I20261114 15:42:00.161532 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:42:00.161558 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:42:00.161587 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:42:00.161599 0x16e013000 feature_extraction.cc:294]   Features:        1616 (SIFT)
+I20261114 15:42:00.177019 0x16e013000 feature_extraction.cc:270] Processed file [15/16]
+I20261114 15:42:00.177072 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0015.jpg
+I20261114 15:42:00.177087 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:42:00.177098 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:42:00.177109 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:42:00.177122 0x16e013000 feature_extraction.cc:294]   Features:        1669 (SIFT)
+I20261114 15:42:00.190170 0x16e013000 feature_extraction.cc:270] Processed file [16/16]
+I20261114 15:42:00.190214 0x16e013000 feature_extraction.cc:273]   Name:            templeSR0016.jpg
+I20261114 15:42:00.190228 0x16e013000 feature_extraction.cc:282]   Dimensions:      640 x 480
+I20261114 15:42:00.190239 0x16e013000 feature_extraction.cc:285]   Camera:          #1 - PINHOLE
+I20261114 15:42:00.190249 0x16e013000 feature_extraction.cc:289]   Focal Length:    1523.15px (Prior)
+I20261114 15:42:00.190262 0x16e013000 feature_extraction.cc:294]   Features:        1619 (SIFT)
+I20261114 15:42:00.190878 0x16db27000 timer.cc:90] Elapsed time: 0.038 [minutes]
+I20261114 15:42:00.241781 0x16db27000 feature_matching.cc:196] === Feature matching & geometric verification ===
+I20261114 15:42:00.241966 0x16dbb3000 sift.cc:1685] Creating SIFT CPU feature matcher
+I20261114 15:42:00.241985 0x16dd57000 sift.cc:1685] Creating SIFT CPU feature matcher
+I20261114 15:42:00.241997 0x16dccb000 sift.cc:1685] Creating SIFT CPU feature matcher
+I20261114 15:42:00.242005 0x16dc3f000 sift.cc:1685] Creating SIFT CPU feature matcher
+I20261114 15:42:00.242366 0x16db27000 pairing.cc:181] Generating exhaustive image pairs...
+I20261114 15:42:00.242390 0x16db27000 pairing.cc:214] Processing block [1/1, 1/1]
+I20261114 15:42:00.801521 0x16db27000 feature_matching.cc:218] in 0.559s
+I20261114 15:42:00.801558 0x16db27000 timer.cc:90] Elapsed time: 0.009 [minutes]
+I20261114 15:42:00.810001 0x20bbed300 incremental_pipeline.cc:353] Loading database
+I20261114 15:42:00.810074 0x20bbed300 database_cache.cc:82] Loading rigs...
+I20261114 15:42:00.810104 0x20bbed300 database_cache.cc:92]  1 in 0.000s
+I20261114 15:42:00.810119 0x20bbed300 database_cache.cc:100] Loading cameras...
+I20261114 15:42:00.810135 0x20bbed300 database_cache.cc:118]  1 in 0.000s
+I20261114 15:42:00.810144 0x20bbed300 database_cache.cc:126] Loading frames...
+I20261114 15:42:00.810183 0x20bbed300 database_cache.cc:136]  16 in 0.000s
+I20261114 15:42:00.810192 0x20bbed300 database_cache.cc:144] Loading matches...
+I20261114 15:42:00.810308 0x20bbed300 database_cache.cc:163]  34 in 0.000s
+I20261114 15:42:00.810317 0x20bbed300 database_cache.cc:171] Loading images...
+I20261114 15:42:00.810879 0x20bbed300 database_cache.cc:268]  16 in 0.001s (connected 16, loaded 16)
+I20261114 15:42:00.810889 0x20bbed300 database_cache.cc:282] Loading pose priors...
+I20261114 15:42:00.810902 0x20bbed300 database_cache.cc:290]  0 in 0.000s
+I20261114 15:42:00.810910 0x20bbed300 database_cache.cc:298] Building correspondence graph...
+I20261114 15:42:00.812166 0x20bbed300 database_cache.cc:327]  in 0.001s (ignored 0)
+I20261114 15:42:00.812177 0x20bbed300 timer.cc:90] Elapsed time: 0.000 [minutes]
+I20261114 15:42:00.812644 0x20bbed300 incremental_pipeline.cc:465] Finding good initial image pair
+I20261114 15:42:00.835105 0x20bbed300 incremental_pipeline.cc:492] Registering initial image pair #4 and #10
+I20261114 15:42:00.837039 0x20bbed300 incremental_pipeline.cc:510] Global bundle adjustment
+I20261114 15:42:00.846606 0x20bbed300 incremental_pipeline.cc:620] Registering image #11 (num_reg_frames=2)
+I20261114 15:42:00.846625 0x20bbed300 incremental_pipeline.cc:623] => Image sees 331 / 1403 points
+I20261114 15:42:00.857422 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:00.862607 0x20bbed300 incremental_pipeline.cc:620] Registering image #3 (num_reg_frames=3)
+I20261114 15:42:00.862620 0x20bbed300 incremental_pipeline.cc:623] => Image sees 192 / 460 points
+I20261114 15:42:00.883340 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:00.897873 0x20bbed300 incremental_pipeline.cc:620] Registering image #9 (num_reg_frames=4)
+I20261114 15:42:00.897895 0x20bbed300 incremental_pipeline.cc:623] => Image sees 85 / 476 points
+I20261114 15:42:00.923122 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:00.937754 0x20bbed300 incremental_pipeline.cc:620] Registering image #6 (num_reg_frames=5)
+I20261114 15:42:00.937769 0x20bbed300 incremental_pipeline.cc:623] => Image sees 40 / 475 points
+I20261114 15:42:00.952524 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:00.965303 0x20bbed300 incremental_pipeline.cc:620] Registering image #7 (num_reg_frames=6)
+I20261114 15:42:00.965323 0x20bbed300 incremental_pipeline.cc:623] => Image sees 121 / 464 points
+I20261114 15:42:00.978873 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:00.990356 0x20bbed300 incremental_pipeline.cc:620] Registering image #8 (num_reg_frames=7)
+I20261114 15:42:00.990369 0x20bbed300 incremental_pipeline.cc:623] => Image sees 128 / 453 points
+I20261114 15:42:01.009354 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.020710 0x20bbed300 incremental_pipeline.cc:620] Registering image #15 (num_reg_frames=8)
+I20261114 15:42:01.020721 0x20bbed300 incremental_pipeline.cc:623] => Image sees 71 / 467 points
+I20261114 15:42:01.029713 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.044982 0x20bbed300 incremental_pipeline.cc:620] Registering image #16 (num_reg_frames=9)
+I20261114 15:42:01.045022 0x20bbed300 incremental_pipeline.cc:623] => Image sees 52 / 578 points
+I20261114 15:42:01.053334 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.070061 0x20bbed300 incremental_pipeline.cc:620] Registering image #12 (num_reg_frames=10)
+I20261114 15:42:01.070073 0x20bbed300 incremental_pipeline.cc:623] => Image sees 93 / 646 points
+I20261114 15:42:01.092192 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.112138 0x20bbed300 incremental_pipeline.cc:620] Registering image #13 (num_reg_frames=11)
+I20261114 15:42:01.112161 0x20bbed300 incremental_pipeline.cc:623] => Image sees 221 / 568 points
+I20261114 15:42:01.137359 0x20bbed300 incremental_pipeline.cc:620] Registering image #5 (num_reg_frames=12)
+I20261114 15:42:01.137379 0x20bbed300 incremental_pipeline.cc:623] => Image sees 55 / 232 points
+I20261114 15:42:01.150548 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.168428 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.177782 0x20bbed300 incremental_pipeline.cc:826] Keeping successful reconstruction
+I20261114 15:42:01.182232 0x20bbed300 incremental_pipeline.cc:465] Finding good initial image pair
+I20261114 15:42:01.185171 0x20bbed300 incremental_pipeline.cc:492] Registering initial image pair #14 and #1
+I20261114 15:42:01.185803 0x20bbed300 incremental_pipeline.cc:510] Global bundle adjustment
+I20261114 15:42:01.189237 0x20bbed300 incremental_pipeline.cc:620] Registering image #2 (num_reg_frames=2)
+I20261114 15:42:01.189248 0x20bbed300 incremental_pipeline.cc:623] => Image sees 121 / 714 points
+I20261114 15:42:01.193237 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.198340 0x20bbed300 incremental_pipeline.cc:620] Registering image #5 (num_reg_frames=3)
+I20261114 15:42:01.198369 0x20bbed300 incremental_pipeline.cc:623] => Image sees 65 / 232 points
+I20261114 15:42:01.203606 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+I20261114 15:42:01.206649 0x20bbed300 incremental_pipeline.cc:88] Retriangulation and Global bundle adjustment
+W20261114 15:42:01.208024 0x20bbed300 incremental_pipeline.cc:821] Discarding reconstruction due to insufficient size
+I20261114 15:42:01.208542 0x20bbed300 timer.cc:90] Elapsed time: 0.007 [minutes]

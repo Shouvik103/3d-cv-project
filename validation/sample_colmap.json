@@ -1,0 +1,87 @@
+{
+  "source_sha256": "83a7d100b72a679a9ba81272beeadffb369faaae300c5cf485054dbafa4c38df",
+  "timestamp_utc": "2026-11-14T10:09:03.293028+00:00",
+  "git_commit": "ac24571bb53e951c95fbec980171db08066e29a8",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "reference": "gt",
+    "auc_thresholds_deg": [
+      5,
+      10,
+      30
+    ],
+    "pointcloud": {
+      "max_points": 50000,
+      "fscore_tau_frac": 0.01
+    }
+  },
+  "method": "sample_colmap_export_check",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 8,
+    "total_images": 8,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.001030619737405647,
+    "ate_percent_extent": 0.04043574294862959,
+    "median_rotation_deg": 0.02515768191587573,
+    "median_translation_deg": 0.07232572246288752,
+    "auc": {
+      "5": 0.9825257199535647,
+      "10": 0.9912628599767824,
+      "30": 0.9970876199922608
+    },
+    "pose_pairs": 28,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 0.25500785350607363,
+      "rotation": [
+        [
+          0.9916245863842961,
+          -0.007854603054951803,
+          -0.1289146418721415
+        ],
+        [
+          0.0007492061384222177,
+          0.9984820355824272,
+          -0.05507325402891277
+        ],
+        [
+          0.12915153258221723,
+          0.054515409106234564,
+          0.9901252202633989
+        ]
+      ],
+      "translation": [
+        5.877562609439629e-17,
+        0.231146580891236,
+        -4.217539837194011
+      ]
+    },
+    "compared_images": [
+      "view_00.png",
+      "view_01.png",
+      "view_02.png",
+      "view_03.png",
+      "view_04.png",
+      "view_05.png",
+      "view_06.png",
+      "view_07.png"
+    ],
+    "reprojection": {
+      "observations": 8597,
+      "invalid": 0,
+      "mean_px": 0.21796896234310342,
+      "median_px": 0.15741700051482146,
+      "resolution": "input images as processed, not original camera resolution"
+    }
+  }
+}

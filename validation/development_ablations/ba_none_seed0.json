@@ -1,0 +1,252 @@
+{
+  "source_sha256": "ae3434fb8cf6b3131271fc81f0bcf3746544fbc7a8b58d48634103278ad86e14",
+  "timestamp_utc": "2026-11-14T10:00:11.627380+00:00",
+  "git_commit": "ac24571bb53e951c95fbec980171db08066e29a8",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": false
+    },
+    "matching": {
+      "ratio": 0.8,
+      "mutual": true,
+      "min_inliers": 30,
+      "ransac_thresh_px": 1.0,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 10,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 2.0,
+      "min_angle_deg": 1.5
+    },
+    "registration": {
+      "pnp_reproj_px": 4.0,
+      "pnp_iters": 2000,
+      "min_inliers": 20
+    },
+    "ba": {
+      "mode": "none",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "method": "ba_none_seed0",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 8,
+    "total_images": 8,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.004298529689477449,
+    "ate_percent_extent": 0.16865021624590742,
+    "median_rotation_deg": 0.07128645773934096,
+    "median_translation_deg": 0.35351783595307595,
+    "auc": {
+      "5": 0.9273626533493999,
+      "10": 0.9636813266747,
+      "30": 0.9878937755582334
+    },
+    "pose_pairs": 28,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 0.7426777662011258,
+      "rotation": [
+        [
+          0.9540386422005893,
+          0.013364750992961513,
+          0.29938545826234103
+        ],
+        [
+          -0.006877015902696917,
+          0.9997183654264632,
+          -0.022713354690913966
+        ],
+        [
+          -0.2996046992961389,
+          0.01961053951163354,
+          0.9538618615395696
+        ]
+      ],
+      "translation": [
+        -1.2759968163844204,
+        0.20693885285368985,
+        -4.108765609904414
+      ]
+    },
+    "compared_images": [
+      "view_00.png",
+      "view_01.png",
+      "view_02.png",
+      "view_03.png",
+      "view_04.png",
+      "view_05.png",
+      "view_06.png",
+      "view_07.png"
+    ]
+  },
+  "run": {
+    "source_sha256": "ae3434fb8cf6b3131271fc81f0bcf3746544fbc7a8b58d48634103278ad86e14",
+    "timestamp_utc": "2026-11-14T10:00:11.575238+00:00",
+    "git_commit": "ac24571bb53e951c95fbec980171db08066e29a8",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": false
+      },
+      "matching": {
+        "ratio": 0.8,
+        "mutual": true,
+        "min_inliers": 30,
+        "ransac_thresh_px": 1.0,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 10,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 2.0,
+        "min_angle_deg": 1.5
+      },
+      "registration": {
+        "pnp_reproj_px": 4.0,
+        "pnp_iters": 2000,
+        "min_inliers": 20
+      },
+      "ba": {
+        "mode": "none",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    },
+    "registered": 8,
+    "points": 3036,
+    "median_reprojection_px": 0.18288832592867182,
+    "elapsed_seconds": 6.438910541000951,
+    "total_images": 8,
+    "runtime_seconds": 6.584885416006728,
+    "init_pair": [
+      "view_00.png",
+      "view_02.png"
+    ],
+    "image_names": [
+      "view_00.png",
+      "view_01.png",
+      "view_02.png",
+      "view_03.png",
+      "view_04.png",
+      "view_05.png",
+      "view_06.png",
+      "view_07.png"
+    ],
+    "history": [
+      {
+        "registered": 2,
+        "points": 663,
+        "median_reprojection_px": 0.16596647200055756,
+        "elapsed_seconds": 5.904052125006274
+      },
+      {
+        "registered": 3,
+        "points": 1270,
+        "median_reprojection_px": 0.13428202771119413,
+        "elapsed_seconds": 5.970734458001971
+      },
+      {
+        "registered": 4,
+        "points": 1702,
+        "median_reprojection_px": 0.14174393011085396,
+        "elapsed_seconds": 6.032359791002818
+      },
+      {
+        "registered": 5,
+        "points": 2103,
+        "median_reprojection_px": 0.15584781455298738,
+        "elapsed_seconds": 6.099470041001041
+      },
+      {
+        "registered": 6,
+        "points": 2431,
+        "median_reprojection_px": 0.16534523640019314,
+        "elapsed_seconds": 6.16985841600399
+      },
+      {
+        "registered": 7,
+        "points": 2763,
+        "median_reprojection_px": 0.17799382112948958,
+        "elapsed_seconds": 6.248509333003312
+      },
+      {
+        "registered": 8,
+        "points": 3067,
+        "median_reprojection_px": 0.18566238586378359,
+        "elapsed_seconds": 6.33100054100214
+      },
+      {
+        "registered": 8,
+        "points": 3036,
+        "median_reprojection_px": 0.18288832592867182,
+        "elapsed_seconds": 6.438910541000951
+      }
+    ],
+    "mean_track_length": 3.3857048748353096
+  }
+}
