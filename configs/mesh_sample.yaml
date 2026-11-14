@@ -1,0 +1,13 @@
+# Offline analytic fixture: never labelled a learned-depth or real-scene result.
+seed: 0
+depth_backend: mono
+cache_only: true
+mono: {model_id: analytic-fixture, revision: null, input_long_side: 80, device: cpu}
+filter:
+  depth_trunc_pct: 100
+  edge_grad_thresh: 0.15
+  consistency: false
+  roi_percentiles: [0, 100]
+  roi_margin_frac: 0.15
+tsdf: {voxel_div: 96, sdf_trunc_voxels: 4}
+heldout: {num_views: 2, seed: 0}

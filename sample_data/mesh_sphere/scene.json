@@ -1,0 +1,6 @@
+{
+  "images": "images",
+  "depth_cache": "cache/depth_mono",
+  "synthetic": true,
+  "shape": "sphere"
+}

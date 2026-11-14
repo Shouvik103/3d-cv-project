@@ -1,0 +1,4 @@
+# Classical depth; no model download, with held-out cameras excluded from stereo.
+depth_backend: sgbm
+sgbm: {input_long_side: 640, num_disparities: 128, neighbors: 2}
+tsdf: {voxel_div: 192, sdf_trunc_voxels: 4}

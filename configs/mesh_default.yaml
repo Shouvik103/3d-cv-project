@@ -1,0 +1,28 @@
+seed: 0
+depth_backend: mono
+cache_only: false
+mono:
+  model_id: depth-anything/Depth-Anything-V2-Small-hf
+  revision: 5426e4f0f36572d16453bbda7a8389317b1bef99
+  input_long_side: 768
+  device: auto
+align:
+  min_points: 30
+  iterations: 400
+  ransac_tol: 0.10
+  max_median_rel_residual: 0.10
+filter:
+  depth_trunc_pct: 98
+  edge_grad_thresh: 0.05
+  consistency: true
+  consistency_rel_tol: 0.02
+  consistency_min_views: 2
+  roi_percentiles: [5, 95]
+  roi_margin_frac: 0.15
+sgbm: {input_long_side: 640, num_disparities: 128, neighbors: 2}
+vggt: {confidence_quantile: 0.5}
+tsdf: {voxel_div: 256, sdf_trunc_voxels: 4}
+poisson: {enabled: false, depth: 8, density_quantile: 0.05}
+clean: {min_component_frac: 0.02, light_target_triangles: 80000}
+export: [ply, obj, glb]
+heldout: {num_views: 3, seed: 0}

@@ -1,0 +1,7 @@
+# Wider sparse ROI for thin chair legs / ornaments; this does not invent surfaces.
+depth_backend: sgbm
+filter:
+  roi_percentiles: [1, 99]
+  roi_margin_frac: 0.20
+sgbm: {input_long_side: 640, num_disparities: 128, neighbors: 2}
+tsdf: {voxel_div: 192, sdf_trunc_voxels: 4}

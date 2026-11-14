@@ -1,0 +1,3 @@
+# Memory-conscious real-scene run. Same relative depth model, 384px inference.
+mono: {input_long_side: 384}
+tsdf: {voxel_div: 192, sdf_trunc_voxels: 4}

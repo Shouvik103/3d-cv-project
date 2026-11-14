@@ -1,0 +1,135 @@
+{
+  "source_sha256": "d2a706c7fbab442fdeb2ee0a1e0b8c619b400b71de44f7dfe48df5136d564f8a",
+  "timestamp_utc": "2026-11-14T10:12:12.996910+00:00",
+  "git_commit": "28fc80cc5458ac6323439b09d7ca332027b649cc",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": false
+    },
+    "matching": {
+      "ratio": 0.8,
+      "mutual": true,
+      "min_inliers": 30,
+      "ransac_thresh_px": 1.0,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 10,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 2.0,
+      "min_angle_deg": 1.5
+    },
+    "registration": {
+      "pnp_reproj_px": 4.0,
+      "pnp_iters": 2000,
+      "min_inliers": 20
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 8,
+  "points": 3067,
+  "median_reprojection_px": 0.12316848274487037,
+  "elapsed_seconds": 14.879183917000773,
+  "total_images": 8,
+  "runtime_seconds": 15.043754417005403,
+  "init_pair": [
+    "view_00.png",
+    "view_02.png"
+  ],
+  "image_names": [
+    "view_00.png",
+    "view_01.png",
+    "view_02.png",
+    "view_03.png",
+    "view_04.png",
+    "view_05.png",
+    "view_06.png",
+    "view_07.png"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 663,
+      "median_reprojection_px": 0.09240699255994564,
+      "elapsed_seconds": 6.581180042005144
+    },
+    {
+      "registered": 3,
+      "points": 1270,
+      "median_reprojection_px": 0.09210055876590284,
+      "elapsed_seconds": 6.993573292005749
+    },
+    {
+      "registered": 4,
+      "points": 1702,
+      "median_reprojection_px": 0.10603472709817519,
+      "elapsed_seconds": 7.530872333001753
+    },
+    {
+      "registered": 5,
+      "points": 2103,
+      "median_reprojection_px": 0.109305129452371,
+      "elapsed_seconds": 9.606674417002068
+    },
+    {
+      "registered": 6,
+      "points": 2431,
+      "median_reprojection_px": 0.11624632867879883,
+      "elapsed_seconds": 10.425345957999525
+    },
+    {
+      "registered": 7,
+      "points": 2763,
+      "median_reprojection_px": 0.1218590684988941,
+      "elapsed_seconds": 11.324922167004843
+    },
+    {
+      "registered": 8,
+      "points": 3067,
+      "median_reprojection_px": 0.12463255108711017,
+      "elapsed_seconds": 12.316526542002975
+    },
+    {
+      "registered": 8,
+      "points": 3067,
+      "median_reprojection_px": 0.12316848274487037,
+      "elapsed_seconds": 14.879183917000773
+    }
+  ],
+  "mean_track_length": 3.410172807303554
+}

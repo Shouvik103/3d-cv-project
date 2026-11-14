@@ -1,0 +1,6 @@
+{
+  "reconstruction": "reconstruction",
+  "images": "images",
+  "depth_cache": "depth_mono",
+  "provenance": "Own SfM on original generated sample images; no ground-truth poses used for mesh"
+}

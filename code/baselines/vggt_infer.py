@@ -30,7 +30,8 @@ def main():
     a.out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(a.out, image_names=np.array([p.name for p in paths]), extrinsic=cpu(extrinsic), intrinsic=cpu(intrinsic),
                         world_points=cpu(predictions['world_points']), world_points_conf=cpu(predictions['world_points_conf']),
-                        images=images.float().cpu().permute(0, 2, 3, 1).numpy())
+                        images=images.float().cpu().permute(0, 2, 3, 1).numpy(),
+                        depth=cpu(predictions['depth']), depth_conf=cpu(predictions['depth_conf']))
     write_json(a.out.with_suffix('.json'), dict(manifest(), runtime_seconds=elapsed, timing_scope='GPU forward pass only; excludes loading and export',
                                               peak_gpu_bytes=torch.cuda.max_memory_allocated(), gpu=torch.cuda.get_device_name(), image_names=[p.name for p in paths]))
 
