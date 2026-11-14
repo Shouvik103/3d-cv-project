@@ -1,0 +1,13 @@
+candidate_hz: 5.0
+max_candidates: 1200
+analysis_max_side: 640
+max_frames: 40
+min_frames: 5
+max_side: 1600
+min_sharpness: 10.0
+relative_sharpness: 0.35
+min_corners: 50
+min_tracked_fraction: 0.55
+target_motion_fraction: 0.025
+min_motion_fraction: 0.004
+max_motion_fraction: 0.18
