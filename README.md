@@ -245,7 +245,8 @@ core. Credit [OpenCV](https://opencv.org/), [SciPy](https://scipy.org/),
 are documented in its [license](https://github.com/facebookresearch/vggt/blob/main/LICENSE.txt).
 No weights are included. Actual Python package versions accompany run summaries.
 
-Repository contributors: Shouvik103 and DagarMihir. Five technical workstreams can
+Repository contributors: Shouvik Das (23bcs125; Shouvik103) and
+Mihir Dagar (23bcs080; DagarMihir). Five technical workstreams can
 be shared among up to four course group members; they do not imply five members.
 Record real member details and contributions in `TEAM_CONTRIBUTIONS.md` before
 submission. Git author metadata alone is not evidence of implementation ownership.
