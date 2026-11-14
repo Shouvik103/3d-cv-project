@@ -1,0 +1,589 @@
+{
+  "source_sha256": "c613efac6e619112a9804a59744c1c3483475244223f8e2d47b48550dcd3518b",
+  "timestamp_utc": "2026-11-14T16:42:22.629939+00:00",
+  "git_commit": "cea6d0ca8456c5b7d691e1e6ed42172474fd4ad1",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "sgbm",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 768,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        5,
+        95
+      ],
+      "roi_margin_frac": 0.15
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 192,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 3,
+      "seed": 0
+    }
+  },
+  "scene": "results/mesh/car_scene",
+  "backend": "sgbm",
+  "frames_fused": 57,
+  "registered_views": 60,
+  "fusion_images": [
+    "IMG_20261114_181828.jpg",
+    "IMG_20261114_181835.jpg",
+    "IMG_20261114_181837.jpg",
+    "IMG_20261114_181839.jpg",
+    "IMG_20261114_181844.jpg",
+    "IMG_20261114_181848.jpg",
+    "IMG_20261114_181857.jpg",
+    "IMG_20261114_181859.jpg",
+    "IMG_20261114_181901.jpg",
+    "IMG_20261114_181910.jpg",
+    "IMG_20261114_181911.jpg",
+    "IMG_20261114_181939.jpg",
+    "IMG_20261114_181941.jpg",
+    "IMG_20261114_181946.jpg",
+    "IMG_20261114_181948.jpg",
+    "IMG_20261114_182009.jpg",
+    "IMG_20261114_182032.jpg",
+    "IMG_20261114_182034.jpg",
+    "IMG_20261114_182042.jpg",
+    "IMG_20261114_182043.jpg",
+    "IMG_20261114_182045.jpg",
+    "IMG_20261114_182048.jpg",
+    "IMG_20261114_182050.jpg",
+    "IMG_20261114_182051.jpg",
+    "IMG_20261114_182054.jpg",
+    "IMG_20261114_182056.jpg",
+    "IMG_20261114_182100.jpg",
+    "IMG_20261114_182121.jpg",
+    "IMG_20261114_182128.jpg",
+    "IMG_20261114_182131.jpg",
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182208.jpg",
+    "IMG_20261114_182218.jpg",
+    "IMG_20261114_182220.jpg",
+    "IMG_20261114_182222.jpg",
+    "IMG_20261114_182224.jpg",
+    "IMG_20261114_182227.jpg",
+    "IMG_20261114_182229.jpg",
+    "IMG_20261114_182230.jpg",
+    "IMG_20261114_182232.jpg",
+    "IMG_20261114_182235.jpg",
+    "IMG_20261114_182239.jpg",
+    "IMG_20261114_182241.jpg",
+    "IMG_20261114_182245.jpg",
+    "IMG_20261114_182247.jpg",
+    "IMG_20261114_182251.jpg",
+    "IMG_20261114_182252.jpg",
+    "IMG_20261114_182257.jpg",
+    "IMG_20261114_182258.jpg",
+    "IMG_20261114_182300.jpg",
+    "IMG_20261114_182301.jpg",
+    "IMG_20261114_182303.jpg",
+    "IMG_20261114_182304.jpg",
+    "IMG_20261114_182314.jpg",
+    "IMG_20261114_182315.jpg",
+    "IMG_20261114_182319.jpg",
+    "IMG_20261114_182325.jpg"
+  ],
+  "heldout_images": [
+    "IMG_20261114_182136.jpg",
+    "IMG_20261114_182226.jpg",
+    "IMG_20261114_182255.jpg"
+  ],
+  "heldout": {
+    "views": 3,
+    "rows": [
+      {
+        "image": "IMG_20261114_182136.jpg",
+        "pixels": 280115,
+        "coverage": 0.06484143518518519,
+        "psnr_db": 16.97759059244271,
+        "ssim": 0.5444239012302273,
+        "mae": 0.10300929391861584
+      },
+      {
+        "image": "IMG_20261114_182226.jpg",
+        "pixels": 769182,
+        "coverage": 0.17805138888888888,
+        "psnr_db": 16.858680499536735,
+        "ssim": 0.5779652199146262,
+        "mae": 0.11531429628586164
+      },
+      {
+        "image": "IMG_20261114_182255.jpg",
+        "pixels": 732041,
+        "coverage": 0.16945393518518517,
+        "psnr_db": 17.495401211025158,
+        "ssim": 0.5469940549373445,
+        "mae": 0.10229594358321639
+      }
+    ],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": 0.6005641683861622,
+    "passed": true,
+    "automatic_no_track_check": false,
+    "scene_extent": 3.0822950147721135,
+    "images": [
+      {
+        "image": "IMG_20261114_181828.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 282
+      },
+      {
+        "image": "IMG_20261114_181835.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 479
+      },
+      {
+        "image": "IMG_20261114_181837.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 498
+      },
+      {
+        "image": "IMG_20261114_181839.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 524
+      },
+      {
+        "image": "IMG_20261114_181844.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 356
+      },
+      {
+        "image": "IMG_20261114_181848.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 159
+      },
+      {
+        "image": "IMG_20261114_181857.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 163
+      },
+      {
+        "image": "IMG_20261114_181859.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 228
+      },
+      {
+        "image": "IMG_20261114_181901.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 217
+      },
+      {
+        "image": "IMG_20261114_181910.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 82
+      },
+      {
+        "image": "IMG_20261114_181911.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 63
+      },
+      {
+        "image": "IMG_20261114_181939.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 386
+      },
+      {
+        "image": "IMG_20261114_181941.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 388
+      },
+      {
+        "image": "IMG_20261114_181946.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 400
+      },
+      {
+        "image": "IMG_20261114_181948.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 377
+      },
+      {
+        "image": "IMG_20261114_182009.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 36
+      },
+      {
+        "image": "IMG_20261114_182032.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 7
+      },
+      {
+        "image": "IMG_20261114_182034.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 24
+      },
+      {
+        "image": "IMG_20261114_182042.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 267
+      },
+      {
+        "image": "IMG_20261114_182043.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 334
+      },
+      {
+        "image": "IMG_20261114_182045.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 358
+      },
+      {
+        "image": "IMG_20261114_182048.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 397
+      },
+      {
+        "image": "IMG_20261114_182050.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 399
+      },
+      {
+        "image": "IMG_20261114_182051.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 467
+      },
+      {
+        "image": "IMG_20261114_182054.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 496
+      },
+      {
+        "image": "IMG_20261114_182056.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 484
+      },
+      {
+        "image": "IMG_20261114_182100.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 388
+      },
+      {
+        "image": "IMG_20261114_182121.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 409
+      },
+      {
+        "image": "IMG_20261114_182128.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 93
+      },
+      {
+        "image": "IMG_20261114_182131.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 71
+      },
+      {
+        "image": "IMG_20261114_182136.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 185
+      },
+      {
+        "image": "IMG_20261114_182205.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 309
+      },
+      {
+        "image": "IMG_20261114_182208.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 402
+      },
+      {
+        "image": "IMG_20261114_182218.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 409
+      },
+      {
+        "image": "IMG_20261114_182220.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 175
+      },
+      {
+        "image": "IMG_20261114_182222.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 216
+      },
+      {
+        "image": "IMG_20261114_182224.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 344
+      },
+      {
+        "image": "IMG_20261114_182226.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 360
+      },
+      {
+        "image": "IMG_20261114_182227.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 442
+      },
+      {
+        "image": "IMG_20261114_182229.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 433
+      },
+      {
+        "image": "IMG_20261114_182230.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 302
+      },
+      {
+        "image": "IMG_20261114_182232.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 353
+      },
+      {
+        "image": "IMG_20261114_182235.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 316
+      },
+      {
+        "image": "IMG_20261114_182239.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 421
+      },
+      {
+        "image": "IMG_20261114_182241.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9995283018867924,
+        "tracked_points": 572
+      },
+      {
+        "image": "IMG_20261114_182245.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9992924528301886,
+        "tracked_points": 511
+      },
+      {
+        "image": "IMG_20261114_182247.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 506
+      },
+      {
+        "image": "IMG_20261114_182251.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 332
+      },
+      {
+        "image": "IMG_20261114_182252.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 340
+      },
+      {
+        "image": "IMG_20261114_182255.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 391
+      },
+      {
+        "image": "IMG_20261114_182257.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 418
+      },
+      {
+        "image": "IMG_20261114_182258.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 349
+      },
+      {
+        "image": "IMG_20261114_182300.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 354
+      },
+      {
+        "image": "IMG_20261114_182301.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9992924528301886,
+        "tracked_points": 138
+      },
+      {
+        "image": "IMG_20261114_182303.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9992924528301886,
+        "tracked_points": 76
+      },
+      {
+        "image": "IMG_20261114_182304.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 306
+      },
+      {
+        "image": "IMG_20261114_182314.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 330
+      },
+      {
+        "image": "IMG_20261114_182315.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 376
+      },
+      {
+        "image": "IMG_20261114_182319.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997641509433962,
+        "tracked_points": 375
+      },
+      {
+        "image": "IMG_20261114_182325.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 404
+      }
+    ]
+  },
+  "roi": [
+    [
+      -0.4896353019999999,
+      0.5810240606249999,
+      1.821049931075
+    ],
+    [
+      2.7582589189999993,
+      1.968232002875,
+      3.0603009954249996
+    ]
+  ],
+  "voxel_length": 0.01605361986860476,
+  "full": {
+    "vertices": 62184,
+    "faces": 119296,
+    "components": 1,
+    "boundary_edges": 6352,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 10.053695315752925,
+    "mean_edge_length": 0.015176377224678492
+  },
+  "light": {
+    "vertices": 41977,
+    "faces": 80000,
+    "components": 22,
+    "boundary_edges": 5132,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 10.029790137046696,
+    "mean_edge_length": 0.018250143694418377
+  },
+  "timing_seconds": {
+    "depth": 44.33655204603565,
+    "alignment": 0.0,
+    "filtering": 2.0763607500120997,
+    "fusion": 0.3354429579921998,
+    "clean_export": 0.6196782079932746,
+    "total": 66.55471966699406
+  },
+  "peak_rss_mb": 1973.84375
+}

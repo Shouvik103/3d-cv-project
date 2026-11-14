@@ -1,0 +1,47 @@
+{
+  "archive": "mesh_addon_review.zip",
+  "sha256": "9be7867608af81d486c69e359fa5d8f21dc15d8157fd42832b565ad6fc840d3e",
+  "bytes": 16980995,
+  "raw_datasets_excluded": true,
+  "weights_excluded": true,
+  "fresh_isolated_venv": true,
+  "offline": true,
+  "empty_model_cache": true,
+  "all_depth_predictions_from_shipped_cache": true,
+  "commands": [
+    {
+      "command": [
+        "code/mesh/run_mesh.py",
+        "--scene",
+        "sample_data/scene_small",
+        "--out",
+        "outputs/archive_mesh",
+        "--cache-only"
+      ],
+      "returncode": 0,
+      "seconds": 4.041772333002882
+    },
+    {
+      "command": [
+        "code/viz/view_mesh.py",
+        "--mesh",
+        "sample_data/scene_small/mesh_light.glb",
+        "--screenshot",
+        "outputs/archive_mesh/view.png"
+      ],
+      "returncode": 0,
+      "seconds": 1.231526333009242
+    },
+    {
+      "command": [
+        "-m",
+        "pytest",
+        "tests/test_mesh_pipeline.py",
+        "-q"
+      ],
+      "returncode": 0,
+      "seconds": 5.341569208991132
+    }
+  ],
+  "passed": true
+}

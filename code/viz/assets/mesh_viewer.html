@@ -1,0 +1,187 @@
+<section id="__ROOT__" data-mesh-viewer>
+  <style>
+    #__ROOT__ { color: var(--foreground); }
+    #__ROOT__ .mesh-controls { display:flex; flex-wrap:wrap; align-items:end; gap:calc(var(--font-size-base) * 1); margin-block:calc(var(--font-size-base) * .75); }
+    #__ROOT__ .mesh-field { display:grid; }
+    #__ROOT__ .mesh-stage { width:100%; height:540px; position:relative; touch-action:none; }
+    #__ROOT__ canvas { display:block; }
+    #__ROOT__ .mesh-caption { max-width:calc(100% - 90px); }
+    #__ROOT__ .mesh-hover { position:absolute; pointer-events:none; z-index:2; }
+    #__ROOT__ .mesh-hover[hidden] { display:none; }
+    @media(max-width:480px) { #__ROOT__ .mesh-stage { height:440px; } }
+  </style>
+  <h2>__TITLE__</h2>
+  <div class="mesh-caption text-small text-muted">__COUNTS__ · arbitrary units</div>
+  <div class="mesh-controls">
+    <div class="mesh-field">
+      <label class="form-label" for="__ROOT__-mode">Appearance</label>
+      <select class="form-select mesh-mode" id="__ROOT__-mode">
+        <option value="colored">Colored surface</option>
+        <option value="shaded">Shaded surface</option>
+        <option value="wireframe">Wireframe</option>
+        <option value="normals">Surface normals</option>
+      </select>
+    </div>
+    <div class="mesh-field">
+      <label class="form-label" for="__ROOT__-view">View</label>
+      <select class="form-select mesh-view" id="__ROOT__-view">
+        <option value="front-corner">Front corner</option>
+        <option value="back-corner">Back corner</option>
+        <option value="front">Front</option>
+        <option value="back">Back</option>
+        <option value="side-a">Side A</option>
+        <option value="side-b">Side B</option>
+        <option value="top">Top</option>
+      </select>
+    </div>
+    <label class="form-check"><input type="checkbox" class="form-check-input mesh-axes" checked><span class="form-check-label">Axes</span></label>
+  </div>
+  <div class="mesh-stage" role="img" aria-label="__TITLE__: interactive triangle surface. Drag to rotate, scroll to zoom, right-drag to pan, and hover for X, Y and Z coordinates.">
+    <div class="card mesh-hover text-small tabular-nums" role="tooltip" hidden>
+      <div class="mesh-face"></div>
+      <div>X <span class="mesh-x"></span></div>
+      <div>Y <span class="mesh-y"></span></div>
+      <div>Z <span class="mesh-z"></span></div>
+    </div>
+  </div>
+  <div class="sr-only mesh-status" aria-live="polite">Loading triangle mesh.</div>
+  <script type="application/json" id="__ROOT__-data">__DATA__</script>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(async () => {
+  const root=document.getElementById('__ROOT__');
+  const stage=root.querySelector('.mesh-stage'),status=root.querySelector('.mesh-status');
+  const mode=root.querySelector('.mesh-mode'),view=root.querySelector('.mesh-view'),axesInput=root.querySelector('.mesh-axes');
+  const hover=root.querySelector('.mesh-hover'),faceLabel=root.querySelector('.mesh-face');
+  const values=['x','y','z'].map(a=>root.querySelector('.mesh-'+a));
+  try {
+    if(typeof THREE==='undefined' || !THREE.OrbitControls) throw Error('The 3D renderer could not load. Reopen with an internet connection.');
+    if(typeof DecompressionStream==='undefined') throw Error('This view requires a browser with gzip stream support.');
+    const data=JSON.parse(root.querySelector('#__ROOT__-data').textContent);
+    const compressed=Uint8Array.from(atob(data.encoded),x=>x.charCodeAt(0));
+    const bytes=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+    if(bytes.byteLength!==data.byteLength) throw Error('Incomplete mesh geometry.');
+    const source=new DataView(bytes),positions=new Float32Array(data.vertices*3),indices=new Uint16Array(data.triangles*3);
+    for(let i=0;i<data.vertices;i++) for(let a=0;a<3;a++) positions[i*3+a]=data.offset[a]+source.getUint16(i*6+a*2,true)/65535*data.scale[a];
+    const colors=new Uint8Array(bytes,data.vertices*6,data.vertices*3);
+    for(let i=0;i<indices.length;i++) indices[i]=source.getUint16(data.indexOffset+i*2,true);
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
+    geometry.setAttribute('color',new THREE.BufferAttribute(colors,3,true));
+    geometry.setIndex(new THREE.BufferAttribute(indices,1));
+    geometry.computeVertexNormals();geometry.computeBoundingSphere();geometry.computeBoundingBox();
+    const probe=document.createElement('span');probe.setAttribute('aria-hidden','true');root.appendChild(probe);
+    const colorCanvas=document.createElement('canvas');colorCanvas.width=1;colorCanvas.height=1;const colorContext=colorCanvas.getContext('2d',{willReadFrequently:true});
+    function color(token) {
+      probe.style.color=`var(${token})`;colorContext.clearRect(0,0,1,1);colorContext.fillStyle=getComputedStyle(probe).color;colorContext.fillRect(0,0,1,1);
+      const rgba=colorContext.getImageData(0,0,1,1).data;return `rgb(${rgba[0]},${rgba[1]},${rgba[2]})`;
+    }
+    const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    renderer.setClearColor(0,0);renderer.outputEncoding=THREE.LinearEncoding;stage.appendChild(renderer.domElement);
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.01,100);camera.up.set(0,0,1);
+    const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=false;controls.minDistance=.25;controls.maxDistance=35;
+    // Neutral unit illumination is physical scene lighting; UI colors follow the theme.
+    scene.add(new THREE.AmbientLight(new THREE.Color(1,1,1),.35));
+    const key=new THREE.DirectionalLight(new THREE.Color(1,1,1),.65);key.position.set(3,-4,6);scene.add(key);
+    const fill=new THREE.DirectionalLight(new THREE.Color(1,1,1),.15);fill.position.set(-4,2,1);scene.add(fill);
+    const materials={
+      colored:new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide,toneMapped:false}),
+      shaded:new THREE.MeshLambertMaterial({color:color('--muted-foreground'),side:THREE.DoubleSide}),
+      wireframe:new THREE.MeshBasicMaterial({color:color('--foreground'),wireframe:true,side:THREE.DoubleSide}),
+      normals:new THREE.MeshNormalMaterial({side:THREE.DoubleSide})
+    };
+    const surface=new THREE.Mesh(geometry,materials.colored);scene.add(surface);
+    const axes=new THREE.Group(),axisMaterials=[],labels=[];scene.add(axes);
+    const low=data.offset.map(x=>x-.08),high=data.offset.map((x,i)=>x+data.scale[i]+.08);
+    function addLine(points,opacity) {
+      const g=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p)));
+      const m=new THREE.LineBasicMaterial({color:color('--border'),transparent:true,opacity});axisMaterials.push(m);axes.add(new THREE.Line(g,m));
+    }
+    function addLabel(text,p,heading=false) {
+      const canvas=document.createElement('canvas');canvas.width=192;canvas.height=64;
+      const texture=new THREE.CanvasTexture(canvas),sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:false,depthWrite:false,transparent:true}));
+      sprite.position.fromArray(p);sprite.renderOrder=3;axes.add(sprite);labels.push({canvas,texture,sprite,text,heading});
+    }
+    ['X','Y','Z'].forEach((name,a)=>{
+      const end=[...low];end[a]=high[a];addLine([low,end],.8);const title=[...end];title[a]+=.16;addLabel(name,title,true);
+      for(let tick=Math.ceil(low[a]*2)/2;tick<=high[a];tick+=.5) {
+        const p=[...low];p[a]=tick;const outward=a===1?0:1;const mark=[...p];mark[outward]-=.035;addLine([p,mark],.65);
+        const text=[...p];text[outward]-=.10;addLabel(String(Math.abs(tick)<1e-8?0:tick),text);
+        if(a<2) {const opposite=[...p];opposite[1-a]=high[1-a];addLine([p,opposite],.23);}
+      }
+    });
+    const highlightGeometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array(3),3));
+    const highlightMaterial=new THREE.PointsMaterial({color:color('--viz-series-1'),size:6,sizeAttenuation:false,depthTest:false});
+    const highlight=new THREE.Points(highlightGeometry,highlightMaterial);highlight.visible=false;highlight.frustumCulled=false;highlight.renderOrder=4;scene.add(highlight);
+    function theme() {
+      materials.shaded.color.set(color('--muted-foreground'));materials.wireframe.color.set(color('--foreground'));highlightMaterial.color.set(color('--viz-series-1'));
+      axisMaterials.forEach(m=>m.color.set(color('--border')));
+      for(const item of labels) {
+        const ctx=item.canvas.getContext('2d');ctx.clearRect(0,0,192,64);ctx.fillStyle=color('--foreground');ctx.font=`${item.heading?500:400} 36px ${getComputedStyle(root).fontFamily}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(item.text,96,32);item.texture.needsUpdate=true;
+      }
+    }
+    const directions={'front-corner':[2.8,-3.4,2.2],'back-corner':[-2.8,-3.4,2.2],front:[1,0,.12],back:[-1,0,.12],'side-a':[0,-1,.12],'side-b':[0,1,.12],top:[0,-.001,1]};
+    let fitting=5,previousFit=0,applying=false,dragging=false,timer,pointer=null,hoverFrame=0,lastHover=0;
+    function draw() {
+      const base=parseFloat(getComputedStyle(root).fontSize)||14;
+      for(const item of labels) {
+        const height=2*camera.position.distanceTo(item.sprite.position)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*base*(item.heading?1.15:.95)*64/36/Math.max(1,stage.clientHeight);
+        item.sprite.scale.set(height*3,height,1);
+      }
+      renderer.render(scene,camera);
+    }
+    function hideHover() {hover.hidden=true;highlight.visible=false;delete hover.dataset.triangle;}
+    function preset() {hideHover();camera.position.fromArray(directions[view.value]).normalize().multiplyScalar(fitting);controls.target.set(0,0,0);controls.update();draw();}
+    function setAppearance() {surface.material=materials[mode.value];axes.visible=axesInput.checked;hideHover();root.dataset.mode=mode.value;root.dataset.axes=String(axes.visible);draw();}
+    function restore(saved) {
+      const s=saved?.privateContent||saved;if(!s || s.scene!==data.scene)return false;
+      if(materials[s.mode])mode.value=s.mode;if(directions[s.view])view.value=s.view;if(typeof s.axes==='boolean')axesInput.checked=s.axes;
+      if(Array.isArray(s.eye)&&s.eye.length===3&&s.eye.every(Number.isFinite)&&Array.isArray(s.target)&&s.target.length===3&&s.target.every(Number.isFinite)) {camera.position.fromArray(s.eye);controls.target.fromArray(s.target);controls.update();} else preset();
+      setAppearance();return true;
+    }
+    function save() {
+      if(applying)return;
+      window.openai?.setWidgetState?.({modelContent:{scene:data.title,representation:'triangle mesh',triangles:data.triangles,vertices:data.vertices,mode:mode.value,view:view.value,axes:axesInput.checked},privateContent:{scene:data.scene,mode:mode.value,view:view.value,axes:axesInput.checked,eye:camera.position.toArray(),target:controls.target.toArray()}})?.catch(()=>{});
+    }
+    function resize() {
+      const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);
+      const vertical=THREE.MathUtils.degToRad(camera.fov),horizontal=2*Math.atan(Math.tan(vertical/2)*camera.aspect);
+      fitting=geometry.boundingSphere.radius*1.25/Math.sin(Math.min(vertical,horizontal)/2);
+      if(previousFit) camera.position.sub(controls.target).multiplyScalar(fitting/previousFit).add(controls.target);
+      previousFit=fitting;controls.update();draw();
+    }
+    controls.addEventListener('change',()=>{draw();if(!applying){clearTimeout(timer);timer=setTimeout(save,200);}});
+    controls.addEventListener('start',()=>{dragging=true;hideHover();});controls.addEventListener('end',()=>{dragging=false;});
+    mode.addEventListener('change',()=>{setAppearance();status.textContent=mode.options[mode.selectedIndex].text;save();});
+    axesInput.addEventListener('change',()=>{setAppearance();save();});
+    view.addEventListener('change',()=>{applying=true;preset();applying=false;status.textContent=view.options[view.selectedIndex].text;save();});
+    const raycaster=new THREE.Raycaster(),ndc=new THREE.Vector2();
+    function pick() {
+      if(!pointer || dragging)return;
+      const r=renderer.domElement.getBoundingClientRect();ndc.set((pointer.x-r.left)/r.width*2-1,-(pointer.y-r.top)/r.height*2+1);
+      camera.updateMatrixWorld();surface.updateMatrixWorld();raycaster.setFromCamera(ndc,camera);
+      const hit=raycaster.intersectObject(surface,false)[0];
+      if(!hit) {hideHover();draw();return;}
+      const point=hit.point;[point.x,point.y,point.z].forEach((v,i)=>{values[i].textContent=(Math.abs(v)<.00005?0:v).toFixed(4);});
+      faceLabel.textContent='Triangle '+(hit.faceIndex+1).toLocaleString();hover.dataset.triangle=String(hit.faceIndex);hover.hidden=false;
+      highlightGeometry.getAttribute('position').array.set([point.x,point.y,point.z]);highlightGeometry.getAttribute('position').needsUpdate=true;highlight.visible=true;
+      hover.style.left=Math.max(0,Math.min(r.width-hover.offsetWidth,pointer.x-r.left+14))+'px';hover.style.top=Math.max(0,Math.min(r.height-hover.offsetHeight,pointer.y-r.top+14))+'px';draw();
+    }
+    function queuePick() {
+      if(hoverFrame || dragging)return;
+      hoverFrame=requestAnimationFrame(function frame(now){if(now-lastHover<65){hoverFrame=requestAnimationFrame(frame);return;}hoverFrame=0;lastHover=now;pick();});
+    }
+    renderer.domElement.addEventListener('pointermove',e=>{pointer={x:e.clientX,y:e.clientY};queuePick();});
+    renderer.domElement.addEventListener('pointerleave',()=>{pointer=null;hideHover();draw();});
+    renderer.domElement.addEventListener('pointerup',e=>{pointer={x:e.clientX,y:e.clientY};queuePick();});
+    window.addEventListener('openai:set_globals',e=>{if(!e.detail?.globals?.widgetState)return;applying=true;restore(e.detail.globals.widgetState);applying=false;});
+    new MutationObserver(()=>{theme();draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{theme();draw();});
+    applying=true;theme();resize();if(!restore(window.openai?.widgetState)){preset();setAppearance();}applying=false;
+    new ResizeObserver(()=>{applying=true;resize();applying=false;}).observe(stage);
+    root.dataset.ready='true';root.dataset.triangles=String(data.triangles);status.textContent='Mesh ready. All '+data.triangles.toLocaleString()+' triangles displayed.';
+  } catch(error) {stage.setAttribute('role','alert');stage.textContent=error.message||String(error);status.textContent=String(error);}
+})();
+</script>

@@ -1,0 +1,4 @@
+{
+  "hidden_native_window_created": true,
+  "headless_screenshot_test": "passed in pytest and isolated environment"
+}

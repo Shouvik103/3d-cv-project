@@ -1,0 +1,45 @@
+align:
+  iterations: 400
+  max_median_rel_residual: 0.1
+  min_points: 30
+  ransac_tol: 0.1
+cache_only: false
+clean:
+  light_target_triangles: 80000
+  min_component_frac: 0.02
+depth_backend: sgbm
+export:
+- ply
+- obj
+- glb
+filter:
+  consistency: true
+  consistency_min_views: 2
+  consistency_rel_tol: 0.02
+  depth_trunc_pct: 98
+  edge_grad_thresh: 0.05
+  roi_margin_frac: 0.15
+  roi_percentiles:
+  - 5
+  - 95
+heldout:
+  num_views: 3
+  seed: 0
+mono:
+  device: auto
+  input_long_side: 768
+  model_id: depth-anything/Depth-Anything-V2-Small-hf
+poisson:
+  density_quantile: 0.05
+  depth: 8
+  enabled: false
+seed: 0
+sgbm:
+  input_long_side: 640
+  neighbors: 2
+  num_disparities: 128
+tsdf:
+  sdf_trunc_voxels: 4
+  voxel_div: 192
+vggt:
+  confidence_quantile: 0.5

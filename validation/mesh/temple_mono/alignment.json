@@ -1,0 +1,278 @@
+{
+  "backend": "mono",
+  "images": [
+    {
+      "image": "templeSR0001.jpg",
+      "index": 0,
+      "s": 0.016164202309533884,
+      "b": 0.1763741339014481,
+      "n_inliers": 764,
+      "samples": 781,
+      "median_rel_residual": 0.010888024194073368,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "e685abaed4c8e4e67ce5fc72fcd4bef7b878d04d0fc3a1f62efaeb975fd88003.npz",
+        "key": "e685abaed4c8e4e67ce5fc72fcd4bef7b878d04d0fc3a1f62efaeb975fd88003",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 81019,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0002.jpg",
+      "index": 1,
+      "s": 0.003644642838114856,
+      "b": 0.20583420159807017,
+      "n_inliers": 666,
+      "samples": 670,
+      "median_rel_residual": 0.007723879800164141,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "cc16b9963ad877e3bc17a142e7692f71a1c9a3581e6952ce1dbc009780b0b0c6.npz",
+        "key": "cc16b9963ad877e3bc17a142e7692f71a1c9a3581e6952ce1dbc009780b0b0c6",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 142175,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0003.jpg",
+      "index": 2,
+      "s": 0.02415398710806476,
+      "b": 0.16506369253836153,
+      "n_inliers": 819,
+      "samples": 832,
+      "median_rel_residual": 0.00947560851836751,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "4714b4881acf4fb76428168b4cc1b18e49127aa33d34f6198a709ef851c00c53.npz",
+        "key": "4714b4881acf4fb76428168b4cc1b18e49127aa33d34f6198a709ef851c00c53",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 73660,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0004.jpg",
+      "index": 3,
+      "s": 0.03718614520147865,
+      "b": 0.1193585373632111,
+      "n_inliers": 357,
+      "samples": 368,
+      "median_rel_residual": 0.009512758811160248,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "67297fae1d1e644511da4b342654c48ba598abc6731e0063091f87224dc738c1.npz",
+        "key": "67297fae1d1e644511da4b342654c48ba598abc6731e0063091f87224dc738c1",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 60360,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0005.jpg",
+      "index": 4,
+      "s": 0.011835563800925234,
+      "b": 0.19399630102926796,
+      "n_inliers": 313,
+      "samples": 314,
+      "median_rel_residual": 0.02580986554135718,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "a32452c6c72061d21fcbf52daf7e54d79f60a8c73c0ab43147d6271614fb5275.npz",
+        "key": "a32452c6c72061d21fcbf52daf7e54d79f60a8c73c0ab43147d6271614fb5275",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 77943,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0006.jpg",
+      "index": 5,
+      "s": 0.013358120250497953,
+      "b": 0.1801398239202264,
+      "n_inliers": 573,
+      "samples": 589,
+      "median_rel_residual": 0.009871901257580272,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "7630190e182345d95760d928350dc6befd9ca0c3373b3771435b194d79925700.npz",
+        "key": "7630190e182345d95760d928350dc6befd9ca0c3373b3771435b194d79925700",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 91288,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0007.jpg",
+      "index": 6,
+      "s": 0.002397483665781865,
+      "b": 0.21778697359565005,
+      "n_inliers": 562,
+      "samples": 564,
+      "median_rel_residual": 0.009163758165905108,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "d2a254c84563420968392e7618f1b735b6ef6721fba88acd67d403dbab8cf49a.npz",
+        "key": "d2a254c84563420968392e7618f1b735b6ef6721fba88acd67d403dbab8cf49a",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 112081,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0008.jpg",
+      "index": 7,
+      "s": -0.0013007988672741398,
+      "b": 0.22804380030795435,
+      "n_inliers": 533,
+      "samples": 534,
+      "median_rel_residual": 0.013542781705975787,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "8c49672963cee2ae2db36af8fb7b4de1cb55a887f7bbb31bccbb4fa89b86298b.npz",
+        "key": "8c49672963cee2ae2db36af8fb7b4de1cb55a887f7bbb31bccbb4fa89b86298b",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 106149,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0011.jpg",
+      "index": 10,
+      "s": 0.015509969209763533,
+      "b": 0.1769270982276344,
+      "n_inliers": 762,
+      "samples": 781,
+      "median_rel_residual": 0.011758315429393235,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "c4cb8f60ec74fffbb16ce31f407e7e04912a0601193e785fa4c5858325eef3b0.npz",
+        "key": "c4cb8f60ec74fffbb16ce31f407e7e04912a0601193e785fa4c5858325eef3b0",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 81338,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0013.jpg",
+      "index": 12,
+      "s": 0.01064560079711291,
+      "b": 0.19583042043454568,
+      "n_inliers": 631,
+      "samples": 635,
+      "median_rel_residual": 0.010692870891989902,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "7eb575c643aea0219329eb7dc9aa9c32e239720965c0d26339159528d084a319.npz",
+        "key": "7eb575c643aea0219329eb7dc9aa9c32e239720965c0d26339159528d084a319",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 106374,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0014.jpg",
+      "index": 13,
+      "s": 0.0037315867123798078,
+      "b": 0.20713413837852243,
+      "n_inliers": 784,
+      "samples": 787,
+      "median_rel_residual": 0.02632468747012507,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "d428019154586089ec7883c3fd45febd3d769ad30bf16e2be92033ef28965bec.npz",
+        "key": "d428019154586089ec7883c3fd45febd3d769ad30bf16e2be92033ef28965bec",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 115087,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0015.jpg",
+      "index": 14,
+      "s": 0.011535293241098704,
+      "b": 0.18015836264307833,
+      "n_inliers": 624,
+      "samples": 644,
+      "median_rel_residual": 0.014202745658948086,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "ba41b47e81ff994790cb762d343164a658bbf5737775e5ccc6b0815c3fa3ef42.npz",
+        "key": "ba41b47e81ff994790cb762d343164a658bbf5737775e5ccc6b0815c3fa3ef42",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 86874,
+      "status": "accepted"
+    },
+    {
+      "image": "templeSR0016.jpg",
+      "index": 15,
+      "s": 0.008732486559689423,
+      "b": 0.1951074820477393,
+      "n_inliers": 698,
+      "samples": 699,
+      "median_rel_residual": 0.010109030183380347,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "bd7c56974409c21e501ba0d7b4d34b07d911670da74d72da690a650ad2cba0cb.npz",
+        "key": "bd7c56974409c21e501ba0d7b4d34b07d911670da74d72da690a650ad2cba0cb",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 384,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0"
+      },
+      "pixels_before_consistency": 112837,
+      "status": "accepted"
+    }
+  ]
+}

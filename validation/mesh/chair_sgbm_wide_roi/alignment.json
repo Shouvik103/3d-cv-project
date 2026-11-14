@@ -1,0 +1,1259 @@
+{
+  "backend": "sgbm",
+  "images": [
+    {
+      "image": "r_101.png",
+      "index": 0,
+      "pairs": [
+        {
+          "neighbor": "r_99.png",
+          "valid_pixels": 92717,
+          "baseline": 0.5050761534244682,
+          "disparities": 128,
+          "min_disparity": -151
+        },
+        {
+          "neighbor": "r_106.png",
+          "valid_pixels": 25174,
+          "baseline": 1.2431081762128353,
+          "disparities": 144,
+          "min_disparity": 224
+        }
+      ],
+      "pixels_before_consistency": 93141,
+      "status": "accepted"
+    },
+    {
+      "image": "r_106.png",
+      "index": 1,
+      "pairs": [
+        {
+          "neighbor": "r_109.png",
+          "valid_pixels": 51983,
+          "baseline": 0.7444645502229222,
+          "disparities": 128,
+          "min_disparity": 127
+        },
+        {
+          "neighbor": "r_101.png",
+          "valid_pixels": 30728,
+          "baseline": 1.2431081762128346,
+          "disparities": 144,
+          "min_disparity": -359
+        }
+      ],
+      "pixels_before_consistency": 76755,
+      "status": "accepted"
+    },
+    {
+      "image": "r_109.png",
+      "index": 2,
+      "pairs": [
+        {
+          "neighbor": "r_106.png",
+          "valid_pixels": 56802,
+          "baseline": 0.7444645502229225,
+          "disparities": 128,
+          "min_disparity": -218
+        },
+        {
+          "neighbor": "r_112.png",
+          "valid_pixels": 49863,
+          "baseline": 0.7455154673058607,
+          "disparities": 128,
+          "min_disparity": 126
+        }
+      ],
+      "pixels_before_consistency": 72080,
+      "status": "accepted"
+    },
+    {
+      "image": "r_11.png",
+      "index": 3,
+      "pairs": [
+        {
+          "neighbor": "r_15.png",
+          "valid_pixels": 40444,
+          "baseline": 0.7014969275495111,
+          "disparities": 128,
+          "min_disparity": 117
+        },
+        {
+          "neighbor": "r_3.png",
+          "valid_pixels": 3042,
+          "baseline": 1.3722821272496193,
+          "disparities": 208,
+          "min_disparity": -442
+        }
+      ],
+      "pixels_before_consistency": 42511,
+      "status": "accepted"
+    },
+    {
+      "image": "r_112.png",
+      "index": 4,
+      "pairs": [
+        {
+          "neighbor": "r_115.png",
+          "valid_pixels": 45880,
+          "baseline": 0.7435440237740654,
+          "disparities": 128,
+          "min_disparity": 125
+        },
+        {
+          "neighbor": "r_109.png",
+          "valid_pixels": 52230,
+          "baseline": 0.745515467305861,
+          "disparities": 128,
+          "min_disparity": -218
+        }
+      ],
+      "pixels_before_consistency": 66726,
+      "status": "accepted"
+    },
+    {
+      "image": "r_115.png",
+      "index": 5,
+      "pairs": [
+        {
+          "neighbor": "r_112.png",
+          "valid_pixels": 48189,
+          "baseline": 0.7435440237740658,
+          "disparities": 128,
+          "min_disparity": -217
+        },
+        {
+          "neighbor": "r_118.png",
+          "valid_pixels": 43277,
+          "baseline": 0.7478794644916938,
+          "disparities": 128,
+          "min_disparity": 126
+        }
+      ],
+      "pixels_before_consistency": 63590,
+      "status": "accepted"
+    },
+    {
+      "image": "r_118.png",
+      "index": 6,
+      "pairs": [
+        {
+          "neighbor": "r_121.png",
+          "valid_pixels": 41583,
+          "baseline": 0.7311616955249206,
+          "disparities": 128,
+          "min_disparity": 124
+        },
+        {
+          "neighbor": "r_115.png",
+          "valid_pixels": 42061,
+          "baseline": 0.7478794644916935,
+          "disparities": 128,
+          "min_disparity": -216
+        }
+      ],
+      "pixels_before_consistency": 58343,
+      "status": "accepted"
+    },
+    {
+      "image": "r_121.png",
+      "index": 7,
+      "pairs": [
+        {
+          "neighbor": "r_118.png",
+          "valid_pixels": 39116,
+          "baseline": 0.73116169552492,
+          "disparities": 128,
+          "min_disparity": -209
+        },
+        {
+          "neighbor": "r_124.png",
+          "valid_pixels": 36560,
+          "baseline": 0.7385469818348391,
+          "disparities": 128,
+          "min_disparity": 127
+        }
+      ],
+      "pixels_before_consistency": 50356,
+      "status": "accepted"
+    },
+    {
+      "image": "r_124.png",
+      "index": 8,
+      "pairs": [
+        {
+          "neighbor": "r_121.png",
+          "valid_pixels": 34329,
+          "baseline": 0.738546981834838,
+          "disparities": 128,
+          "min_disparity": -209
+        },
+        {
+          "neighbor": "r_127.png",
+          "valid_pixels": 34520,
+          "baseline": 0.7387871173512226,
+          "disparities": 128,
+          "min_disparity": 128
+        }
+      ],
+      "pixels_before_consistency": 44649,
+      "status": "accepted"
+    },
+    {
+      "image": "r_127.png",
+      "index": 9,
+      "pairs": [
+        {
+          "neighbor": "r_130.png",
+          "valid_pixels": 37132,
+          "baseline": 0.7351621909012004,
+          "disparities": 128,
+          "min_disparity": 128
+        },
+        {
+          "neighbor": "r_124.png",
+          "valid_pixels": 40640,
+          "baseline": 0.7387871173512223,
+          "disparities": 128,
+          "min_disparity": -208
+        }
+      ],
+      "pixels_before_consistency": 51589,
+      "status": "accepted"
+    },
+    {
+      "image": "r_130.png",
+      "index": 10,
+      "pairs": [
+        {
+          "neighbor": "r_133.png",
+          "valid_pixels": 45300,
+          "baseline": 0.734972210096054,
+          "disparities": 128,
+          "min_disparity": 126
+        },
+        {
+          "neighbor": "r_127.png",
+          "valid_pixels": 51726,
+          "baseline": 0.7351621909012004,
+          "disparities": 128,
+          "min_disparity": -207
+        }
+      ],
+      "pixels_before_consistency": 64482,
+      "status": "accepted"
+    },
+    {
+      "image": "r_133.png",
+      "index": 11,
+      "pairs": [
+        {
+          "neighbor": "r_136.png",
+          "valid_pixels": 53014,
+          "baseline": 0.7276112819142261,
+          "disparities": 128,
+          "min_disparity": 123
+        },
+        {
+          "neighbor": "r_130.png",
+          "valid_pixels": 59662,
+          "baseline": 0.7349722100960536,
+          "disparities": 128,
+          "min_disparity": -207
+        }
+      ],
+      "pixels_before_consistency": 74269,
+      "status": "accepted"
+    },
+    {
+      "image": "r_136.png",
+      "index": 12,
+      "pairs": [
+        {
+          "neighbor": "r_139.png",
+          "valid_pixels": 61315,
+          "baseline": 0.7162256066270569,
+          "disparities": 128,
+          "min_disparity": 120
+        },
+        {
+          "neighbor": "r_133.png",
+          "valid_pixels": 67929,
+          "baseline": 0.7276112819142264,
+          "disparities": 128,
+          "min_disparity": -206
+        }
+      ],
+      "pixels_before_consistency": 82054,
+      "status": "accepted"
+    },
+    {
+      "image": "r_139.png",
+      "index": 13,
+      "pairs": [
+        {
+          "neighbor": "r_142.png",
+          "valid_pixels": 64777,
+          "baseline": 0.7128072104151606,
+          "disparities": 128,
+          "min_disparity": 120
+        },
+        {
+          "neighbor": "r_136.png",
+          "valid_pixels": 74936,
+          "baseline": 0.716225606627057,
+          "disparities": 128,
+          "min_disparity": -202
+        }
+      ],
+      "pixels_before_consistency": 87185,
+      "status": "accepted"
+    },
+    {
+      "image": "r_142.png",
+      "index": 14,
+      "pairs": [
+        {
+          "neighbor": "r_143.png",
+          "valid_pixels": 90616,
+          "baseline": 0.23575014438501724,
+          "disparities": 128,
+          "min_disparity": 31
+        },
+        {
+          "neighbor": "r_139.png",
+          "valid_pixels": 78474,
+          "baseline": 0.7128072104151605,
+          "disparities": 128,
+          "min_disparity": -199
+        }
+      ],
+      "pixels_before_consistency": 92640,
+      "status": "accepted"
+    },
+    {
+      "image": "r_143.png",
+      "index": 15,
+      "pairs": [
+        {
+          "neighbor": "r_142.png",
+          "valid_pixels": 92135,
+          "baseline": 0.23575014438501682,
+          "disparities": 128,
+          "min_disparity": -73
+        },
+        {
+          "neighbor": "r_44.png",
+          "valid_pixels": 75038,
+          "baseline": 0.6883819916840962,
+          "disparities": 128,
+          "min_disparity": -188
+        }
+      ],
+      "pixels_before_consistency": 92659,
+      "status": "accepted"
+    },
+    {
+      "image": "r_146.png",
+      "index": 16,
+      "pairs": [
+        {
+          "neighbor": "r_48.png",
+          "valid_pixels": 64469,
+          "baseline": 0.5654247270421743,
+          "disparities": 128,
+          "min_disparity": 92
+        },
+        {
+          "neighbor": "r_44.png",
+          "valid_pixels": 68663,
+          "baseline": 0.6849445534868177,
+          "disparities": 128,
+          "min_disparity": -186
+        }
+      ],
+      "pixels_before_consistency": 86436,
+      "status": "accepted"
+    },
+    {
+      "image": "r_149.png",
+      "index": 17,
+      "pairs": [
+        {
+          "neighbor": "r_48.png",
+          "valid_pixels": 79747,
+          "baseline": 0.3114226741044125,
+          "disparities": 128,
+          "min_disparity": -91
+        },
+        {
+          "neighbor": "r_52.png",
+          "valid_pixels": 77693,
+          "baseline": 0.6747332117652266,
+          "disparities": 128,
+          "min_disparity": 112
+        }
+      ],
+      "pixels_before_consistency": 93861,
+      "status": "accepted"
+    },
+    {
+      "image": "r_15.png",
+      "index": 18,
+      "pairs": [
+        {
+          "neighbor": "r_11.png",
+          "valid_pixels": 35824,
+          "baseline": 0.7014969275495113,
+          "disparities": 128,
+          "min_disparity": -223
+        },
+        {
+          "neighbor": "r_19.png",
+          "valid_pixels": 47460,
+          "baseline": 0.7111424152264527,
+          "disparities": 128,
+          "min_disparity": 119
+        }
+      ],
+      "pixels_before_consistency": 59263,
+      "status": "accepted"
+    },
+    {
+      "image": "r_152.png",
+      "index": 19,
+      "pairs": [
+        {
+          "neighbor": "r_52.png",
+          "valid_pixels": 86489,
+          "baseline": 0.0881879050513229,
+          "disparities": 128,
+          "min_disparity": 4
+        },
+        {
+          "neighbor": "r_155.png",
+          "valid_pixels": 72449,
+          "baseline": 0.6706166917926412,
+          "disparities": 128,
+          "min_disparity": 111
+        }
+      ],
+      "pixels_before_consistency": 98352,
+      "status": "accepted"
+    },
+    {
+      "image": "r_155.png",
+      "index": 20,
+      "pairs": [
+        {
+          "neighbor": "r_56.png",
+          "valid_pixels": 68020,
+          "baseline": 0.44773454332902496,
+          "disparities": 128,
+          "min_disparity": 70
+        },
+        {
+          "neighbor": "r_158.png",
+          "valid_pixels": 70345,
+          "baseline": 0.6597316827134777,
+          "disparities": 128,
+          "min_disparity": 109
+        }
+      ],
+      "pixels_before_consistency": 90588,
+      "status": "accepted"
+    },
+    {
+      "image": "r_158.png",
+      "index": 21,
+      "pairs": [
+        {
+          "neighbor": "r_161.png",
+          "valid_pixels": 70172,
+          "baseline": 0.6507419856304604,
+          "disparities": 128,
+          "min_disparity": 107
+        },
+        {
+          "neighbor": "r_155.png",
+          "valid_pixels": 89101,
+          "baseline": 0.659731682713478,
+          "disparities": 128,
+          "min_disparity": -178
+        }
+      ],
+      "pixels_before_consistency": 95304,
+      "status": "accepted"
+    },
+    {
+      "image": "r_161.png",
+      "index": 22,
+      "pairs": [
+        {
+          "neighbor": "r_164.png",
+          "valid_pixels": 70756,
+          "baseline": 0.6321044538227281,
+          "disparities": 128,
+          "min_disparity": 103
+        },
+        {
+          "neighbor": "r_158.png",
+          "valid_pixels": 86907,
+          "baseline": 0.6507419856304606,
+          "disparities": 128,
+          "min_disparity": -176
+        }
+      ],
+      "pixels_before_consistency": 94552,
+      "status": "accepted"
+    },
+    {
+      "image": "r_164.png",
+      "index": 23,
+      "pairs": [
+        {
+          "neighbor": "r_167.png",
+          "valid_pixels": 68274,
+          "baseline": 0.6134690125169505,
+          "disparities": 128,
+          "min_disparity": 100
+        },
+        {
+          "neighbor": "r_161.png",
+          "valid_pixels": 84968,
+          "baseline": 0.6321044538227274,
+          "disparities": 128,
+          "min_disparity": -171
+        }
+      ],
+      "pixels_before_consistency": 91780,
+      "status": "accepted"
+    },
+    {
+      "image": "r_167.png",
+      "index": 24,
+      "pairs": [
+        {
+          "neighbor": "r_170.png",
+          "valid_pixels": 62245,
+          "baseline": 0.6048402738542213,
+          "disparities": 128,
+          "min_disparity": 98
+        },
+        {
+          "neighbor": "r_164.png",
+          "valid_pixels": 81220,
+          "baseline": 0.6134690125169502,
+          "disparities": 128,
+          "min_disparity": -167
+        }
+      ],
+      "pixels_before_consistency": 87037,
+      "status": "accepted"
+    },
+    {
+      "image": "r_170.png",
+      "index": 25,
+      "pairs": [
+        {
+          "neighbor": "r_173.png",
+          "valid_pixels": 53973,
+          "baseline": 0.5927823782801153,
+          "disparities": 128,
+          "min_disparity": 95
+        },
+        {
+          "neighbor": "r_167.png",
+          "valid_pixels": 75375,
+          "baseline": 0.6048402738542212,
+          "disparities": 128,
+          "min_disparity": -168
+        }
+      ],
+      "pixels_before_consistency": 79857,
+      "status": "accepted"
+    },
+    {
+      "image": "r_173.png",
+      "index": 26,
+      "pairs": [
+        {
+          "neighbor": "r_170.png",
+          "valid_pixels": 68661,
+          "baseline": 0.5927823782801153,
+          "disparities": 128,
+          "min_disparity": -168
+        },
+        {
+          "neighbor": "r_177.png",
+          "valid_pixels": 33603,
+          "baseline": 0.7701633313793464,
+          "disparities": 128,
+          "min_disparity": 128
+        }
+      ],
+      "pixels_before_consistency": 70650,
+      "status": "accepted"
+    },
+    {
+      "image": "r_177.png",
+      "index": 27,
+      "pairs": [
+        {
+          "neighbor": "r_181.png",
+          "valid_pixels": 28847,
+          "baseline": 0.7434718710473189,
+          "disparities": 128,
+          "min_disparity": 123
+        },
+        {
+          "neighbor": "r_173.png",
+          "valid_pixels": 52377,
+          "baseline": 0.770163331379346,
+          "disparities": 128,
+          "min_disparity": -221
+        }
+      ],
+      "pixels_before_consistency": 55466,
+      "status": "accepted"
+    },
+    {
+      "image": "r_181.png",
+      "index": 28,
+      "pairs": [
+        {
+          "neighbor": "r_182.png",
+          "valid_pixels": 56069,
+          "baseline": 0.1821648938279974,
+          "disparities": 128,
+          "min_disparity": 21
+        },
+        {
+          "neighbor": "r_177.png",
+          "valid_pixels": 48901,
+          "baseline": 0.743471871047319,
+          "disparities": 128,
+          "min_disparity": -221
+        }
+      ],
+      "pixels_before_consistency": 60205,
+      "status": "accepted"
+    },
+    {
+      "image": "r_182.png",
+      "index": 29,
+      "pairs": [
+        {
+          "neighbor": "r_181.png",
+          "valid_pixels": 60769,
+          "baseline": 0.18216489382799772,
+          "disparities": 128,
+          "min_disparity": -64
+        },
+        {
+          "neighbor": "r_177.png",
+          "valid_pixels": 40885,
+          "baseline": 0.9239592181435976,
+          "disparities": 128,
+          "min_disparity": -273
+        }
+      ],
+      "pixels_before_consistency": 60082,
+      "status": "accepted"
+    },
+    {
+      "image": "r_188.png",
+      "index": 31,
+      "pairs": [
+        {
+          "neighbor": "r_191.png",
+          "valid_pixels": 41751,
+          "baseline": 0.5209955011594647,
+          "disparities": 128,
+          "min_disparity": 84
+        },
+        {
+          "neighbor": "r_194.png",
+          "valid_pixels": 15644,
+          "baseline": 1.0262994343507714,
+          "disparities": 160,
+          "min_disparity": 179
+        }
+      ],
+      "pixels_before_consistency": 43253,
+      "status": "accepted"
+    },
+    {
+      "image": "r_19.png",
+      "index": 32,
+      "pairs": [
+        {
+          "neighbor": "r_15.png",
+          "valid_pixels": 35812,
+          "baseline": 0.7111424152264535,
+          "disparities": 128,
+          "min_disparity": -221
+        },
+        {
+          "neighbor": "r_23.png",
+          "valid_pixels": 51887,
+          "baseline": 0.7306257896418594,
+          "disparities": 128,
+          "min_disparity": 123
+        }
+      ],
+      "pixels_before_consistency": 57890,
+      "status": "accepted"
+    },
+    {
+      "image": "r_191.png",
+      "index": 33,
+      "pairs": [
+        {
+          "neighbor": "r_194.png",
+          "valid_pixels": 39804,
+          "baseline": 0.5085560633141295,
+          "disparities": 128,
+          "min_disparity": 82
+        },
+        {
+          "neighbor": "r_188.png",
+          "valid_pixels": 50671,
+          "baseline": 0.5209955011594647,
+          "disparities": 128,
+          "min_disparity": -170
+        }
+      ],
+      "pixels_before_consistency": 56146,
+      "status": "accepted"
+    },
+    {
+      "image": "r_194.png",
+      "index": 34,
+      "pairs": [
+        {
+          "neighbor": "r_191.png",
+          "valid_pixels": 46904,
+          "baseline": 0.5085560633141295,
+          "disparities": 128,
+          "min_disparity": -168
+        },
+        {
+          "neighbor": "r_197.png",
+          "valid_pixels": 36761,
+          "baseline": 0.5141723226194695,
+          "disparities": 128,
+          "min_disparity": 83
+        }
+      ],
+      "pixels_before_consistency": 51041,
+      "status": "accepted"
+    },
+    {
+      "image": "r_197.png",
+      "index": 35,
+      "pairs": [
+        {
+          "neighbor": "r_194.png",
+          "valid_pixels": 41638,
+          "baseline": 0.5141723226194697,
+          "disparities": 128,
+          "min_disparity": -171
+        },
+        {
+          "neighbor": "r_191.png",
+          "valid_pixels": 15040,
+          "baseline": 1.0179997628506938,
+          "disparities": 160,
+          "min_disparity": -327
+        }
+      ],
+      "pixels_before_consistency": 41965,
+      "status": "accepted"
+    },
+    {
+      "image": "r_23.png",
+      "index": 36,
+      "pairs": [
+        {
+          "neighbor": "r_19.png",
+          "valid_pixels": 37452,
+          "baseline": 0.7306257896418601,
+          "disparities": 128,
+          "min_disparity": -219
+        },
+        {
+          "neighbor": "r_15.png",
+          "valid_pixels": 1196,
+          "baseline": 1.4321224039283147,
+          "disparities": 176,
+          "min_disparity": -431
+        }
+      ],
+      "pixels_before_consistency": 37303,
+      "status": "accepted"
+    },
+    {
+      "image": "r_3.png",
+      "index": 38,
+      "pairs": [
+        {
+          "neighbor": "r_197.png",
+          "valid_pixels": 17865,
+          "baseline": 1.0221667449738612,
+          "disparities": 160,
+          "min_disparity": -331
+        },
+        {
+          "neighbor": "r_11.png",
+          "valid_pixels": 388,
+          "baseline": 1.3722821272496197,
+          "disparities": 208,
+          "min_disparity": 245
+        }
+      ],
+      "pixels_before_consistency": 17874,
+      "status": "accepted"
+    },
+    {
+      "image": "r_31.png",
+      "index": 39,
+      "pairs": [
+        {
+          "neighbor": "r_35.png",
+          "valid_pixels": 51147,
+          "baseline": 0.8023322294783093,
+          "disparities": 128,
+          "min_disparity": 137
+        },
+        {
+          "neighbor": "r_23.png",
+          "valid_pixels": 2936,
+          "baseline": 1.5201717115204365,
+          "disparities": 160,
+          "min_disparity": -426
+        }
+      ],
+      "pixels_before_consistency": 52963,
+      "status": "accepted"
+    },
+    {
+      "image": "r_35.png",
+      "index": 40,
+      "pairs": [
+        {
+          "neighbor": "r_31.png",
+          "valid_pixels": 64449,
+          "baseline": 0.8023322294783096,
+          "disparities": 128,
+          "min_disparity": -219
+        },
+        {
+          "neighbor": "r_39.png",
+          "valid_pixels": 55810,
+          "baseline": 0.8338277543355687,
+          "disparities": 128,
+          "min_disparity": 142
+        }
+      ],
+      "pixels_before_consistency": 87051,
+      "status": "accepted"
+    },
+    {
+      "image": "r_39.png",
+      "index": 41,
+      "pairs": [
+        {
+          "neighbor": "r_40.png",
+          "valid_pixels": 97931,
+          "baseline": 0.2105881509946895,
+          "disparities": 128,
+          "min_disparity": 26
+        },
+        {
+          "neighbor": "r_35.png",
+          "valid_pixels": 70174,
+          "baseline": 0.8338277543355691,
+          "disparities": 128,
+          "min_disparity": -225
+        }
+      ],
+      "pixels_before_consistency": 99244,
+      "status": "accepted"
+    },
+    {
+      "image": "r_40.png",
+      "index": 42,
+      "pairs": [
+        {
+          "neighbor": "r_39.png",
+          "valid_pixels": 98516,
+          "baseline": 0.2105881509946898,
+          "disparities": 128,
+          "min_disparity": -66
+        },
+        {
+          "neighbor": "r_44.png",
+          "valid_pixels": 60896,
+          "baseline": 0.8555686518980572,
+          "disparities": 128,
+          "min_disparity": 146
+        }
+      ],
+      "pixels_before_consistency": 98973,
+      "status": "accepted"
+    },
+    {
+      "image": "r_44.png",
+      "index": 43,
+      "pairs": [
+        {
+          "neighbor": "r_146.png",
+          "valid_pixels": 49807,
+          "baseline": 0.684944553486818,
+          "disparities": 128,
+          "min_disparity": 114
+        },
+        {
+          "neighbor": "r_143.png",
+          "valid_pixels": 54141,
+          "baseline": 0.6883819916840956,
+          "disparities": 128,
+          "min_disparity": 115
+        }
+      ],
+      "pixels_before_consistency": 65974,
+      "status": "accepted"
+    },
+    {
+      "image": "r_48.png",
+      "index": 44,
+      "pairs": [
+        {
+          "neighbor": "r_149.png",
+          "valid_pixels": 73636,
+          "baseline": 0.3114226741044122,
+          "disparities": 128,
+          "min_disparity": 45
+        },
+        {
+          "neighbor": "r_146.png",
+          "valid_pixels": 80555,
+          "baseline": 0.5654247270421745,
+          "disparities": 128,
+          "min_disparity": -155
+        }
+      ],
+      "pixels_before_consistency": 93799,
+      "status": "accepted"
+    },
+    {
+      "image": "r_52.png",
+      "index": 45,
+      "pairs": [
+        {
+          "neighbor": "r_152.png",
+          "valid_pixels": 93668,
+          "baseline": 0.08818790505132287,
+          "disparities": 128,
+          "min_disparity": -35
+        },
+        {
+          "neighbor": "r_149.png",
+          "valid_pixels": 95672,
+          "baseline": 0.6747332117652265,
+          "disparities": 128,
+          "min_disparity": -183
+        }
+      ],
+      "pixels_before_consistency": 98420,
+      "status": "accepted"
+    },
+    {
+      "image": "r_56.png",
+      "index": 46,
+      "pairs": [
+        {
+          "neighbor": "r_155.png",
+          "valid_pixels": 77341,
+          "baseline": 0.44773454332902535,
+          "disparities": 128,
+          "min_disparity": -125
+        },
+        {
+          "neighbor": "r_158.png",
+          "valid_pixels": 66227,
+          "baseline": 0.6809936673777797,
+          "disparities": 128,
+          "min_disparity": -184
+        }
+      ],
+      "pixels_before_consistency": 86512,
+      "status": "accepted"
+    },
+    {
+      "image": "r_60.png",
+      "index": 47,
+      "pairs": [
+        {
+          "neighbor": "r_158.png",
+          "valid_pixels": 55177,
+          "baseline": 0.8234068727864148,
+          "disparities": 128,
+          "min_disparity": -222
+        },
+        {
+          "neighbor": "r_161.png",
+          "valid_pixels": 60404,
+          "baseline": 0.8539800203102208,
+          "disparities": 128,
+          "min_disparity": -230
+        }
+      ],
+      "pixels_before_consistency": 72763,
+      "status": "accepted"
+    },
+    {
+      "image": "r_64.png",
+      "index": 48,
+      "pairs": [
+        {
+          "neighbor": "r_60.png",
+          "valid_pixels": 49682,
+          "baseline": 0.952261928451221,
+          "disparities": 128,
+          "min_disparity": -260
+        },
+        {
+          "neighbor": "r_164.png",
+          "valid_pixels": 35224,
+          "baseline": 1.0962050816306674,
+          "disparities": 128,
+          "min_disparity": -294
+        }
+      ],
+      "pixels_before_consistency": 63084,
+      "status": "accepted"
+    },
+    {
+      "image": "r_71.png",
+      "index": 50,
+      "pairs": [
+        {
+          "neighbor": "r_75.png",
+          "valid_pixels": 24509,
+          "baseline": 0.9757838507990859,
+          "disparities": 128,
+          "min_disparity": 171
+        },
+        {
+          "neighbor": "r_170.png",
+          "valid_pixels": 4370,
+          "baseline": 1.6224462800587316,
+          "disparities": 160,
+          "min_disparity": -440
+        }
+      ],
+      "pixels_before_consistency": 27325,
+      "status": "accepted"
+    },
+    {
+      "image": "r_75.png",
+      "index": 51,
+      "pairs": [
+        {
+          "neighbor": "r_78.png",
+          "valid_pixels": 29155,
+          "baseline": 0.7439640055880197,
+          "disparities": 128,
+          "min_disparity": 126
+        },
+        {
+          "neighbor": "r_71.png",
+          "valid_pixels": 30745,
+          "baseline": 0.975783850799086,
+          "disparities": 128,
+          "min_disparity": -267
+        }
+      ],
+      "pixels_before_consistency": 42635,
+      "status": "accepted"
+    },
+    {
+      "image": "r_78.png",
+      "index": 52,
+      "pairs": [
+        {
+          "neighbor": "r_80.png",
+          "valid_pixels": 37020,
+          "baseline": 0.4930537848614094,
+          "disparities": 128,
+          "min_disparity": 78
+        },
+        {
+          "neighbor": "r_75.png",
+          "valid_pixels": 40701,
+          "baseline": 0.7439640055880199,
+          "disparities": 128,
+          "min_disparity": -208
+        }
+      ],
+      "pixels_before_consistency": 46620,
+      "status": "accepted"
+    },
+    {
+      "image": "r_80.png",
+      "index": 53,
+      "pairs": [
+        {
+          "neighbor": "r_78.png",
+          "valid_pixels": 45142,
+          "baseline": 0.49305378486140977,
+          "disparities": 128,
+          "min_disparity": -142
+        },
+        {
+          "neighbor": "r_83.png",
+          "valid_pixels": 32947,
+          "baseline": 0.7452942367637028,
+          "disparities": 128,
+          "min_disparity": 125
+        }
+      ],
+      "pixels_before_consistency": 52617,
+      "status": "accepted"
+    },
+    {
+      "image": "r_83.png",
+      "index": 54,
+      "pairs": [
+        {
+          "neighbor": "r_80.png",
+          "valid_pixels": 45588,
+          "baseline": 0.7452942367637034,
+          "disparities": 128,
+          "min_disparity": -212
+        },
+        {
+          "neighbor": "r_86.png",
+          "valid_pixels": 35049,
+          "baseline": 0.7462847707117076,
+          "disparities": 128,
+          "min_disparity": 125
+        }
+      ],
+      "pixels_before_consistency": 55037,
+      "status": "accepted"
+    },
+    {
+      "image": "r_86.png",
+      "index": 55,
+      "pairs": [
+        {
+          "neighbor": "r_89.png",
+          "valid_pixels": 42928,
+          "baseline": 0.7447826766652145,
+          "disparities": 128,
+          "min_disparity": 124
+        },
+        {
+          "neighbor": "r_83.png",
+          "valid_pixels": 44710,
+          "baseline": 0.7462847707117072,
+          "disparities": 128,
+          "min_disparity": -215
+        }
+      ],
+      "pixels_before_consistency": 61836,
+      "status": "accepted"
+    },
+    {
+      "image": "r_89.png",
+      "index": 56,
+      "pairs": [
+        {
+          "neighbor": "r_92.png",
+          "valid_pixels": 46986,
+          "baseline": 0.7371822990865522,
+          "disparities": 128,
+          "min_disparity": 124
+        },
+        {
+          "neighbor": "r_86.png",
+          "valid_pixels": 48710,
+          "baseline": 0.7447826766652139,
+          "disparities": 128,
+          "min_disparity": -216
+        }
+      ],
+      "pixels_before_consistency": 66982,
+      "status": "accepted"
+    },
+    {
+      "image": "r_92.png",
+      "index": 57,
+      "pairs": [
+        {
+          "neighbor": "r_89.png",
+          "valid_pixels": 48689,
+          "baseline": 0.7371822990865516,
+          "disparities": 128,
+          "min_disparity": -215
+        },
+        {
+          "neighbor": "r_95.png",
+          "valid_pixels": 51456,
+          "baseline": 0.7455095367311457,
+          "disparities": 128,
+          "min_disparity": 127
+        }
+      ],
+      "pixels_before_consistency": 67784,
+      "status": "accepted"
+    },
+    {
+      "image": "r_95.png",
+      "index": 58,
+      "pairs": [
+        {
+          "neighbor": "r_92.png",
+          "valid_pixels": 50740,
+          "baseline": 0.7455095367311453,
+          "disparities": 128,
+          "min_disparity": -218
+        },
+        {
+          "neighbor": "r_99.png",
+          "valid_pixels": 47962,
+          "baseline": 0.9982835288513742,
+          "disparities": 128,
+          "min_disparity": 176
+        }
+      ],
+      "pixels_before_consistency": 80645,
+      "status": "accepted"
+    },
+    {
+      "image": "r_99.png",
+      "index": 59,
+      "pairs": [
+        {
+          "neighbor": "r_101.png",
+          "valid_pixels": 85305,
+          "baseline": 0.5050761534244681,
+          "disparities": 128,
+          "min_disparity": 83
+        },
+        {
+          "neighbor": "r_95.png",
+          "valid_pixels": 55746,
+          "baseline": 0.9982835288513742,
+          "disparities": 128,
+          "min_disparity": -288
+        }
+      ],
+      "pixels_before_consistency": 92770,
+      "status": "accepted"
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+{
+  "convention": "OpenCV world-to-camera; x_cam=R X+t",
+  "median_reprojection_px": 0.6005641683861622,
+  "passed": true,
+  "automatic_no_track_check": false,
+  "scene_extent": 3.0822950147721135,
+  "images": [
+    {
+      "image": "IMG_20261114_181828.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 282
+    },
+    {
+      "image": "IMG_20261114_181835.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 479
+    },
+    {
+      "image": "IMG_20261114_181837.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 498
+    },
+    {
+      "image": "IMG_20261114_181839.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 524
+    },
+    {
+      "image": "IMG_20261114_181844.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 356
+    },
+    {
+      "image": "IMG_20261114_181848.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 159
+    },
+    {
+      "image": "IMG_20261114_181857.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 163
+    },
+    {
+      "image": "IMG_20261114_181859.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 228
+    },
+    {
+      "image": "IMG_20261114_181901.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 217
+    },
+    {
+      "image": "IMG_20261114_181910.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 82
+    },
+    {
+      "image": "IMG_20261114_181911.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 63
+    },
+    {
+      "image": "IMG_20261114_181939.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 386
+    },
+    {
+      "image": "IMG_20261114_181941.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 388
+    },
+    {
+      "image": "IMG_20261114_181946.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 400
+    },
+    {
+      "image": "IMG_20261114_181948.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 377
+    },
+    {
+      "image": "IMG_20261114_182009.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 36
+    },
+    {
+      "image": "IMG_20261114_182032.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 7
+    },
+    {
+      "image": "IMG_20261114_182034.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 24
+    },
+    {
+      "image": "IMG_20261114_182042.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 267
+    },
+    {
+      "image": "IMG_20261114_182043.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 334
+    },
+    {
+      "image": "IMG_20261114_182045.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 358
+    },
+    {
+      "image": "IMG_20261114_182048.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 397
+    },
+    {
+      "image": "IMG_20261114_182050.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 399
+    },
+    {
+      "image": "IMG_20261114_182051.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 467
+    },
+    {
+      "image": "IMG_20261114_182054.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 496
+    },
+    {
+      "image": "IMG_20261114_182056.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 484
+    },
+    {
+      "image": "IMG_20261114_182100.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 388
+    },
+    {
+      "image": "IMG_20261114_182121.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 409
+    },
+    {
+      "image": "IMG_20261114_182128.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 93
+    },
+    {
+      "image": "IMG_20261114_182131.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 71
+    },
+    {
+      "image": "IMG_20261114_182136.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 185
+    },
+    {
+      "image": "IMG_20261114_182205.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 309
+    },
+    {
+      "image": "IMG_20261114_182208.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 402
+    },
+    {
+      "image": "IMG_20261114_182218.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 409
+    },
+    {
+      "image": "IMG_20261114_182220.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 175
+    },
+    {
+      "image": "IMG_20261114_182222.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 216
+    },
+    {
+      "image": "IMG_20261114_182224.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 344
+    },
+    {
+      "image": "IMG_20261114_182226.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 360
+    },
+    {
+      "image": "IMG_20261114_182227.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 442
+    },
+    {
+      "image": "IMG_20261114_182229.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 433
+    },
+    {
+      "image": "IMG_20261114_182230.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 302
+    },
+    {
+      "image": "IMG_20261114_182232.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 353
+    },
+    {
+      "image": "IMG_20261114_182235.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 316
+    },
+    {
+      "image": "IMG_20261114_182239.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 421
+    },
+    {
+      "image": "IMG_20261114_182241.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9995283018867924,
+      "tracked_points": 572
+    },
+    {
+      "image": "IMG_20261114_182245.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992924528301886,
+      "tracked_points": 511
+    },
+    {
+      "image": "IMG_20261114_182247.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 506
+    },
+    {
+      "image": "IMG_20261114_182251.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 332
+    },
+    {
+      "image": "IMG_20261114_182252.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 340
+    },
+    {
+      "image": "IMG_20261114_182255.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 391
+    },
+    {
+      "image": "IMG_20261114_182257.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 418
+    },
+    {
+      "image": "IMG_20261114_182258.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 349
+    },
+    {
+      "image": "IMG_20261114_182300.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 354
+    },
+    {
+      "image": "IMG_20261114_182301.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992924528301886,
+      "tracked_points": 138
+    },
+    {
+      "image": "IMG_20261114_182303.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992924528301886,
+      "tracked_points": 76
+    },
+    {
+      "image": "IMG_20261114_182304.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 306
+    },
+    {
+      "image": "IMG_20261114_182314.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 330
+    },
+    {
+      "image": "IMG_20261114_182315.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 376
+    },
+    {
+      "image": "IMG_20261114_182319.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9997641509433962,
+      "tracked_points": 375
+    },
+    {
+      "image": "IMG_20261114_182325.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 404
+    }
+  ]
+}

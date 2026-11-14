@@ -1,0 +1,195 @@
+{
+  "backend": "mono",
+  "images": [
+    {
+      "image": "view_00.png",
+      "index": 0,
+      "s": 1.6956903661621936,
+      "b": 0.10098727618895294,
+      "n_inliers": 492,
+      "samples": 492,
+      "median_rel_residual": 0.00010439066149560538,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "109bba89b19adf73a8fa6dc688fb6cbbc7d8acd201d15731fca975d7d163ffce.npz",
+        "key": "109bba89b19adf73a8fa6dc688fb6cbbc7d8acd201d15731fca975d7d163ffce",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_01.png",
+      "index": 1,
+      "s": 1.6959711983781764,
+      "b": 0.10092958281294635,
+      "n_inliers": 477,
+      "samples": 477,
+      "median_rel_residual": 0.00010495814567569408,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "636459969feb6e5b8d4c92fc0393ec2a364a77ae38b64923db121acfc593a901.npz",
+        "key": "636459969feb6e5b8d4c92fc0393ec2a364a77ae38b64923db121acfc593a901",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_02.png",
+      "index": 2,
+      "s": 1.695930979726092,
+      "b": 0.10093951431985494,
+      "n_inliers": 467,
+      "samples": 467,
+      "median_rel_residual": 0.00010489294517658312,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "f2f0eb5f021aabfb534d408637e19982c8de6632b7d7419e342c3fa6b669e31e.npz",
+        "key": "f2f0eb5f021aabfb534d408637e19982c8de6632b7d7419e342c3fa6b669e31e",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_03.png",
+      "index": 3,
+      "s": 1.6964170989672092,
+      "b": 0.10083697756025768,
+      "n_inliers": 459,
+      "samples": 459,
+      "median_rel_residual": 9.812007596852952e-05,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "2631b7679a3b7b45ed03a4b4349dfc4931665eca3249d0fc57424a4f62f4dc6f.npz",
+        "key": "2631b7679a3b7b45ed03a4b4349dfc4931665eca3249d0fc57424a4f62f4dc6f",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_04.png",
+      "index": 4,
+      "s": 1.6959001933174263,
+      "b": 0.10094619252456204,
+      "n_inliers": 468,
+      "samples": 468,
+      "median_rel_residual": 0.00010120497985439364,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "86f8372001ff5b28e575a9dd1bf73ead5aa187b3d2956336337b023608b7e0d4.npz",
+        "key": "86f8372001ff5b28e575a9dd1bf73ead5aa187b3d2956336337b023608b7e0d4",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_05.png",
+      "index": 5,
+      "s": 1.6959429378178883,
+      "b": 0.10094062835543971,
+      "n_inliers": 481,
+      "samples": 481,
+      "median_rel_residual": 0.00010417739362533513,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "9792b26ee9f8c1b002b15f2ea455eec18286baac940cc265c25e53342083e726.npz",
+        "key": "9792b26ee9f8c1b002b15f2ea455eec18286baac940cc265c25e53342083e726",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_06.png",
+      "index": 6,
+      "s": 1.6956570459426874,
+      "b": 0.10099758461335072,
+      "n_inliers": 513,
+      "samples": 513,
+      "median_rel_residual": 0.00010498453574051183,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "d6222a2d1ca40ba3c9fd372d16235bc216cf7f5588d3b2eb00e56b2723dfa704.npz",
+        "key": "d6222a2d1ca40ba3c9fd372d16235bc216cf7f5588d3b2eb00e56b2723dfa704",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_08.png",
+      "index": 8,
+      "s": 1.6961325022599734,
+      "b": 0.10089873143065417,
+      "n_inliers": 481,
+      "samples": 481,
+      "median_rel_residual": 9.646651670850567e-05,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "fcdf1e01964169dad52ef032d58effad08391c3125706f82deb2c08bf800526a.npz",
+        "key": "fcdf1e01964169dad52ef032d58effad08391c3125706f82deb2c08bf800526a",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_10.png",
+      "index": 10,
+      "s": 1.6955809263430126,
+      "b": 0.1010167303939781,
+      "n_inliers": 468,
+      "samples": 468,
+      "median_rel_residual": 9.737929889147177e-05,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "fb30c28f1f6685a7b942ac671d277474dde86a38bd8bd80b08e0109122e041ef.npz",
+        "key": "fb30c28f1f6685a7b942ac671d277474dde86a38bd8bd80b08e0109122e041ef",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    },
+    {
+      "image": "view_11.png",
+      "index": 11,
+      "s": 1.6961924642304482,
+      "b": 0.10087982845825604,
+      "n_inliers": 471,
+      "samples": 471,
+      "median_rel_residual": 0.0001039619663762516,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "fd48e37ca39608037e42af12d62e4615a2fc8665df275363193dbc042a60a229.npz",
+        "key": "fd48e37ca39608037e42af12d62e4615a2fc8665df275363193dbc042a60a229",
+        "model_id": "analytic-fixture",
+        "input_long_side": 80,
+        "provenance": "Analytic ray-surface fixture; not a learned prediction"
+      },
+      "pixels_before_consistency": 2601,
+      "status": "accepted"
+    }
+  ]
+}

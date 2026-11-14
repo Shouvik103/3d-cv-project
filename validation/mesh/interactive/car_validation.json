@@ -1,0 +1,26 @@
+{
+  "model": "car",
+  "triangles": 80000,
+  "allTrianglesDisplayed": true,
+  "hover": {
+    "found": true,
+    "triangle": 63164,
+    "coordinates": [
+      0.0878,
+      -0.1067,
+      0.069
+    ],
+    "distanceToSelectedTrianglePlane": 0.000011201148135746472,
+    "correctPlane": true
+  },
+  "modes": {
+    "shaded": true,
+    "wireframe": true,
+    "normals": true
+  },
+  "axesToggle": true,
+  "mouseOrbit": true,
+  "wheelZoom": true,
+  "rightDragPan": true,
+  "mobileNoHorizontalOverflow": true
+}

@@ -6,9 +6,18 @@ __pycache__/
 /data/
 /results/
 /outputs/
+/cars/
+/fountain_dense/
+/nerf_synthetic/
+/dist/
+/output/
+/tmp/
 *.npz
 !sample_data/**/*.npz
 *.ply
 !sample_data/**/*.ply
 
 **/cache/
+!sample_data/mesh_sphere/cache/
+!sample_data/mesh_sphere/cache/depth_mono/
+!sample_data/mesh_sphere/cache/depth_mono/*.npz

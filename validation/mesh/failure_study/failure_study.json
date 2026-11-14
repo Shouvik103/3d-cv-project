@@ -1,0 +1,75 @@
+{
+  "scope": "Analytic unit sphere, known geometry; deliberate depth corruption after alignment. Not a real-scene accuracy claim.",
+  "voxel": 0.045,
+  "seed": 0,
+  "cases": [
+    {
+      "case": "exact_12_views",
+      "status": "complete",
+      "statistics": {
+        "vertices": 7608,
+        "faces": 14808,
+        "components": 1,
+        "boundary_edges": 496,
+        "nonmanifold_edges": 0,
+        "watertight": false,
+        "surface_area": 9.932873931173136,
+        "mean_edge_length": 0.042916404595738415
+      },
+      "median_surface_error": 0.00533424500766666,
+      "p95_surface_error": 0.014416430686025949,
+      "views": 12
+    },
+    {
+      "case": "two_views",
+      "status": "complete",
+      "statistics": {
+        "vertices": 2846,
+        "faces": 5249,
+        "components": 1,
+        "boundary_edges": 495,
+        "nonmanifold_edges": 0,
+        "watertight": false,
+        "surface_area": 3.5646735152095372,
+        "mean_edge_length": 0.0430846143703723
+      },
+      "median_surface_error": 0.005635788918618323,
+      "p95_surface_error": 0.016731713896525724,
+      "views": 2
+    },
+    {
+      "case": "one_depth_wrong_scale",
+      "status": "complete",
+      "statistics": {
+        "vertices": 15467,
+        "faces": 29421,
+        "components": 1,
+        "boundary_edges": 1897,
+        "nonmanifold_edges": 0,
+        "watertight": false,
+        "surface_area": 20.069272078774812,
+        "mean_edge_length": 0.04318732718093003
+      },
+      "median_surface_error": 0.031156186877660308,
+      "p95_surface_error": 1.0198398994158886,
+      "views": 12
+    },
+    {
+      "case": "all_depth_wrong_scale",
+      "status": "complete",
+      "statistics": {
+        "vertices": 54436,
+        "faces": 97072,
+        "components": 25,
+        "boundary_edges": 14096,
+        "nonmanifold_edges": 0,
+        "watertight": false,
+        "surface_area": 66.7819488265969,
+        "mean_edge_length": 0.04302625261950552
+      },
+      "median_surface_error": 0.7955200868538101,
+      "p95_surface_error": 1.1220764888430224,
+      "views": 12
+    }
+  ]
+}

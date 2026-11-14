@@ -1,0 +1,115 @@
+{
+  "backend": "sgbm",
+  "images": [
+    {
+      "image": "view_00.png",
+      "index": 0,
+      "pairs": [
+        {
+          "neighbor": "view_01.png",
+          "valid_pixels": 109882,
+          "baseline": 0.5015439308183343,
+          "disparities": 128,
+          "min_disparity": 28
+        },
+        {
+          "neighbor": "view_02.png",
+          "valid_pixels": 90232,
+          "baseline": 1.000296210556868,
+          "disparities": 128,
+          "min_disparity": 69
+        }
+      ],
+      "pixels_before_consistency": 106960,
+      "status": "accepted"
+    },
+    {
+      "image": "view_01.png",
+      "index": 1,
+      "pairs": [
+        {
+          "neighbor": "view_00.png",
+          "valid_pixels": 151055,
+          "baseline": 0.5015439308183341,
+          "disparities": 128,
+          "min_disparity": -71
+        },
+        {
+          "neighbor": "view_02.png",
+          "valid_pixels": 115328,
+          "baseline": 0.49974276461342354,
+          "disparities": 128,
+          "min_disparity": 28
+        }
+      ],
+      "pixels_before_consistency": 145085,
+      "status": "accepted"
+    },
+    {
+      "image": "view_02.png",
+      "index": 2,
+      "pairs": [
+        {
+          "neighbor": "view_03.png",
+          "valid_pixels": 125898,
+          "baseline": 0.5015496699288653,
+          "disparities": 128,
+          "min_disparity": 29
+        },
+        {
+          "neighbor": "view_01.png",
+          "valid_pixels": 154136,
+          "baseline": 0.49974276461342343,
+          "disparities": 128,
+          "min_disparity": -69
+        }
+      ],
+      "pixels_before_consistency": 146568,
+      "status": "accepted"
+    },
+    {
+      "image": "view_03.png",
+      "index": 3,
+      "pairs": [
+        {
+          "neighbor": "view_02.png",
+          "valid_pixels": 162241,
+          "baseline": 0.5015496699288657,
+          "disparities": 128,
+          "min_disparity": -67
+        },
+        {
+          "neighbor": "view_01.png",
+          "valid_pixels": 125770,
+          "baseline": 1.0003551454341715,
+          "disparities": 128,
+          "min_disparity": -124
+        }
+      ],
+      "pixels_before_consistency": 142779,
+      "status": "accepted"
+    },
+    {
+      "image": "view_06.png",
+      "index": 6,
+      "pairs": [
+        {
+          "neighbor": "view_03.png",
+          "valid_pixels": 95254,
+          "baseline": 1.4911254104704816,
+          "disparities": 128,
+          "min_disparity": -183
+        },
+        {
+          "neighbor": "view_02.png",
+          "valid_pixels": 77194,
+          "baseline": 1.9868096307264402,
+          "disparities": 128,
+          "min_disparity": -237
+        }
+      ],
+      "pixels_before_consistency": 92656,
+      "status": "accepted"
+    }
+  ]
+}

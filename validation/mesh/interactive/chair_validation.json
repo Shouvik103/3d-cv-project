@@ -1,0 +1,26 @@
+{
+  "model": "chair",
+  "triangles": 79999,
+  "allTrianglesDisplayed": true,
+  "hover": {
+    "found": true,
+    "triangle": 44662,
+    "coordinates": [
+      -0.1398,
+      0.1698,
+      -0.1098
+    ],
+    "distanceToSelectedTrianglePlane": 0.000050243593322228696,
+    "correctPlane": true
+  },
+  "modes": {
+    "shaded": true,
+    "wireframe": true,
+    "normals": true
+  },
+  "axesToggle": true,
+  "mouseOrbit": true,
+  "wheelZoom": true,
+  "rightDragPan": true,
+  "mobileNoHorizontalOverflow": true
+}

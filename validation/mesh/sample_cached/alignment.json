@@ -1,0 +1,115 @@
+{
+  "backend": "mono",
+  "images": [
+    {
+      "image": "view_00.png",
+      "index": 0,
+      "s": 0.008820151145372785,
+      "b": 0.16564626613637498,
+      "n_inliers": 898,
+      "samples": 1209,
+      "median_rel_residual": 0.03276151389113285,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "8965ccc05b3cdc8d793f9ff8c2aacab76147339b8cc2802069bb7ca37a6b7672.npz",
+        "key": "8965ccc05b3cdc8d793f9ff8c2aacab76147339b8cc2802069bb7ca37a6b7672",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 768,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0",
+        "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99"
+      },
+      "pixels_before_consistency": 362220,
+      "status": "accepted"
+    },
+    {
+      "image": "view_01.png",
+      "index": 1,
+      "s": 0.007650195276915818,
+      "b": 0.1659273373644077,
+      "n_inliers": 971,
+      "samples": 1286,
+      "median_rel_residual": 0.03627791965368293,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "21ff12225f555045d0491a3c8798ba1b10b848ea237ad7184c1a9d384fd9cf2a.npz",
+        "key": "21ff12225f555045d0491a3c8798ba1b10b848ea237ad7184c1a9d384fd9cf2a",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 768,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0",
+        "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99"
+      },
+      "pixels_before_consistency": 354613,
+      "status": "accepted"
+    },
+    {
+      "image": "view_02.png",
+      "index": 2,
+      "s": 0.006046109971952698,
+      "b": 0.17179174721795792,
+      "n_inliers": 952,
+      "samples": 1354,
+      "median_rel_residual": 0.030580130391937452,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "8914c8772df1209c9caa3fa23c4709bc60b6a98f2d53f6c4e6191e50504be8d7.npz",
+        "key": "8914c8772df1209c9caa3fa23c4709bc60b6a98f2d53f6c4e6191e50504be8d7",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 768,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0",
+        "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99"
+      },
+      "pixels_before_consistency": 362460,
+      "status": "accepted"
+    },
+    {
+      "image": "view_03.png",
+      "index": 3,
+      "s": 0.00500354176516406,
+      "b": 0.17336048032139642,
+      "n_inliers": 935,
+      "samples": 1385,
+      "median_rel_residual": 0.031226691961252263,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "97b6f2299797764236a5574b786e3f4bc8494ec14a3d9bffb467a774e6357152.npz",
+        "key": "97b6f2299797764236a5574b786e3f4bc8494ec14a3d9bffb467a774e6357152",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 768,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0",
+        "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99"
+      },
+      "pixels_before_consistency": 361917,
+      "status": "accepted"
+    },
+    {
+      "image": "view_06.png",
+      "index": 6,
+      "s": 0.01028880512061204,
+      "b": 0.16101052356824608,
+      "n_inliers": 899,
+      "samples": 1314,
+      "median_rel_residual": 0.03189574388852507,
+      "cache": {
+        "cache_hit": true,
+        "cache_file": "a6cd3b6a3fa52bfd7f21eab47cdb166b9f0edfe1dbe1a03fd6fce06dc343833f.npz",
+        "key": "a6cd3b6a3fa52bfd7f21eab47cdb166b9f0edfe1dbe1a03fd6fce06dc343833f",
+        "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+        "input_long_side": 768,
+        "device": "mps",
+        "kind": "relative_inverse_depth",
+        "license": "Apache-2.0",
+        "model_revision": "5426e4f0f36572d16453bbda7a8389317b1bef99"
+      },
+      "pixels_before_consistency": 353560,
+      "status": "accepted"
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "source_sha256": "ad2013f90aae8d438bf729c2e86c5feffccb25caf0632062b687b85c96ddb011",
+  "timestamp_utc": "2026-11-14T16:37:09.293496+00:00",
+  "git_commit": "cea6d0ca8456c5b7d691e1e6ed42172474fd4ad1",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "mono",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "input_long_side": 768,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        5,
+        95
+      ],
+      "roi_margin_frac": 0.15
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 256,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 3,
+      "seed": 0
+    }
+  },
+  "scene": "sample_data/scene_small",
+  "backend": "mono",
+  "frames_fused": 5,
+  "registered_views": 8,
+  "fusion_images": [
+    "view_00.png",
+    "view_01.png",
+    "view_02.png",
+    "view_03.png",
+    "view_06.png"
+  ],
+  "heldout_images": [
+    "view_04.png",
+    "view_05.png",
+    "view_07.png"
+  ],
+  "heldout": {
+    "views": 3,
+    "rows": [
+      {
+        "image": "view_04.png",
+        "pixels": 355611,
+        "coverage": 0.74085625,
+        "psnr_db": 14.252584673782847,
+        "ssim": 0.4640035618868863,
+        "mae": 0.11707932014939657
+      },
+      {
+        "image": "view_05.png",
+        "pixels": 353086,
+        "coverage": 0.7355958333333333,
+        "psnr_db": 13.802017224672227,
+        "ssim": 0.45339949563979487,
+        "mae": 0.12455607567546635
+      },
+      {
+        "image": "view_07.png",
+        "pixels": 343575,
+        "coverage": 0.71578125,
+        "psnr_db": 13.058082935422739,
+        "ssim": 0.43609439645317866,
+        "mae": 0.13835567673429944
+      }
+    ],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": 0.12316836273825385,
+    "passed": true,
+    "automatic_no_track_check": false,
+    "scene_extent": 5.798589997588633,
+    "images": [
+      {
+        "image": "view_00.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1209
+      },
+      {
+        "image": "view_01.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1286
+      },
+      {
+        "image": "view_02.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1354
+      },
+      {
+        "image": "view_03.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1385
+      },
+      {
+        "image": "view_04.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1402
+      },
+      {
+        "image": "view_05.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1353
+      },
+      {
+        "image": "view_06.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1314
+      },
+      {
+        "image": "view_07.png",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 1156
+      }
+    ]
+  },
+  "roi": [
+    [
+      -2.47788965,
+      -2.0286480241,
+      4.5228123516
+    ],
+    [
+      2.58086769,
+      2.0433200500999997,
+      7.2633535524
+    ]
+  ],
+  "voxel_length": 0.022650742178080597,
+  "full": {
+    "vertices": 68836,
+    "faces": 136068,
+    "components": 1,
+    "boundary_edges": 1882,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 25.736320840726982,
+    "mean_edge_length": 0.022543991653894438
+  },
+  "light": {
+    "vertices": 40620,
+    "faces": 80000,
+    "components": 2,
+    "boundary_edges": 1516,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 25.73585437447864,
+    "mean_edge_length": 0.029679695931656855
+  },
+  "timing_seconds": {
+    "depth": 5.582653749021119,
+    "alignment": 0.11577191601099912,
+    "filtering": 0.23400137499265838,
+    "fusion": 0.08686404200852849,
+    "clean_export": 0.756535749998875,
+    "total": 9.454472082987195
+  },
+  "peak_rss_mb": 713.40625
+}

@@ -1,0 +1,369 @@
+{
+  "convention": "OpenCV world-to-camera; x_cam=R X+t",
+  "median_reprojection_px": 0.28232794060989586,
+  "passed": true,
+  "automatic_no_track_check": false,
+  "scene_extent": 2.604997605338438,
+  "images": [
+    {
+      "image": "r_101.png",
+      "positive_fraction": 0.9992513102071375,
+      "inside_fraction": 0.9915148490142252,
+      "tracked_points": 157
+    },
+    {
+      "image": "r_106.png",
+      "positive_fraction": 0.9992513102071375,
+      "inside_fraction": 0.9906413775892189,
+      "tracked_points": 214
+    },
+    {
+      "image": "r_109.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9898926877963564,
+      "tracked_points": 258
+    },
+    {
+      "image": "r_11.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9892687796356376,
+      "tracked_points": 294
+    },
+    {
+      "image": "r_112.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9902670326927876,
+      "tracked_points": 290
+    },
+    {
+      "image": "r_115.png",
+      "positive_fraction": 0.9996256551035687,
+      "inside_fraction": 0.9896431245320689,
+      "tracked_points": 330
+    },
+    {
+      "image": "r_118.png",
+      "positive_fraction": 0.9996256551035687,
+      "inside_fraction": 0.9902670326927876,
+      "tracked_points": 365
+    },
+    {
+      "image": "r_121.png",
+      "positive_fraction": 0.9997504367357125,
+      "inside_fraction": 0.9921387571749438,
+      "tracked_points": 370
+    },
+    {
+      "image": "r_124.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9930122285999501,
+      "tracked_points": 391
+    },
+    {
+      "image": "r_127.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9943848265535313,
+      "tracked_points": 411
+    },
+    {
+      "image": "r_130.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9942600449213875,
+      "tracked_points": 503
+    },
+    {
+      "image": "r_133.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9948839530821063,
+      "tracked_points": 619
+    },
+    {
+      "image": "r_136.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9947591714499626,
+      "tracked_points": 807
+    },
+    {
+      "image": "r_139.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9943848265535313,
+      "tracked_points": 1038
+    },
+    {
+      "image": "r_142.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9950087347142501,
+      "tracked_points": 1287
+    },
+    {
+      "image": "r_143.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9955078612428251,
+      "tracked_points": 1339
+    },
+    {
+      "image": "r_146.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9961317694035438,
+      "tracked_points": 1384
+    },
+    {
+      "image": "r_149.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9966308959321188,
+      "tracked_points": 1442
+    },
+    {
+      "image": "r_15.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9897679061642126,
+      "tracked_points": 330
+    },
+    {
+      "image": "r_152.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9967556775642625,
+      "tracked_points": 1360
+    },
+    {
+      "image": "r_155.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9960069877714001,
+      "tracked_points": 1273
+    },
+    {
+      "image": "r_158.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9961317694035438,
+      "tracked_points": 1162
+    },
+    {
+      "image": "r_161.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9957574245071126,
+      "tracked_points": 1023
+    },
+    {
+      "image": "r_164.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.994509608185675,
+      "tracked_points": 865
+    },
+    {
+      "image": "r_167.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9931370102320939,
+      "tracked_points": 738
+    },
+    {
+      "image": "r_170.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9928874469678063,
+      "tracked_points": 612
+    },
+    {
+      "image": "r_173.png",
+      "positive_fraction": 0.9996256551035687,
+      "inside_fraction": 0.9925131020713751,
+      "tracked_points": 502
+    },
+    {
+      "image": "r_177.png",
+      "positive_fraction": 0.9996256551035687,
+      "inside_fraction": 0.9923883204392313,
+      "tracked_points": 421
+    },
+    {
+      "image": "r_181.png",
+      "positive_fraction": 0.9997504367357125,
+      "inside_fraction": 0.9925131020713751,
+      "tracked_points": 460
+    },
+    {
+      "image": "r_182.png",
+      "positive_fraction": 0.9997504367357125,
+      "inside_fraction": 0.9923883204392313,
+      "tracked_points": 480
+    },
+    {
+      "image": "r_185.png",
+      "positive_fraction": 0.9997504367357125,
+      "inside_fraction": 0.9921387571749438,
+      "tracked_points": 430
+    },
+    {
+      "image": "r_188.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9917644122785126,
+      "tracked_points": 367
+    },
+    {
+      "image": "r_19.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9911405041177939,
+      "tracked_points": 364
+    },
+    {
+      "image": "r_191.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9912652857499377,
+      "tracked_points": 297
+    },
+    {
+      "image": "r_194.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9912652857499377,
+      "tracked_points": 219
+    },
+    {
+      "image": "r_197.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9920139755428001,
+      "tracked_points": 186
+    },
+    {
+      "image": "r_23.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9933865734963814,
+      "tracked_points": 441
+    },
+    {
+      "image": "r_27.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9943848265535313,
+      "tracked_points": 515
+    },
+    {
+      "image": "r_3.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9915148490142252,
+      "tracked_points": 167
+    },
+    {
+      "image": "r_31.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9952582979785376,
+      "tracked_points": 624
+    },
+    {
+      "image": "r_35.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9952582979785376,
+      "tracked_points": 847
+    },
+    {
+      "image": "r_39.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9947591714499626,
+      "tracked_points": 1143
+    },
+    {
+      "image": "r_40.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9948839530821063,
+      "tracked_points": 1169
+    },
+    {
+      "image": "r_44.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9960069877714001,
+      "tracked_points": 1319
+    },
+    {
+      "image": "r_48.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9966308959321188,
+      "tracked_points": 1398
+    },
+    {
+      "image": "r_52.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9966308959321188,
+      "tracked_points": 1370
+    },
+    {
+      "image": "r_56.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9960069877714001,
+      "tracked_points": 1193
+    },
+    {
+      "image": "r_60.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9956326428749688,
+      "tracked_points": 927
+    },
+    {
+      "image": "r_64.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9946343898178188,
+      "tracked_points": 601
+    },
+    {
+      "image": "r_7.png",
+      "positive_fraction": 0.9998752183678562,
+      "inside_fraction": 0.9900174694285001,
+      "tracked_points": 200
+    },
+    {
+      "image": "r_71.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9923883204392313,
+      "tracked_points": 262
+    },
+    {
+      "image": "r_75.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9917644122785126,
+      "tracked_points": 237
+    },
+    {
+      "image": "r_78.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9913900673820814,
+      "tracked_points": 267
+    },
+    {
+      "image": "r_80.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9913900673820814,
+      "tracked_points": 281
+    },
+    {
+      "image": "r_83.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9913900673820814,
+      "tracked_points": 274
+    },
+    {
+      "image": "r_86.png",
+      "positive_fraction": 0.999500873471425,
+      "inside_fraction": 0.9913900673820814,
+      "tracked_points": 254
+    },
+    {
+      "image": "r_89.png",
+      "positive_fraction": 0.9993760918392812,
+      "inside_fraction": 0.9911405041177939,
+      "tracked_points": 235
+    },
+    {
+      "image": "r_92.png",
+      "positive_fraction": 0.9993760918392812,
+      "inside_fraction": 0.9912652857499377,
+      "tracked_points": 236
+    },
+    {
+      "image": "r_95.png",
+      "positive_fraction": 0.9993760918392812,
+      "inside_fraction": 0.9918891939106563,
+      "tracked_points": 188
+    },
+    {
+      "image": "r_99.png",
+      "positive_fraction": 0.99900174694285,
+      "inside_fraction": 0.9916396306463688,
+      "tracked_points": 169
+    }
+  ]
+}

@@ -147,3 +147,114 @@ fixed background, digital zoom, and poorly overlapping footage remain outside
 the reliable assumptions of this classical pipeline. Object/background
 segmentation and dense meshing are not implemented. A real phone video still
 needs validation; no such footage was supplied in this session.
+
+## Mesh add-on implementation and validation (14 Nov 2026)
+
+Implemented `MESH_ADDON.md` as a separate stage. Existing SfM geometry, photo
+input and video input paths are unchanged. New files are under `code/mesh/`
+(adapters, learned/stereo depth, alignment, filters, TSDF/Poisson, cleaning,
+exports, evaluation, CLI, synthetic fixtures, experiments/failure study and
+packaging) and `code/viz/{view_mesh,render_mesh}.py`. New configs document default,
+low-memory monocular, classical, wider-object-ROI and offline fixture settings.
+The only existing inference code modified is `code/baselines/vggt_infer.py`, which
+adds raw depth/depth-confidence fields to its NPZ export; existing fields remain.
+README, pinned requirements and sample depth-cache ignore exceptions are updated.
+`sample_data/scene_small` now includes our SfM output, five cached learned-depth
+predictions for its default fusion split and light PLY/GLB meshes. An analytic
+sphere fixture is separately labelled; its caches are not network predictions.
+
+Inspected common JSON/PLY/observations formats before implementation. Our poses
+already use OpenCV world-to-camera. Existing Temple and generated-tile SfM
+reprojection medians were 0.1639 px and 0.1232 px. Adapters validate image sizes,
+registered poses, K, track ordering and radial undistortion, retaining overlays.
+No SfM export rewrite was needed. The renderer uses actual unnormalized ray
+directions to obtain z-depth from RaycastingScene's t_hit; normalizing without
+rescaling t_hit, as in a naive outline, would produce incorrect z-depth.
+
+Tests were written before real mesh runs. Open3D 0.20.0's ScalableTSDFVolume
+returned zero points/triangles even for an identity-camera unit-depth plane;
+UniformTSDFVolume on the same input returned geometry. After pinning Open3D
+0.19.0, the geometric and full pipeline gates passed. Tiny raw TSDF silhouette
+components are evaluated after the same component cleanup used in production.
+A large-image consistency remap initially exceeded OpenCV's SHRT_MAX dimension
+because pixels had been flattened into one long map; using HxW maps fixes it,
+and a >32,767-pixel regression test covers it. The synthetic cache fixture uses
+OpenCV integer pixel centers and interior landmarks to avoid interpolating
+background at sphere silhouettes; its relocated CLI test now checks radial
+surface error as well as successful export.
+
+Final whole-project test result: **36 passed** (nine mesh tests). The sole pytest
+warning comes from the installed Dash plugin's deprecated hook, not mesh code.
+An isolated new virtual environment installed requirements and reconstructed both
+shipped samples offline, wrote a headless screenshot and passed the mesh suite.
+Exact commands/results are in `validation/mesh/fresh_machine.json`; archive
+extraction is recorded in `validation/mesh/archive_check.json` when present.
+No hardcoded user-home paths were found under `code/`. `pip check` passed.
+
+Validated package versions: Open3D 0.19.0, torch 2.15.0, torchvision 0.29.2,
+transformers 5.23.0, trimesh 5.2.1, scikit-image 0.26.0, tqdm 4.70.1. Depth Anything
+V2 Small was verified against its Hugging Face model card (Apache-2.0), and its
+revision is pinned to `5426e4f0f36572d16453bbda7a8389317b1bef99`. Actual inference
+succeeded on MPS. Weights stay outside the repository. Cached predictions record
+model/image/settings provenance; no model download is needed for shipped samples.
+
+Measured runs under `results/mesh/` include:
+- `temple_mono`: our 16-view SfM, 13 fused views after holding out 3, 173,812 full
+  triangles. This public real scene has no supplied GT triangle mesh.
+- `sample_mono` / `sample_sgbm`: our generated tile-scene SfM, five fusion views
+  after holding out three; both depth backends produced surfaces.
+- `chair_sgbm` and `chair_sgbm_wide_roi`: existing COLMAP poses, 57 fusion views
+  after holding out three. The wider ROI retains more of the thin legs. The wide
+  run has 100,870 full triangles and 79,999 light triangles.
+- `car_sgbm`: existing COLMAP poses, 57 fusion views; 119,296 full triangles.
+  Glossy/textureless surfaces and background artifacts remain visible.
+- `sphere_cached`: analytic synthetic control; not evidence of learned depth.
+
+`validation/mesh/mesh_metrics.csv` and per-run JSONs contain actual statistics,
+PSNR/SSIM/MAE/coverage, runtime and peak RSS. Held-out checks exclude photos from
+all depth/fusion neighbors, but SfM poses/landmarks were estimated with all views;
+these are fusion checks, not fully held-out SfM experiments. Every mesh remains
+non-watertight; no gaps or unseen surfaces were invented. Low image coverage is
+reported alongside image scores. No real GT mesh F-score or VGGT mesh result is
+claimed: the necessary GT geometry/bounding volume and VGGT depth were absent.
+The geometry-comparison CLI supports camera-aligned GT/agreement evaluation when
+those files become available.
+
+The tile-scene ablation matrix executed mono/SGBM, TSDF/Poisson, voxel divisions
+128/256/384 and consistency on/off. A separately labelled analytic matrix and
+controlled wrong-depth-scale/two-view failure study are retained. Headless
+renders include three views each of colored, shaded, wireframe and normals,
+metric depth arrays and colored/shaded 150-180-frame 1280x720 orbit videos.
+Native display orientation follows capture conventions; Temple images are
+rolled, so its render command includes `--up y`. This is a display rotation only.
+
+`docs/mesh_report.md`, its generated PDF addendum, measured figures and a
+30-second captioned `results/mesh/mesh_segment.mp4` are ready for integration.
+Bibliographic entries were verified against original paper/model/library pages.
+The report addendum is not the complete IEEE course report, and the captioned
+segment is not a narrated 1-2 minute full demo. A bounded review ZIP is generated
+with the packaging CLI. Final course report/demo assembly, any absent GT/VGGT
+experiments, contributor evidence, and human portal tagging/upload remain
+separate project work; no submission or remote push was performed by this task.
+
+## Browser mesh interfaces (14 Nov 2026)
+
+Added `code/viz/view_mesh_web.py` and two literal templates under
+`code/viz/assets/`. The exporter embeds the supplied triangle surface with gzip,
+16-bit display coordinates, original uint8 vertex colors and exact connectivity.
+No further mesh decimation or point sampling is performed. It creates a standalone
+browser file and optionally an inline fragment. Sources retain their original
+file hashes. Three.js and OrbitControls 0.128.0 provide rendering/orbit controls;
+no external implementation was copied into the reconstruction pipeline.
+
+Interactive car: all 80,000 light-mesh triangles, 41,977 vertices; chair: all
+79,999 light-mesh triangles, 41,231 vertices. Both interfaces support mouse orbit,
+wheel/pinch zoom, right-drag pan, preset views, colored/shaded/wireframe/normals,
+axes and ray-cast surface XYZ hover in arbitrary display units. Shared camera
+poses provide upright display orientation. The reconstruction, source meshes
+and existing point-cloud views are unchanged.
+
+Actual browser validation exercised modes, orbit/zoom/pan, axes and a 360px mobile
+layout. Hover XYZ was checked against the selected triangle's plane, within
+0.0002 display units. Both fragments are below 1 MB and include every triangle.
+Validation JSONs and screenshots accompany the exports under `results/mesh/`.

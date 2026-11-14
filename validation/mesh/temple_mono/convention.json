@@ -1,0 +1,105 @@
+{
+  "convention": "OpenCV world-to-camera; x_cam=R X+t",
+  "median_reprojection_px": 0.1639052712625645,
+  "passed": true,
+  "automatic_no_track_check": false,
+  "scene_extent": 1.6172567577367158,
+  "images": [
+    {
+      "image": "templeSR0001.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992376111817026,
+      "tracked_points": 781
+    },
+    {
+      "image": "templeSR0002.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9979669631512071,
+      "tracked_points": 670
+    },
+    {
+      "image": "templeSR0003.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 832
+    },
+    {
+      "image": "templeSR0004.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9979669631512071,
+      "tracked_points": 368
+    },
+    {
+      "image": "templeSR0005.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9987293519695044,
+      "tracked_points": 314
+    },
+    {
+      "image": "templeSR0006.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9987293519695044,
+      "tracked_points": 589
+    },
+    {
+      "image": "templeSR0007.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 564
+    },
+    {
+      "image": "templeSR0008.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 534
+    },
+    {
+      "image": "templeSR0009.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.997712833545108,
+      "tracked_points": 562
+    },
+    {
+      "image": "templeSR0010.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9987293519695044,
+      "tracked_points": 714
+    },
+    {
+      "image": "templeSR0011.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992376111817026,
+      "tracked_points": 781
+    },
+    {
+      "image": "templeSR0012.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9989834815756036,
+      "tracked_points": 700
+    },
+    {
+      "image": "templeSR0013.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 635
+    },
+    {
+      "image": "templeSR0014.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 787
+    },
+    {
+      "image": "templeSR0015.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9984752223634054,
+      "tracked_points": 644
+    },
+    {
+      "image": "templeSR0016.jpg",
+      "positive_fraction": 1.0,
+      "inside_fraction": 0.9992376111817026,
+      "tracked_points": 699
+    }
+  ]
+}

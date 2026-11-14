@@ -1,0 +1,81 @@
+{
+  "convention": "OpenCV world-to-camera; x_cam=R X+t",
+  "median_reprojection_px": 1.5091400069013012e-07,
+  "passed": true,
+  "automatic_no_track_check": false,
+  "scene_extent": 3.323370575510542,
+  "images": [
+    {
+      "image": "view_00.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 492
+    },
+    {
+      "image": "view_01.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 477
+    },
+    {
+      "image": "view_02.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 467
+    },
+    {
+      "image": "view_03.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 459
+    },
+    {
+      "image": "view_04.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 468
+    },
+    {
+      "image": "view_05.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 481
+    },
+    {
+      "image": "view_06.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 513
+    },
+    {
+      "image": "view_07.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 499
+    },
+    {
+      "image": "view_08.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 481
+    },
+    {
+      "image": "view_09.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 462
+    },
+    {
+      "image": "view_10.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 468
+    },
+    {
+      "image": "view_11.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 471
+    }
+  ]
+}

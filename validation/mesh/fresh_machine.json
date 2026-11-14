@@ -1,0 +1,63 @@
+{
+  "isolated_new_venv": true,
+  "relocated_source": true,
+  "offline": true,
+  "commands": [
+    {
+      "command": [
+        "-m",
+        "pip",
+        "check"
+      ],
+      "returncode": 0,
+      "seconds": 0.22373125000740401
+    },
+    {
+      "command": [
+        "code/mesh/run_mesh.py",
+        "--scene",
+        "sample_data/scene_small",
+        "--out",
+        "outputs/fresh",
+        "--cache-only"
+      ],
+      "returncode": 0,
+      "seconds": 37.07178104200284
+    },
+    {
+      "command": [
+        "code/viz/view_mesh.py",
+        "--mesh",
+        "outputs/fresh/mesh_light.ply",
+        "--screenshot",
+        "outputs/fresh/view.png"
+      ],
+      "returncode": 0,
+      "seconds": 1.2104199580062414
+    },
+    {
+      "command": [
+        "code/mesh/run_mesh.py",
+        "--scene",
+        "sample_data/mesh_sphere",
+        "--out",
+        "outputs/sphere",
+        "--config",
+        "configs/mesh_sample.yaml"
+      ],
+      "returncode": 0,
+      "seconds": 1.7273262920061825
+    },
+    {
+      "command": [
+        "-m",
+        "pytest",
+        "tests/test_mesh_pipeline.py",
+        "-q"
+      ],
+      "returncode": 0,
+      "seconds": 5.3374520409997785
+    }
+  ],
+  "passed": true
+}

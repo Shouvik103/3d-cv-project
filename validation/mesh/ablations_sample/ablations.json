@@ -1,0 +1,362 @@
+[
+  {
+    "name": "default",
+    "status": "complete",
+    "full": {
+      "vertices": 68748,
+      "faces": 135982,
+      "components": 1,
+      "boundary_edges": 1790,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 25.718468175082855,
+      "mean_edge_length": 0.022542528380098046
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 355526,
+          "coverage": 0.7406791666666667,
+          "psnr_db": 14.252263015522944,
+          "ssim": 0.46402853432413715,
+          "mae": 0.11710259444728106
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 352982,
+          "coverage": 0.7353791666666667,
+          "psnr_db": 13.802168000357877,
+          "ssim": 0.45366299470073995,
+          "mae": 0.12457606107263962
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 343565,
+          "coverage": 0.7157604166666667,
+          "psnr_db": 13.059047321051038,
+          "ssim": 0.43638996840606764,
+          "mae": 0.13834494504897657
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 3.231048416986596
+  },
+  {
+    "name": "voxel_128",
+    "status": "complete",
+    "full": {
+      "vertices": 14421,
+      "faces": 28157,
+      "components": 1,
+      "boundary_edges": 691,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 21.993035464393184,
+      "mean_edge_length": 0.04564980678537247
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 354175,
+          "coverage": 0.7378645833333334,
+          "psnr_db": 14.18949863403748,
+          "ssim": 0.45798338164821906,
+          "mae": 0.11973153849667205
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 351714,
+          "coverage": 0.7327375,
+          "psnr_db": 13.783447982276115,
+          "ssim": 0.4484940827968909,
+          "mae": 0.12660331825609497
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 342513,
+          "coverage": 0.71356875,
+          "psnr_db": 13.056156994120924,
+          "ssim": 0.4284888861479987,
+          "mae": 0.14033363439532823
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 1.277054042002419
+  },
+  {
+    "name": "voxel_384",
+    "status": "complete",
+    "full": {
+      "vertices": 185779,
+      "faces": 369148,
+      "components": 1,
+      "boundary_edges": 3974,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 31.075994335749716,
+      "mean_edge_length": 0.015050181222620746
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 356358,
+          "coverage": 0.7424125,
+          "psnr_db": 14.062357682114804,
+          "ssim": 0.46427475331674783,
+          "mae": 0.11826291890430961
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 353737,
+          "coverage": 0.7369520833333333,
+          "psnr_db": 13.641061055042755,
+          "ssim": 0.45538151714992203,
+          "mae": 0.12558307184424397
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 344161,
+          "coverage": 0.7170020833333334,
+          "psnr_db": 12.913998887122055,
+          "ssim": 0.43876006773744186,
+          "mae": 0.13958844273237145
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 2.9998001250060042
+  },
+  {
+    "name": "consistency_off",
+    "status": "complete",
+    "full": {
+      "vertices": 73122,
+      "faces": 144432,
+      "components": 1,
+      "boundary_edges": 2138,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 27.28789894675429,
+      "mean_edge_length": 0.0225287538282872
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 364888,
+          "coverage": 0.7601833333333333,
+          "psnr_db": 14.364828161130006,
+          "ssim": 0.4768054898994886,
+          "mae": 0.11409939309159312
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 362549,
+          "coverage": 0.7553104166666667,
+          "psnr_db": 13.918211196737136,
+          "ssim": 0.46701846597432967,
+          "mae": 0.12128522379404491
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 352060,
+          "coverage": 0.7334583333333333,
+          "psnr_db": 13.165025723776171,
+          "ssim": 0.45038542370622014,
+          "mae": 0.1350012716935133
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 1.4897183330031112
+  },
+  {
+    "name": "consistency_on",
+    "status": "complete",
+    "full": {
+      "vertices": 68748,
+      "faces": 135982,
+      "components": 1,
+      "boundary_edges": 1790,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 25.718468175082855,
+      "mean_edge_length": 0.022542528380098046
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 355526,
+          "coverage": 0.7406791666666667,
+          "psnr_db": 14.252263015522944,
+          "ssim": 0.46402853432413715,
+          "mae": 0.11710259444728106
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 352982,
+          "coverage": 0.7353791666666667,
+          "psnr_db": 13.802168000357877,
+          "ssim": 0.45366299470073995,
+          "mae": 0.12457606107263962
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 343565,
+          "coverage": 0.7157604166666667,
+          "psnr_db": 13.059047321051038,
+          "ssim": 0.43638996840606764,
+          "mae": 0.13834494504897657
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 1.692684667010326
+  },
+  {
+    "name": "poisson",
+    "status": "complete",
+    "full": {
+      "vertices": 69378,
+      "faces": 137531,
+      "components": 1,
+      "boundary_edges": 1323,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 24.347947406834354,
+      "mean_edge_length": 0.021633378804304014
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 363331,
+          "coverage": 0.7569395833333333,
+          "psnr_db": 14.331658775995697,
+          "ssim": 0.4649386161603522,
+          "mae": 0.11614703479927006
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 360780,
+          "coverage": 0.751625,
+          "psnr_db": 13.884298181586253,
+          "ssim": 0.45567116184153855,
+          "mae": 0.12343423671369985
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 350650,
+          "coverage": 0.7305208333333333,
+          "psnr_db": 13.117227975971792,
+          "ssim": 0.4345274013252846,
+          "mae": 0.13762322633316837
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 2.115193207995617
+  },
+  {
+    "name": "sgbm",
+    "status": "complete",
+    "full": {
+      "vertices": 50802,
+      "faces": 93547,
+      "components": 19,
+      "boundary_edges": 8431,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 17.64670203407308,
+      "mean_edge_length": 0.022419431033260186
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 211244,
+          "coverage": 0.44009166666666666,
+          "psnr_db": 14.20005797405011,
+          "ssim": 0.37401700436356405,
+          "mae": 0.13556170153202632
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 206191,
+          "coverage": 0.42956458333333336,
+          "psnr_db": 14.119267136552722,
+          "ssim": 0.36727955894686265,
+          "mae": 0.13726247790494903
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 194005,
+          "coverage": 0.40417708333333335,
+          "psnr_db": 13.98475882099502,
+          "ssim": 0.3539685318502573,
+          "mae": 0.13965258290459126
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 1.90781324999989
+  },
+  {
+    "name": "voxel_256",
+    "status": "complete",
+    "full": {
+      "vertices": 68748,
+      "faces": 135982,
+      "components": 1,
+      "boundary_edges": 1790,
+      "nonmanifold_edges": 0,
+      "watertight": false,
+      "surface_area": 25.718468175082855,
+      "mean_edge_length": 0.022542528380098046
+    },
+    "heldout": {
+      "views": 3,
+      "rows": [
+        {
+          "image": "view_04.png",
+          "pixels": 355526,
+          "coverage": 0.7406791666666667,
+          "psnr_db": 14.252263015522944,
+          "ssim": 0.46402853432413715,
+          "mae": 0.11710259444728106
+        },
+        {
+          "image": "view_05.png",
+          "pixels": 352982,
+          "coverage": 0.7353791666666667,
+          "psnr_db": 13.802168000357877,
+          "ssim": 0.45366299470073995,
+          "mae": 0.12457606107263962
+        },
+        {
+          "image": "view_07.png",
+          "pixels": 343565,
+          "coverage": 0.7157604166666667,
+          "psnr_db": 13.059047321051038,
+          "ssim": 0.43638996840606764,
+          "mae": 0.13834494504897657
+        }
+      ],
+      "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+    },
+    "seconds": 1.6846475829952396
+  }
+]

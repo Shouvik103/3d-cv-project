@@ -1,0 +1,57 @@
+{
+  "convention": "OpenCV world-to-camera; x_cam=R X+t",
+  "median_reprojection_px": 0.12316836273825385,
+  "passed": true,
+  "automatic_no_track_check": false,
+  "scene_extent": 5.798589997588633,
+  "images": [
+    {
+      "image": "view_00.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1209
+    },
+    {
+      "image": "view_01.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1286
+    },
+    {
+      "image": "view_02.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1354
+    },
+    {
+      "image": "view_03.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1385
+    },
+    {
+      "image": "view_04.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1402
+    },
+    {
+      "image": "view_05.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1353
+    },
+    {
+      "image": "view_06.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1314
+    },
+    {
+      "image": "view_07.png",
+      "positive_fraction": 1.0,
+      "inside_fraction": 1.0,
+      "tracked_points": 1156
+    }
+  ]
+}
