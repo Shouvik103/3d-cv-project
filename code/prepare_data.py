@@ -17,6 +17,9 @@ def estimate_intrinsics(image: Image.Image) -> tuple[np.ndarray, str]:
     width, height = image.size
     exif = image.getexif()
     focal35 = exif.get(41989)  # FocalLengthIn35mmFilm
+    if not focal35:
+        # Most phone JPEGs store focal length in the nested Exif IFD.
+        focal35 = exif.get_ifd(34665).get(41989)
     if focal35:
         focal = float(focal35) / 36.0 * max(width, height)
         source = "exif_35mm"

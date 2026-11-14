@@ -47,3 +47,14 @@ def test_orb_remains_binary_when_rootsift_flag_is_set():
     image = np.random.default_rng(0).integers(0, 256, (200, 200), dtype=np.uint8)
     _, descriptors = extract_features(image, 'orb', rootsift=True)
     assert descriptors.dtype == np.uint8
+
+
+def test_prepare_reads_nested_phone_focal_length(tmp_path):
+    raw = tmp_path/'raw'; raw.mkdir()
+    image = Image.new('RGB', (1200, 900))
+    exif = image.getexif(); exif[34665] = {41989: 24}
+    image.save(raw/'phone.jpg', exif=exif)
+    result = prepare(raw, tmp_path/'prepared/images', max_side=600)
+    record = result['images']['phone.jpg']
+    assert record['source'] == 'exif_35mm'
+    assert np.isclose(record['K'][0][0], 400.)
