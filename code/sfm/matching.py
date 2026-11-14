@@ -23,8 +23,8 @@ def match_images(desc1: np.ndarray, desc2: np.ndarray, ratio: float = 0.8, mutua
     return np.asarray([(a, b) for a, b in accepted if reverse.get(b) == a], dtype=int).reshape(-1, 2)
 
 
-def verify_pair(kps1: np.ndarray, kps2: np.ndarray, matches: np.ndarray, *, threshold: float = 1.0, iterations: int = 2000, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+def verify_pair(kps1: np.ndarray, kps2: np.ndarray, matches: np.ndarray, *, threshold: float = 1.0, iterations: int = 2000, confidence: float = 0.999, seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
     if len(matches) < 8:
         raise ValueError("at least eight matches are needed for verification")
-    F, mask = ransac_fundamental(kps1[matches[:, 0]], kps2[matches[:, 1]], threshold, iterations, seed=seed)
+    F, mask = ransac_fundamental(kps1[matches[:, 0]], kps2[matches[:, 1]], threshold, iterations, confidence=confidence, seed=seed)
     return F, matches[mask]

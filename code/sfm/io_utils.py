@@ -38,3 +38,18 @@ def save_ply(points: np.ndarray, colors: np.ndarray | None, path: str | Path) ->
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(f"{header}\n{rows}\n")
+
+
+def load_ply(path: str | Path) -> tuple[np.ndarray, np.ndarray]:
+    """Read the ASCII XYZ/RGB PLY format emitted by this project."""
+    with Path(path).open() as stream:
+        if stream.readline().strip() != 'ply' or stream.readline().strip() != 'format ascii 1.0':
+            raise ValueError('Expected an ASCII PLY')
+        count = None
+        for line in stream:
+            if line.startswith('element vertex '): count = int(line.split()[-1])
+            if line.strip() == 'end_header': break
+        if count is None: raise ValueError('Missing vertex count')
+        rows = [list(map(float, stream.readline().split())) for _ in range(count)]
+    data = np.asarray(rows).reshape(count, -1) if count else np.empty((0, 6))
+    return data[:, :3], data[:, 3:6].astype(np.uint8)

@@ -7,12 +7,12 @@ from pathlib import Path
 import numpy as np
 
 
-def extract_features(image: np.ndarray, detector: str = "sift", n_features: int = 4000, rootsift: bool = False) -> tuple[np.ndarray, np.ndarray]:
+def extract_features(image: np.ndarray, detector: str = "sift", n_features: int = 4000, rootsift: bool = False, contrast_threshold: float = 0.04) -> tuple[np.ndarray, np.ndarray]:
     import cv2
 
     gray = image if image.ndim == 2 else cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     if detector in {"sift", "rootsift"}:
-        engine = cv2.SIFT_create(nfeatures=n_features)
+        engine = cv2.SIFT_create(nfeatures=n_features, contrastThreshold=contrast_threshold)
     elif detector == "orb":
         engine = cv2.ORB_create(nfeatures=n_features)
     else:
@@ -20,7 +20,7 @@ def extract_features(image: np.ndarray, detector: str = "sift", n_features: int 
     keypoints, descriptors = engine.detectAndCompute(gray, None)
     xy = np.array([kp.pt for kp in keypoints], dtype=np.float64).reshape(-1, 2)
     descriptors = np.empty((0, 128 if detector != "orb" else 32), dtype=np.float32) if descriptors is None else descriptors
-    if rootsift or detector == "rootsift":
+    if detector != "orb" and (rootsift or detector == "rootsift"):
         descriptors = descriptors.astype(np.float32)
         descriptors /= np.maximum(descriptors.sum(axis=1, keepdims=True), 1e-12)
         descriptors = np.sqrt(descriptors)
@@ -34,3 +34,20 @@ def save_feature_cache(path: Path, names: list[str], features: dict[str, tuple[n
         payload[f"desc_{index}"] = features[name][1]
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(path, **payload)
+
+
+
+def cached_features(image, path, settings, cache_dir):
+    """Content-addressed features; edits to images/settings invalidate the cache."""
+    import hashlib
+    import json
+    import cv2
+    identity = hashlib.sha256(path.read_bytes() + json.dumps(settings, sort_keys=True).encode() + cv2.__version__.encode()).hexdigest()
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cached = cache_dir / f'{identity}.npz'
+    if cached.exists():
+        with np.load(cached, allow_pickle=False) as data:
+            return data['xy'], data['descriptors']
+    xy, descriptors = extract_features(image, settings['detector'], settings['n_features'], settings.get('rootsift', False), settings.get('contrast_threshold', .04))
+    np.savez_compressed(cached, xy=xy, descriptors=descriptors)
+    return xy, descriptors

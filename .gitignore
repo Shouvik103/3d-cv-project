@@ -3,10 +3,12 @@ __pycache__/
 *.py[cod]
 .DS_Store
 .pytest_cache/
-data/
-results/
-outputs/
+/data/
+/results/
+/outputs/
 *.npz
 !sample_data/**/*.npz
 *.ply
 !sample_data/**/*.ply
+
+**/cache/

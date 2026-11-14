@@ -1,0 +1,121 @@
+images:
+  view_00.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_01.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_02.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_03.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_04.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_05.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_06.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact
+  view_07.png:
+    K:
+    - - 700.0
+      - 0.0
+      - 400.0
+    - - 0.0
+      - 700.0
+      - 300.0
+    - - 0.0
+      - 0.0
+      - 1.0
+    image_size:
+    - 800
+    - 600
+    source: synthetic_exact

@@ -1,0 +1,5 @@
+{
+  "generator": "code/data/make_sample.py",
+  "seed": 7,
+  "description": "Original generated textures on 20 tiles at varying depths; synthetic only"
+}

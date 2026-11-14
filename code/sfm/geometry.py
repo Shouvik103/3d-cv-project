@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import math
-from itertools import combinations
 
 import numpy as np
 
@@ -38,7 +37,7 @@ def fundamental_8pt(points1: np.ndarray, points2: np.ndarray) -> np.ndarray:
     u1, v1 = x1[:, 0], x1[:, 1]
     u2, v2 = x2[:, 0], x2[:, 1]
     A = np.column_stack([u2*u1, u2*v1, u2, v2*u1, v2*v1, v2, u1, v1, np.ones(len(x1))])
-    _, _, Vt = np.linalg.svd(A)
+    _, _, Vt = np.linalg.svd(A, full_matrices=(A.shape[0] < A.shape[1]))
     F = Vt[-1].reshape(3, 3)
     U, s, Vt = np.linalg.svd(F)
     s[-1] = 0.0
@@ -63,6 +62,8 @@ def ransac_fundamental(
 ) -> tuple[np.ndarray, np.ndarray]:
     """8-point RANSAC with deterministic sampling and adaptive iteration count."""
     n = len(points1)
+    if not 0 < confidence < 1 or iters < 1 or thresh <= 0:
+        raise ValueError("RANSAC needs 0 < confidence < 1 and positive iterations/threshold")
     if n < 8:
         raise ValueError("at least 8 tentative matches are required")
     rng = np.random.default_rng(seed)
@@ -82,8 +83,8 @@ def ransac_fundamental(
             best_F, best_mask = candidate, mask
             ratio = mask.mean()
             if ratio > 0:
-                failure_prob = max(EPS, 1.0 - ratio**8)
-                cap = min(cap, max(iteration + 1, int(math.ceil(math.log(1-confidence) / math.log(failure_prob)))))
+                log_failure = math.log1p(-min(1.0-EPS, ratio**8))
+                cap = min(cap, max(iteration + 1, int(math.ceil(math.log1p(-confidence) / log_failure))))
         iteration += 1
     if best_F is None or best_mask.sum() < 8:
         raise RuntimeError("RANSAC failed to find a non-degenerate fundamental matrix")
@@ -172,3 +173,27 @@ def triangulation_angle_deg(X: np.ndarray, R1: np.ndarray, t1: np.ndarray, R2: n
     a, b = np.asarray(X) - camera_center(R1, t1), np.asarray(X) - camera_center(R2, t2)
     cosine = np.dot(a, b) / max(np.linalg.norm(a) * np.linalg.norm(b), EPS)
     return float(np.degrees(np.arccos(np.clip(cosine, -1., 1.))))
+
+
+def pnp_dlt(points: np.ndarray, pixels: np.ndarray, K: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Non-planar six-point camera resection in normalized image coordinates."""
+    X = np.asarray(points, dtype=float)
+    if X.shape != (len(pixels), 3) or len(X) < 6:
+        raise ValueError("DLT PnP needs at least six paired 3D/2D points")
+    if np.linalg.matrix_rank(X - X.mean(axis=0)) < 3:
+        raise ValueError("DLT PnP requires non-planar points")
+    center = X.mean(axis=0)
+    scale = np.sqrt(3) / max(np.linalg.norm(X-center, axis=1).mean(), EPS)
+    T = np.eye(4); T[:3, :3] *= scale; T[:3, 3] = -scale * center
+    Xh = np.c_[(X-center)*scale, np.ones(len(X))]
+    xy = (np.linalg.inv(K) @ _as_h(pixels).T).T
+    xy = xy[:, :2] / xy[:, 2:3]
+    zero = np.zeros_like(Xh)
+    A = np.vstack([np.c_[Xh, zero, -xy[:, :1]*Xh], np.c_[zero, Xh, -xy[:, 1:2]*Xh]])
+    _, _, Vt = np.linalg.svd(A, full_matrices=False)
+    P = Vt[-1].reshape(3, 4) @ T
+    if np.linalg.det(P[:, :3]) < 0:
+        P *= -1
+    U, s, Vt = np.linalg.svd(P[:, :3])
+    R = U @ Vt
+    return R, P[:, 3] / s.mean()
