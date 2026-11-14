@@ -1,0 +1,5 @@
+reference: gt
+auc_thresholds_deg: [5, 10, 30]
+pointcloud:
+  max_points: 50000
+  fscore_tau_frac: 0.01
