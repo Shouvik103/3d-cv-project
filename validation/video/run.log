@@ -1,0 +1,41 @@
+2026-11-14 16:45:42,575 Scanned 50 candidate frames, at 12.2 seconds
+2026-11-14 16:45:44,111 Selected 6/57 candidate frames, from 0.00s to 12.00s
+2026-11-14 16:45:44,262 Features frame_000000000.jpg: 1819
+2026-11-14 16:45:44,390 Features frame_000000015.jpg: 1846
+2026-11-14 16:45:44,520 Features frame_000000042.jpg: 1913
+2026-11-14 16:45:44,648 Features frame_000000087.jpg: 1877
+2026-11-14 16:45:44,778 Features frame_000000126.jpg: 1926
+2026-11-14 16:45:44,908 Features frame_000000144.jpg: 1913
+2026-11-14 16:45:44,982 Pair frame_000000000.jpg/frame_000000015.jpg: 665 inliers, H/F 0.42
+2026-11-14 16:45:45,044 Pair frame_000000000.jpg/frame_000000042.jpg: 591 inliers, H/F 0.27
+2026-11-14 16:45:45,107 Pair frame_000000000.jpg/frame_000000087.jpg: 449 inliers, H/F 0.28
+2026-11-14 16:45:45,176 Pair frame_000000000.jpg/frame_000000126.jpg: 327 inliers, H/F 0.25
+2026-11-14 16:45:45,245 Pair frame_000000000.jpg/frame_000000144.jpg: 284 inliers, H/F 0.22
+2026-11-14 16:45:45,302 Pair frame_000000015.jpg/frame_000000042.jpg: 701 inliers, H/F 0.39
+2026-11-14 16:45:45,369 Pair frame_000000015.jpg/frame_000000087.jpg: 522 inliers, H/F 0.24
+2026-11-14 16:45:45,437 Pair frame_000000015.jpg/frame_000000126.jpg: 412 inliers, H/F 0.17
+2026-11-14 16:45:45,506 Pair frame_000000015.jpg/frame_000000144.jpg: 341 inliers, H/F 0.22
+2026-11-14 16:45:45,566 Pair frame_000000042.jpg/frame_000000087.jpg: 624 inliers, H/F 0.32
+2026-11-14 16:45:45,633 Pair frame_000000042.jpg/frame_000000126.jpg: 481 inliers, H/F 0.27
+2026-11-14 16:45:45,703 Pair frame_000000042.jpg/frame_000000144.jpg: 429 inliers, H/F 0.22
+2026-11-14 16:45:45,764 Pair frame_000000087.jpg/frame_000000126.jpg: 605 inliers, H/F 0.29
+2026-11-14 16:45:45,829 Pair frame_000000087.jpg/frame_000000144.jpg: 547 inliers, H/F 0.29
+2026-11-14 16:45:45,889 Pair frame_000000126.jpg/frame_000000144.jpg: 715 inliers, H/F 0.33
+2026-11-14 16:45:46,454 BA RMS 0.175 -> 0.103 px, 6 evaluations
+2026-11-14 16:45:46,457 State: {'registered': 2, 'points': 583, 'median_reprojection_px': 0.07367655383024399, 'elapsed_seconds': 2.3455846669967286}
+2026-11-14 16:45:46,458 Registration candidates: [('frame_000000126.jpg', 365), ('frame_000000042.jpg', 292), ('frame_000000015.jpg', 252), ('frame_000000000.jpg', 209)]
+2026-11-14 16:45:46,626 BA RMS 0.139 -> 0.126 px, 30 evaluations
+2026-11-14 16:45:46,641 State: {'registered': 3, 'points': 1205, 'median_reprojection_px': 0.0912959866924637, 'elapsed_seconds': 2.530161374997988}
+2026-11-14 16:45:46,644 Registration candidates: [('frame_000000042.jpg', 494), ('frame_000000015.jpg', 435), ('frame_000000000.jpg', 352)]
+2026-11-14 16:45:46,851 BA RMS 0.192 -> 0.138 px, 30 evaluations
+2026-11-14 16:45:46,873 State: {'registered': 4, 'points': 1638, 'median_reprojection_px': 0.10398639272789507, 'elapsed_seconds': 2.7620891249971464}
+2026-11-14 16:45:46,877 Registration candidates: [('frame_000000015.jpg', 606), ('frame_000000000.jpg', 507)]
+2026-11-14 16:45:47,113 BA RMS 0.172 -> 0.145 px, 30 evaluations
+2026-11-14 16:45:47,757 BA RMS 0.145 -> 0.145 px, 80 evaluations
+2026-11-14 16:45:47,786 State: {'registered': 5, 'points': 2060, 'median_reprojection_px': 0.10901207968654417, 'elapsed_seconds': 3.6752080419973936}
+2026-11-14 16:45:47,790 Registration candidates: [('frame_000000000.jpg', 697)]
+2026-11-14 16:45:48,097 BA RMS 0.184 -> 0.157 px, 30 evaluations
+2026-11-14 16:45:48,134 State: {'registered': 6, 'points': 2440, 'median_reprojection_px': 0.11644683090854835, 'elapsed_seconds': 4.022381124996173}
+2026-11-14 16:45:48,138 Registration candidates: []
+2026-11-14 16:45:48,913 BA RMS 0.157 -> 0.155 px, 80 evaluations
+2026-11-14 16:45:48,950 State: {'registered': 6, 'points': 2440, 'median_reprojection_px': 0.11580541759395313, 'elapsed_seconds': 4.838847749997512}

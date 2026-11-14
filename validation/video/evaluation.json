@@ -1,0 +1,54 @@
+{
+  "method": "synthetic_video",
+  "reference_kind": "gt",
+  "metrics": {
+    "registered": 6,
+    "total_images": 6,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.0009336222032458523,
+    "ate_percent_extent": 0.03663010327806637,
+    "median_rotation_deg": 0.025641377863509462,
+    "median_translation_deg": 0.08278890120247706,
+    "auc": {
+      "5": 0.9822525896751569,
+      "10": 0.9911262948375782,
+      "30": 0.9970420982791929
+    },
+    "pose_pairs": 15,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 1.1032964640830536,
+      "rotation": [
+        [
+          0.9990568504078318,
+          -0.0031868334214467738,
+          -0.043304200095693225
+        ],
+        [
+          0.0011283403193593365,
+          0.9988716853012173,
+          -0.0474771855908717
+        ],
+        [
+          0.043406641212003425,
+          0.04738354562767895,
+          0.9979331957112371
+        ]
+      ],
+      "translation": [
+        0.18499077422251087,
+        0.24900060391019643,
+        -4.296204011384291
+      ]
+    },
+    "compared_images": [
+      "frame_000000000.jpg",
+      "frame_000000015.jpg",
+      "frame_000000042.jpg",
+      "frame_000000087.jpg",
+      "frame_000000126.jpg",
+      "frame_000000144.jpg"
+    ]
+  },
+  "note": "Reference cameras belong to generated source images, not a real handheld recording"
+}

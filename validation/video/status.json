@@ -1,0 +1,92 @@
+{
+  "source_sha256": "b571afdff4945ca861831613c3df3b1642b8d22df6a2c0dc5ed64d2ed90f927e",
+  "timestamp_utc": "2026-11-14T11:15:42.039167+00:00",
+  "git_commit": "e442529825a184d6f6d0581bcbe91ed0f6a5dfca",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "video": {
+      "candidate_hz": 5.0,
+      "max_candidates": 1200,
+      "analysis_max_side": 640,
+      "max_frames": 40,
+      "min_frames": 5,
+      "max_side": 1600,
+      "min_sharpness": 10.0,
+      "relative_sharpness": 0.35,
+      "min_corners": 50,
+      "min_tracked_fraction": 0.55,
+      "target_motion_fraction": 0.025,
+      "min_motion_fraction": 0.004,
+      "max_motion_fraction": 0.18
+    },
+    "sfm": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": false
+      },
+      "matching": {
+        "ratio": 0.8,
+        "mutual": true,
+        "min_inliers": 30,
+        "ransac_thresh_px": 1.0,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 10,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 2.0,
+        "min_angle_deg": 1.5
+      },
+      "registration": {
+        "pnp_reproj_px": 4.0,
+        "pnp_iters": 2000,
+        "min_inliers": 20
+      },
+      "ba": {
+        "mode": "local_global",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    }
+  },
+  "status": "completed",
+  "video_name": "video-example.avi",
+  "selected_frames": 6,
+  "selection_report": "input/frames.json",
+  "registered": 6,
+  "points": 2440,
+  "registration_rate": 1.0,
+  "pointcloud": "reconstruction/points.ply",
+  "poses": "reconstruction/poses.json",
+  "preview": "preview.png",
+  "runtime_seconds": 7.5403449590012315
+}

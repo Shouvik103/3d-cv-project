@@ -106,3 +106,44 @@ the embedded assignment is four; five workstreams are not five members.
 | temple_colmap.json | 13/16 | 0.081% | 0.612 |
 
 See `validation/README.md` for interpretation and source metadata.
+
+## 14 November 2026 — automatic video input
+
+Added `code/run_video.py` for local video files, as requested. It selects frames
+without manual timestamps, writes intrinsics and a timestamped contact sheet,
+and invokes the existing image-based reconstruction. No new dependencies are
+required.
+
+The selector samples candidates throughout the clip, bounds analysis storage,
+rejects weak texture and blur, tracks corners forward and backward to estimate
+overlap, separates shots, and chooses the viable continuous shot with the most
+image motion. It adapts the movement threshold for short clips and verifies
+overlap again after enforcing the frame budget. Original selected frames are
+decoded in a second sequential pass rather than relying on imprecise video
+seeks. The report includes source frame indices, decoder timestamps or an
+explicit frame/FPS fallback, candidate decisions, and the source video hash.
+
+The generated video fixture holds eight known camera views for unequal times,
+adds blurred transition frames, and ends with an unrelated static shot. It is
+not a real handheld recording. The complete workflow selected six views at
+0.00, 1.25, 3.50, 7.25, 10.50, and 12.00 seconds and reconstructed all six with
+2,440 points. It rejected seven sampled blurred candidates and six candidates
+from the unrelated shot. The selected frame indices are 0, 15, 42, 87, 126, 144;
+they are deliberately not uniformly spaced. Retained evidence is under
+`validation/video/`.
+
+The expanded tests cover image selection and video-to-SfM accuracy, blur and
+duplicate rejection, scene cuts, scaled intrinsics, stationary footage, missing
+files, preservation of existing output, invalid settings, and a frame budget
+that cannot preserve overlap. All 26 tests pass. The CLI also runs successfully
+from outside the repository using its default configuration paths.
+
+Completed, partial, extracted-only, and failed runs have explicit states in
+`status.json`; incomplete camera registration returns exit code 2. Existing
+output directories are protected. Video without a known focal length uses the
+documented approximate K. A checkerboard calibration or `--focal-px` can override
+that estimate. Pure rotation, non-rigid subjects, object turntables against a
+fixed background, digital zoom, and poorly overlapping footage remain outside
+the reliable assumptions of this classical pipeline. Object/background
+segmentation and dense meshing are not implemented. A real phone video still
+needs validation; no such footage was supplied in this session.

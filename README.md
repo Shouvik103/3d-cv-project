@@ -50,6 +50,78 @@ and table generation on this sample. Set `PYTHON=.venv/bin/python` if the virtua
 environment is not activated. COLMAP requires a fresh output directory for each
 new run. Existing successful COLMAP output is reused by `run_all.sh`.
 
+## Reconstruct from a video
+
+Provide a local video file; frame timestamps are chosen automatically:
+
+```bash
+python code/run_video.py --video "path/to/object.mp4" --out outputs/my_video
+```
+
+Keep the object stationary and walk the camera slowly around it. Keep the same
+lens/zoom, maintain focus, and use a textured subject in good light. Panning from
+one stationary position or rotating the object against a fixed background does
+not provide the assumptions this pipeline needs. The output is a **sparse colored
+point cloud and camera poses**, not a textured mesh or a solid model.
+
+Frame selection scans a bounded set of candidates across the video, rejects blur
+and weak texture, separates shots when feature tracking loses overlap, and chooses
+the continuous shot with the most usable image motion. Forward/backward optical
+flow consistency estimates overlap; motion between retained views determines
+spacing. The motion threshold adapts for short clips. Redundant views are skipped,
+and at most 40 frames enter the default reconstruction. If that budget cannot
+preserve overlap, the command asks for a shorter clip or a larger budget instead
+of silently connecting unrelated views. Image motion is a proxy for viewpoint
+change; the SfM initialization still checks actual triangulation/parallax.
+The cloud can include the static background; this workflow does not segment the
+object automatically.
+
+Outputs under the selected `--out` directory:
+
+- `input/images/`: the selected frames.
+- `input/frames.json`: original frame indices, timestamps, quality scores,
+  tracking overlap, candidate decisions, video hash, and selection settings.
+- `input/selected_frames.png`: a contact sheet labelled with timestamps.
+- `input/intrinsics.yaml`: camera intrinsics scaled to the extracted image size.
+- `reconstruction/points.ply`, `poses.json`, and `summary.json`: the reconstruction.
+- `preview.png`, `run.log`, and `status.json`: preview, progress, and final state.
+
+Use a fresh output directory for every run. `status.json` distinguishes completed,
+partial, failed, and extraction-only runs. Partial registration is reported and
+returns exit code 2; it is not labelled a complete reconstruction. Unsupported,
+static, blurry, or disconnected video fails with an explanation, preserving
+diagnostics. MP4/MOV/AVI support depends on the locally installed video codecs.
+Decoder timestamps are retained where available, with a documented frame/FPS
+fallback. Orientation metadata is handled by supported OpenCV backends.
+
+The default focal length is an approximation because ordinary decoded video has
+no reliable EXIF focal length. Supply calibration or a known focal length for
+better geometry; both refer to the **original decoded video resolution**:
+
+```bash
+python code/run_video.py --video object.mov --out outputs/calibrated_video --calibration data/calibration.yaml
+python code/run_video.py --video object.mp4 --out outputs/known_focal --focal-px 1200
+python code/run_video.py --video object.mp4 --out outputs/frame_check --extract-only
+python code/run_video.py --video object.mp4 --out outputs/more_views --max-frames 60
+```
+
+Optional `--video-config configs/video_default.yaml` controls selection;
+`--config configs/sfm_relaxed.yaml` changes reconstruction settings. More frames
+increase exhaustive-matching cost. No timestamps need to be entered manually.
+
+To try the complete workflow without supplying your own footage:
+
+```bash
+python code/data/make_sample_video.py --out outputs/video-example.avi
+python code/run_video.py --video outputs/video-example.avi --out outputs/video-example --focal-px 700
+```
+
+This fixture contains the generated multiview scene, unequal pauses, duplicate
+views, blur, and a cut to an unrelated shot. It is a controlled integration test;
+real handheld video has not yet been validated. The selector uses OpenCV's
+[optical flow](https://docs.opencv.org/4.13.0/dc/d6b/group__video__track.html)
+and [video decoding properties](https://docs.opencv.org/4.13.0/d4/d15/group__videoio__flags__base.html).
+
 ## Public calibrated scene
 
 ```bash
