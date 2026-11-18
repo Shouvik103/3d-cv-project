@@ -68,15 +68,44 @@ viewpoint gaps; its learned prior does not guarantee correct geometry. Classical
 methods share an image-only mono-depth cache within a comparison. COLMAP camera
 inference and VGGT run in separate processes from mesh fusion.
 
-VGGT / All three accepts 3–30 views per local run, the tested limit on this Mac;
-classical methods retain the 200-photo limit. Install the isolated VGGT runtime
+VGGT / All three accepts 3–60 views per local run; inputs above 16 are processed
+in overlapping windows of at most 16 views. Each window runs in a separate
+process and is aligned using shared predicted cameras. Alignment gates reject
+inconsistent windows. This bounds accelerator memory, but can introduce seams
+and is not a single joint 60-view VGGT inference.
+
+Object quality is the new upload default: supplied alpha or a confident
+simple-background mask excludes background features and depth. Matching and
+depth inputs crop to a padded foreground box with exactly adjusted pixel
+calibration, spending the resolution budget on the object rather than empty
+background. Our SfM retains
+valid tracks when conflicting edges occur, checks usable initialization tracks,
+and bounds pair matching and BA work. COLMAP masks features and refines focal
+length only when input K is estimated. Balanced mesh quality (640px / grid192)
+is the default to limit memory. Choose Standard for full-scene captures.
+
+Create new comparisons directly from object folders in `datasets/`:
+
+```bash
+.venv/bin/python code/web/seed_datasets.py --dry-run
+.venv/bin/python code/web/seed_datasets.py --url http://127.0.0.1:8766
+```
+
+The importer takes up to 60 sharp photos, one per natural capture-order bin,
+to retain coverage. Temple and Dino have 16 photos each and use all 16 with
+their supplied intrinsics. GT poses are never passed to reconstruction.
+Raw datasets and outputs are ignored by Git. The importer uses the normal
+upload API, so every method appears in Workspace and Your comparisons.
+
+Classical methods retain the 200-photo limit.
+Install the isolated VGGT runtime
 with `code/experiments/setup_vggt.py` first. Known original-resolution fx/fy/cx/cy
 and Our SfM's matching ratio can be entered under Camera & matching settings.
 The camera matrix is used by the classical methods; VGGT predicts its own K.
 Finished runs can be retried with explicit depth/matching/quality settings;
 previous attempts and logs are retained locally instead of overwritten.
 
-Fresh Temple/car/chair runs were submitted through the normal upload API using
+Historical 30-view Temple/car/chair runs were submitted through the normal upload API using
 all 16 Temple views and 30 covering views each for car/chair. Those are new
 computations, not relabelled pre-existing COLMAP examples. The raw photos and
 large outputs remain in `outputs/web_ui_extended`; compact measured evidence is

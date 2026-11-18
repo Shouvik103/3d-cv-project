@@ -21,10 +21,10 @@ METHODS = [
          outputs='Camera poses, sparse colored points, observed tracks, reprojection residuals and growth history.',
          mesh='Uploads offer SGBM stereo or pinned Depth Anything V2 Small + sparse depth alignment, followed by TSDF. M4/M5 used the monocular option.',
          limits='Depends on texture, sharpness and overlap. Partial registration, bad initialization and globally wrong geometry can remain despite small pixel residuals. No loop closure or multicomponent merging.',
-         calibration='Fixed supplied/estimated K by default. Optional shared-focal global BA is an experiment; it did not recover the correct Temple calibration in E5.',
+         calibration='Standard runs keep supplied/estimated K fixed. Object quality refines shared focal in global BA only for estimated K; it did not recover the correct Temple calibration in E5.',
          source='https://github.com/Shouvik103/3d-cv-project',license='Project implementation; third-party library terms apply.'),
     dict(id='colmap', name='COLMAP', label='Classical reference baseline', device='CPU · pycolmap 4.2.1',
-         description='A separate classical SfM baseline using the same prepared image files and fixed shared PINHOLE calibration.',
+         description='A separate classical SfM baseline using the same prepared image files and PINHOLE calibration. Object quality handles portrait/landscape camera groups and refines estimated focal lengths.',
          steps=['Read the shared prepared images', 'Extract SIFT features', 'Match and verify pairs', 'Incremental mapping + BA', 'Choose the largest model', 'Convert to common pose / point exports'],
          outputs='Registered cameras, sparse points, observed tracks and reprojection statistics. Disconnected models are reported; only the largest is exported.',
          mesh='M5 feeds COLMAP cameras and landmarks to the same monocular depth / TSDF policy as Our SfM. This is not COLMAP dense MVS.',
@@ -36,7 +36,7 @@ METHODS = [
          steps=['Official 518px crop preprocessing', 'Joint multi-view aggregation', 'Predict camera poses + intrinsics', 'Predict depth + world points', 'Save confidence and raw arrays', 'Convert to common exports'],
          outputs='Predicted cameras, intrinsics, dense depth, world points and confidence. Camera count means predictions, not feature-verified registration.',
          mesh='M5 fuses VGGT’s own depth, confidence and cameras. It does not mix VGGT depth with unrelated SfM poses.',
-         limits='Predictions can be inaccurate or incomplete. Different preprocessing and depth models confound direct comparisons. No observed feature tracks means no comparable pixel reprojection statistic.',
+         limits='Predictions can be inaccurate or incomplete. Different preprocessing and depth models confound direct comparisons. Inputs above 16 views use overlapping batches with checked camera alignment, which can introduce seams. No observed feature tracks means no comparable pixel reprojection statistic.',
          calibration='Predicts its own K after official crop preprocessing. MPS uses FP16 aggregation / FP32 heads, one-frame dense chunks, and no unused tracking head; no CUDA timings are claimed.',
          source='https://github.com/facebookresearch/vggt',license='Original VGGT-1B checkpoint: CC-BY-NC-4.0. Weights are not distributed.'),
 ]
@@ -111,8 +111,8 @@ def run_analysis(folder,metadata,state):
     method=metadata.get('method','ours')
     return dict(name=metadata['name'],method=METHOD_NAMES.get(method,method),mesh_backend=mesh.get('backend',('vggt' if method=='vggt' else metadata.get('depth_backend','sgbm')) if metadata.get('make_mesh') else None),
         status=state.get('status'),elapsed_seconds=state.get('elapsed_seconds'),
-        settings={key:metadata.get(key) for key in ['method','max_side','focal_px','camera_matrix','matching_ratio','depth_backend','make_mesh','mesh_quality']},prior_attempts=metadata.get('prior_attempts',0),
-        reconstruction={key:sfm.get(key) for key in ['total_images','registered','points','median_reprojection_px','mean_reprojection_px','mean_track_length','runtime_seconds','init_pair','focal_refinement','registration_scope','cloud_scope']},
+        settings={key:metadata.get(key) for key in ['method','max_side','focal_px','camera_matrix','matching_ratio','depth_backend','make_mesh','mesh_quality','quality_profile']},prior_attempts=metadata.get('prior_attempts',0),
+        reconstruction={key:sfm.get(key) for key in ['total_images','registered','points','median_reprojection_px','mean_reprojection_px','mean_track_length','runtime_seconds','init_pair','focal_refinement','registration_scope','cloud_scope','memory_scope','vggt']},
         history=sfm.get('history',[]),configuration=sfm.get('config',{}),versions=sfm.get('versions',{}),
         mesh={key:mesh.get(key) for key in ['backend','registered_views','frames_fused','full','light','timing_seconds','heldout','peak_rss_mb']},
         warnings=state.get('warnings',[]),reference='No ground-truth cameras or surface were supplied for this upload. ATE and GT F-scores are unavailable.')

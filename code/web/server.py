@@ -220,6 +220,7 @@ class Workbench:
                 for child in metadata['children']:
                     p=self.root/child
                     if (p/'job.json').exists():children.append(self.describe(p))
+                if not children:continue
                 groups.append(dict(id=metadata['id'],name=metadata['name'],created_at=metadata['created_at'],children=children,
                                    missing_children=len(metadata['children'])-len(children)))
         return sorted(groups,key=lambda x:x['created_at'],reverse=True)

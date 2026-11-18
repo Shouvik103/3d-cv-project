@@ -423,3 +423,39 @@ themes across reloads, storage restrictions, dialog dismissal without deleting,
 and layouts at 390px and 320px. Measured body, muted and input text contrast
 exceeded 4.5:1. Screenshots and results are retained in
 `outputs/web_ui/qa/theme_validation.json` and adjacent `theme-*.png` files.
+
+2026-11-19 — Object quality / 60-view uploads (Codex implementation)
+
+Extended-branch uploads now permit 60 VGGT / All-three input images. The datasets
+importer reads only each object folder under datasets/, chooses one sharp image
+per natural capture-order bin, and submits normal upload API comparisons. It
+uses all available images for the 16-view Temple and Dino sets. No GT poses or
+old reconstruction poses initialize these new runs; local intrinsics files are
+used where supplied. Raw datasets and output directories remain Git-ignored.
+
+The Object quality profile uses supplied alpha or conservative simple-background
+masks and padded foreground crops. Matching and mesh inputs preserve the crop's
+pixel calibration. Standard remains available for full-scene captures. Our SfM
+adds conflict-aware tracks, bounded local/visual-vocabulary pair retrieval,
+coverage-aware viable initialization, triangulation consensus / observation
+pruning, and bounded BA; estimated focal lengths can refine in global BA.
+COLMAP uses foreground masks, guided matching, calibrated camera/rig groups for
+mixed image sizes, focal refinement only for estimated K, and four CPU threads.
+Historical benchmark defaults and saved measurements are retained.
+
+VGGT uses separate-process windows of at most 16 images, retaining all 60 unique
+views in the output. Shared predicted cameras determine a checked Sim(3) between
+windows; cameras, world points and depth use the same transform. Differing
+window heights are padded with corresponding intrinsic offsets, and foreground
+masks have invalid padding. A rejected alignment remains a failure. This is
+explicitly labelled as overlapping-window inference, rather than a single
+joint 60-view transformer pass. Raw per-window predictions and memory records
+are retained locally. The first 16-square-view window measured 6.24 GB peak GPU
+driver allocation. RSS and GPU driver measurements have distinct scopes.
+
+Balanced mesh quality (640 px / voxel division 192) is now the new-upload UI
+default. High / Ultra, point-size controls, XYZ hover, downloads, retries,
+deletion and the legacy saved car/chair entries remain available. Browser
+validation accepted 60 images and rejected 61 for All three, with no new run
+submitted by that form check. Dataset reconstructions are being measured in the
+normal serial queue; final evidence will record incomplete results as well.

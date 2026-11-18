@@ -17,8 +17,8 @@
   function error(message){$('#form-error').textContent=message;$('#form-error').hidden=!message;}
   function setFiles(files){
     if(state.busy)return;
-    const list=Array.from(files);error('');
-    const limit=['all','vggt'].includes($('#reconstruction-method').value)?30:200;
+    const list=Array.from(files).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));error('');
+    const limit=['all','vggt'].includes($('#reconstruction-method').value)?60:200;
     if(list.length>limit){error(`Choose at most ${limit} photos for this method on the local runtime.`);$('#start-button').disabled=true;return;}
     const invalid=list.find(file=>! /\.(jpe?g|png|tiff?)$/i.test(file.name)||file.size>25*1024*1024);
     if(invalid){error(`${invalid.name}: use JPEG, PNG or TIFF files up to 25 MB each.`);return;}
@@ -47,7 +47,7 @@
       if(calibration.some(Boolean)&&!calibration.every(Boolean))throw Error('Supply all four calibration values: fx, fy, cx and cy.');
       if(focal&&calibration.some(Boolean))throw Error('Use either focal length or full calibration, not both.');
       const [fx,fy,cx,cy]=calibration.map(Number);
-      job=await post('/api/jobs',{name:$('#run-name').value||'Untitled reconstruction',method:$('#reconstruction-method').value,depth_backend:$('#depth-backend').value,matching_ratio:Number($('#matching-ratio').value),camera_matrix:calibration.every(Boolean)?[[fx,0,cx],[0,fy,cy],[0,0,1]]:null,max_side:Number($('#resolution').value),make_mesh:$('#output-type').value==='mesh',mesh_quality:$('#mesh-quality').value,focal_px:focal?Number(focal):null});
+      job=await post('/api/jobs',{quality_profile:$('#quality-profile').value,name:$('#run-name').value||'Untitled reconstruction',method:$('#reconstruction-method').value,depth_backend:$('#depth-backend').value,matching_ratio:Number($('#matching-ratio').value),camera_matrix:calibration.every(Boolean)?[[fx,0,cx],[0,fy,cy],[0,0,1]]:null,max_side:Number($('#resolution').value),make_mesh:$('#output-type').value==='mesh',mesh_quality:$('#mesh-quality').value,focal_px:focal?Number(focal):null});
       selectJob(job);
       for(let i=0;i<state.files.length;i++){
         const file=state.files[i];$('#upload-status').textContent=`Uploading ${i+1} of ${state.files.length} · ${file.name}`;
@@ -66,9 +66,9 @@
   }
   $('#mesh-quality').addEventListener('change',meshQuality);$('#output-type').addEventListener('change',meshQuality);meshQuality();
   $('#reconstruction-method').addEventListener('change',()=>{
-    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 30 views on this Mac.':method==='vggt'?'Joint predicted cameras and depth. Up to 30 views; native 518px crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
+    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 60 views, using overlapping 16-view VGGT batches.':method==='vggt'?'Joint predicted cameras and depth. Up to 60 views in overlapping 16-view batches; native 518px crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
     setFiles(state.files);
-    $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–${['all','vggt'].includes(method)?30:200} photos · 25 MB each`;
+    $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–${['all','vggt'].includes(method)?60:200} photos · 25 MB each`;
   });
   function viewer(){
     if(!state.viewer){state.viewer=new WorkbenchViewer($('#canvas-host'));state.viewer.axes.visible=$('#axes').checked;state.viewer.pointSize($('#point-size').value);}
@@ -105,7 +105,7 @@
     const photoKey=job.id+'-'+job.uploads.length;
     if($('#run-photos').dataset.key!==photoKey){$('#run-photos').replaceChildren();job.uploads.forEach(item=>{const img=document.createElement('img');img.src=`/api/jobs/${job.id}/images/${item.index}`;img.alt=item.name;img.title=item.name;img.loading='lazy';$('#run-photos').append(img);});$('#run-photos').dataset.key=photoKey;}
     const links=[];
-    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
+    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record'],['foreground_report','Foreground crop record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
     renderDownloads(links);
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
