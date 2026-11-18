@@ -63,14 +63,17 @@ per-method previews, 3D links and CSV/JSON/PNG downloads.
 
 Our SfM and COLMAP offer SGBM stereo or pinned Depth Anything V2 Small with
 sparse-depth alignment, then TSDF. VGGT uses its own cameras/depth and native
-518px preprocessing. Monocular depth is useful when stereo pairs have wide
+518px preprocessing. Object-quality uploads use the official padding mode so
+tall objects are kept in full; Standard and the historical benchmarks use crop mode.
+Monocular depth is useful when stereo pairs have wide
 viewpoint gaps; its learned prior does not guarantee correct geometry. Classical
 methods share an image-only mono-depth cache within a comparison. COLMAP camera
 inference and VGGT run in separate processes from mesh fusion.
 
 VGGT / All three accepts 3–60 views per local run; inputs above 16 are processed
-in overlapping windows of at most 16 views. Each window runs in a separate
-process and is aligned using shared predicted cameras. Alignment gates reject
+in a 16-view overview spread across the full capture, followed by overlapping
+local windows of at most 16 views. Each window runs in a separate process
+and aligns directly to shared predicted cameras in that overview. Alignment gates reject
 inconsistent windows. This bounds accelerator memory, but can introduce seams
 and is not a single joint 60-view VGGT inference.
 
@@ -102,8 +105,18 @@ Install the isolated VGGT runtime
 with `code/experiments/setup_vggt.py` first. Known original-resolution fx/fy/cx/cy
 and Our SfM's matching ratio can be entered under Camera & matching settings.
 The camera matrix is used by the classical methods; VGGT predicts its own K.
-Finished runs can be retried with explicit depth/matching/quality settings;
-previous attempts and logs are retained locally instead of overwritten.
+Finished runs can be retried with explicit depth/matching/quality settings.
+Choose **Reuse saved cameras · rebuild mesh only** to change mesh quality or
+depth without rerunning SfM / VGGT. Camera and matching changes require a full
+retry. Previous attempts and logs are retained locally instead of overwritten.
+
+New Object-quality classical point clouds display up to 115,000 points sampled
+from accepted foreground / consistency-filtered depth estimates, capped at one
+million exported samples. The smaller TSDF surface cloud remains a separate
+download. Neither cap creates points or completes unseen surfaces. Point count
+is not a reconstruction-quality score. VGGT previews use confidence-filtered
+point-head estimates. Camera + mesh timing combines the original camera solve
+with the current mesh stage; last-attempt timings and reuse flags are separate.
 
 Historical 30-view Temple/car/chair runs were submitted through the normal upload API using
 all 16 Temple views and 30 covering views each for car/chair. Those are new

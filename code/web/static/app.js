@@ -3,7 +3,7 @@
   const $=selector=>document.querySelector(selector);
   const format=n=>Number(n||0).toLocaleString();
   const activeStatuses=new Set(['queued','running']);
-  const state={files:[],urls:[],jobs:[],examples:[],comparisons:[],selected:null,kind:'cloud',loadedKey:null,loadingKey:null,request:0,viewer:null,busy:false};
+  const state={files:[],urls:[],jobs:[],examples:[],comparisons:[],selected:null,kind:'cloud',preferredKind:null,loadedKey:null,loadingKey:null,request:0,viewer:null,busy:false};
   const methodNames={ours:'Our SfM',colmap:'COLMAP',vggt:'VGGT',all:'All three'};
   const statusNames={uploading:'Draft',queued:'Queued',running:'Reconstructing',completed:'Ready',partial:'Partial result',failed:'Failed',cancelled:'Cancelled',interrupted:'Interrupted'};
   const percent=job=>Math.max(0,Math.min(100,Math.round((Number(job.progress)||0)*10)/10));
@@ -66,7 +66,7 @@
   }
   $('#mesh-quality').addEventListener('change',meshQuality);$('#output-type').addEventListener('change',meshQuality);meshQuality();
   $('#reconstruction-method').addEventListener('change',()=>{
-    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 60 views, using overlapping 16-view VGGT batches.':method==='vggt'?'Joint predicted cameras and depth. Up to 60 views in overlapping 16-view batches; native 518px crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
+    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 60 views, using overlapping 16-view VGGT batches.':method==='vggt'?'Joint predicted cameras and depth. Up to 60 views in overlapping 16-view batches; Object quality uses 518px padding to retain the full object; Standard uses crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
     setFiles(state.files);
     $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–${['all','vggt'].includes(method)?60:200} photos · 25 MB each`;
   });
@@ -78,7 +78,7 @@
   function resetSelection(){state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
   function selectJob(job){
     const changed=state.selected?.id!==job.id||state.selected?.type!=='job'||state.selected?.job?.prior_attempts!==job.prior_attempts;
-    if(changed){resetSelection();state.kind=job.artifacts?.mesh_view?'mesh':'cloud';}
+    if(changed){resetSelection();state.kind=state.preferredKind||'cloud';}
     state.selected={type:'job',id:job.id,job};renderJob(job);renderLibrary();
     if(changed)requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
   }
@@ -89,7 +89,7 @@
     const retryKey=job.id+'-'+(job.prior_attempts||0);
     if($('#retry-controls').dataset.key!==retryKey){
       const method=job.method||'ours';$('#retry-controls').dataset.key=retryKey;$('#retry-ratio').value=job.matching_ratio??.85;$('#retry-ratio').disabled=method!=='ours';
-      $('#retry-depth').value=method==='vggt'?'vggt':job.depth_backend||'sgbm';$('#retry-depth').disabled=method==='vggt';$('#retry-depth').querySelector('option[value="vggt"]').disabled=method!=='vggt';$('#retry-quality').value=job.mesh_quality||'balanced';
+      $('#retry-depth').value=method==='vggt'?'vggt':job.depth_backend||'sgbm';$('#retry-depth').disabled=method==='vggt';$('#retry-depth').querySelector('option[value="vggt"]').disabled=method!=='vggt';$('#retry-quality').value=job.mesh_quality||'balanced';$('#retry-reuse').checked=false;$('#retry-reuse').disabled=!job.make_mesh||!job.artifacts?.poses;
     }
     $('#run-percent').textContent=percent(job)+'%';
     const stages=['preparing','reconstructing','meshing','finished'];let stage=stages.indexOf(job.stage);if(job.stage==='point_cloud')stage=1;if(job.stage==='exporting')stage=2;
@@ -105,7 +105,7 @@
     const photoKey=job.id+'-'+job.uploads.length;
     if($('#run-photos').dataset.key!==photoKey){$('#run-photos').replaceChildren();job.uploads.forEach(item=>{const img=document.createElement('img');img.src=`/api/jobs/${job.id}/images/${item.index}`;img.alt=item.name;img.title=item.name;img.loading='lazy';$('#run-photos').append(img);});$('#run-photos').dataset.key=photoKey;}
     const links=[];
-    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record'],['foreground_report','Foreground crop record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
+    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['depth_sample_cloud','Depth sample cloud PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record'],['foreground_report','Foreground crop record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
     renderDownloads(links);
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
@@ -132,16 +132,16 @@
     finally{if(request===state.request){state.loadingKey=null;$('#viewer-loading').hidden=true;}}
   }
   function selectExample(example){
-    resetSelection();state.selected={type:'example',id:example.id,example};state.kind='mesh';
+    resetSelection();state.selected={type:'example',id:example.id,example};state.kind=state.preferredKind||'mesh';
     $('#result-title').textContent=example.name;$('#result-status').textContent='Example';$('#result-status').dataset.status='completed';$('#progress-area').hidden=true;$('#run-details').hidden=true;$('#cloud-tab').disabled=false;$('#mesh-tab').disabled=false;
     message('Existing reconstruction from 60 selected views. Measured stereo surfaces can have holes; coordinates use arbitrary display units.');renderMetrics(60,60,null,null);
     renderDownloads([['Cloud PLY',`/api/examples/${example.id}/cloud-ply`],['Mesh GLB',`/api/examples/${example.id}/glb`],['Mesh PLY',`/api/examples/${example.id}/ply`],['Mesh OBJ',`/api/examples/${example.id}/obj`]]);
-    loadGeometry(`/api/examples/${example.id}/mesh`,`${example.id}-mesh`,'mesh');renderLibrary();
+    loadGeometry(`/api/examples/${example.id}/${state.kind}`,`${example.id}-${state.kind}`,state.kind);renderLibrary();
     requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
   function changeKind(kind){
-    state.kind=kind;if(!state.selected)return;
+    state.kind=kind;state.preferredKind=kind;if(!state.selected)return;
     if(state.selected.type==='job')renderJob(state.selected.job);
     else loadGeometry(`/api/examples/${state.selected.id}/${kind}`,`${state.selected.id}-${kind}`,kind);
   }
@@ -154,8 +154,9 @@
   let savedSize=1;try{savedSize=localStorage.getItem('reconstruction-point-size')||1;}catch{}
   pointSize(savedSize);$('#point-size').addEventListener('input',event=>pointSize(event.target.value));
   $('#axes').addEventListener('change',event=>{if(state.viewer)state.viewer.axes.visible=event.target.checked;});$('#fit-view').addEventListener('click',()=>state.viewer?.fit());
+  $('#retry-reuse').addEventListener('change',()=>{$('#retry-ratio').disabled=$('#retry-reuse').checked||state.selected?.job?.method!=='ours';if($('#retry-reuse').checked)$('#retry-ratio').value=state.selected?.job?.matching_ratio??.85;});
   $('#cancel-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;try{const job=await post(`/api/jobs/${state.selected.id}/cancel`);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}});
-  $('#retry-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;$('#retry-run').disabled=true;try{const method=state.selected.job.method||'ours',settings={mesh_quality:$('#retry-quality').value};if(method!=='vggt')settings.depth_backend=$('#retry-depth').value;if(method==='ours')settings.matching_ratio=Number($('#retry-ratio').value);const job=await post(`/api/jobs/${state.selected.id}/retry`,settings);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}finally{$('#retry-run').disabled=false;}});
+  $('#retry-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;$('#retry-run').disabled=true;try{const method=state.selected.job.method||'ours',settings={mesh_quality:$('#retry-quality').value,reuse_geometry:$('#retry-reuse').checked};if(method!=='vggt')settings.depth_backend=$('#retry-depth').value;if(method==='ours')settings.matching_ratio=Number($('#retry-ratio').value);const job=await post(`/api/jobs/${state.selected.id}/retry`,settings);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}finally{$('#retry-run').disabled=false;}});
   async function log(){if(state.selected?.type!=='job')return;try{const value=await api(`/api/jobs/${state.selected.id}/log`);$('#run-log').textContent=value.text||'The worker log will appear when reconstruction starts.';}catch(exc){$('#run-log').textContent=exc.message;}}
   $('#refresh-log').addEventListener('click',log);$('#run-details').addEventListener('toggle',()=>{if($('#run-details').open)log();});
   function clearSelection(){

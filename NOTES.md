@@ -459,3 +459,37 @@ deletion and the legacy saved car/chair entries remain available. Browser
 validation accepted 60 images and rejected 61 for All three, with no new run
 submitted by that form check. Dataset reconstructions are being measured in the
 normal serial queue; final evidence will record incomplete results as well.
+
+Follow-up quality checks found that foreground cropping can make input photos
+portrait-shaped; VGGT's original center crop then removes object ends. Object
+quality now uses official 518px padding for both images and foreground masks.
+A decoded new car model input verified complete front/rear and overhead views.
+The 16-view padded overview also measured 6.24 GB peak GPU driver allocation.
+The initial VGGT overview spans the whole capture, and every local window aligns
+directly to that world frame instead of accumulating transforms along a chain.
+Baseline inference keeps crop preprocessing as its default for reproducibility.
+Cached-window upgrades validate both prepared image bytes and preprocessing;
+crop predictions cannot silently be reused for padding-based reconstruction.
+
+New classical Object-quality clouds export actual accepted depth-estimate
+samples, rather than only the deduplicated TSDF surface vertices. A one-million
+sample cap with per-view budgets bounds memory; the viewer cap remains 115,000.
+The TSDF cloud and mesh remain separately available. A mesh-only retry can reuse
+saved cameras, intrinsics, masks and predictions; old attempts get immutable
+hard-linked snapshots. Camera/matching changes cannot use this path. Composed
+camera + mesh times, last-attempt times and reuse flags have separate scopes;
+partial cached-window refreshes do not claim a fresh comparable solve time.
+
+Dino was deleted during processing and the user explicitly asked to keep it
+deleted. Drums and Hotdog were subsequently deleted from the library as well;
+they are not restored. Remaining requested library runs are Car, Chair, Mic and
+Temple. All use 60 selected inputs except Temple, which has only 16 available.
+
+The complete regression suite passed 86 tests after the padding, global-overview,
+depth-sample and mesh-only changes. Mathematical checks cover Sim(3) camera /
+depth / point coherence, projection-preserving height padding, outlier-track
+recovery, matching budgets, portrait-mask end retention, and cached-input /
+preprocessing validation. Native COLMAP mixed-size camera extraction is tested
+in an isolated process. Mesh-only execution is verified without invoking SfM.
+New uploaded results open as point clouds initially and retain the user's chosen
+cloud / mesh mode while switching results; both remain available.

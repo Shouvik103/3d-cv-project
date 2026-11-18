@@ -36,7 +36,7 @@ METHODS = [
          steps=['Official 518px crop preprocessing', 'Joint multi-view aggregation', 'Predict camera poses + intrinsics', 'Predict depth + world points', 'Save confidence and raw arrays', 'Convert to common exports'],
          outputs='Predicted cameras, intrinsics, dense depth, world points and confidence. Camera count means predictions, not feature-verified registration.',
          mesh='M5 fuses VGGT’s own depth, confidence and cameras. It does not mix VGGT depth with unrelated SfM poses.',
-         limits='Predictions can be inaccurate or incomplete. Different preprocessing and depth models confound direct comparisons. Inputs above 16 views use overlapping batches with checked camera alignment, which can introduce seams. No observed feature tracks means no comparable pixel reprojection statistic.',
+         limits='Predictions can be inaccurate or incomplete. Different preprocessing and depth models confound direct comparisons. Object quality pads to preserve the full object. Inputs above 16 views use a global overview and overlapping batches with checked camera alignment, which can introduce seams. No observed feature tracks means no comparable pixel reprojection statistic.',
          calibration='Predicts its own K after official crop preprocessing. MPS uses FP16 aggregation / FP32 heads, one-frame dense chunks, and no unused tracking head; no CUDA timings are claimed.',
          source='https://github.com/facebookresearch/vggt',license='Original VGGT-1B checkpoint: CC-BY-NC-4.0. Weights are not distributed.'),
 ]
@@ -110,9 +110,9 @@ def run_analysis(folder,metadata,state):
     from web.settings import METHOD_NAMES
     method=metadata.get('method','ours')
     return dict(name=metadata['name'],method=METHOD_NAMES.get(method,method),mesh_backend=mesh.get('backend',('vggt' if method=='vggt' else metadata.get('depth_backend','sgbm')) if metadata.get('make_mesh') else None),
-        status=state.get('status'),elapsed_seconds=state.get('elapsed_seconds'),
-        settings={key:metadata.get(key) for key in ['method','max_side','focal_px','camera_matrix','matching_ratio','depth_backend','make_mesh','mesh_quality','quality_profile']},prior_attempts=metadata.get('prior_attempts',0),
+        status=state.get('status'),elapsed_seconds=state.get('elapsed_seconds'),cloud_scope=state.get('metrics',{}).get('cloud_scope'),geometry_reused=state.get('metrics',{}).get('geometry_reused',False),
+        settings={key:metadata.get(key) for key in ['method','max_side','focal_px','camera_matrix','matching_ratio','depth_backend','make_mesh','mesh_quality','quality_profile','reuse_geometry']},prior_attempts=metadata.get('prior_attempts',0),
         reconstruction={key:sfm.get(key) for key in ['total_images','registered','points','median_reprojection_px','mean_reprojection_px','mean_track_length','runtime_seconds','init_pair','focal_refinement','registration_scope','cloud_scope','memory_scope','vggt']},
         history=sfm.get('history',[]),configuration=sfm.get('config',{}),versions=sfm.get('versions',{}),
-        mesh={key:mesh.get(key) for key in ['backend','registered_views','frames_fused','full','light','timing_seconds','heldout','peak_rss_mb']},
+        mesh={key:mesh.get(key) for key in ['backend','registered_views','frames_fused','full','light','timing_seconds','heldout','peak_rss_mb','depth_samples','tsdf_cloud_points']},
         warnings=state.get('warnings',[]),reference='No ground-truth cameras or surface were supplied for this upload. ATE and GT F-scores are unavailable.')
