@@ -15,6 +15,7 @@ class BAResult:
     initial_rms: float
     final_rms: float
     nfev: int
+    focal_scale: float = 1.0
 
 
 def _rvecs_from_rotations(rotations: np.ndarray) -> np.ndarray:
@@ -47,12 +48,17 @@ def bundle_adjust(
     loss: str = "huber",
     f_scale: float = 1.0,
     max_nfev: int = 100,
+    refine_focal: bool = False,
 ) -> BAResult:
     """Optimize camera poses and points with scipy's sparse trust-region solver.
 
     The first pose is fixed; one camera-center distance constrains scale.
     This lets the second pose refine instead of freezing its two-view errors.
     """
+    if refine_focal:
+        from .focal_adjust import bundle_adjust_focal
+        return bundle_adjust_focal(rotations,translations,points,camera_indices,point_indices,observations,intrinsics,
+                                   fixed_camera_ids,scale_camera_ids,loss,f_scale,max_nfev)
     from scipy.optimize import least_squares
     from scipy.sparse import lil_matrix
 

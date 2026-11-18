@@ -75,13 +75,20 @@ def run_ba(recon, keypoints, config, anchors, window=None):
     result = bundle_adjust(np.array([recon.cameras[i].R for i in ids]), np.array([recon.cameras[i].t for i in ids]),
                            np.array([recon.points[k] for k in point_ids]), np.array(ci), np.array(pi), np.array(obs), np.array(Ks),
                            fixed_camera_ids=fixed, scale_camera_ids=tuple(camera_slot[i] for i in anchors), loss=config['loss'], f_scale=config['f_scale'],
-                           max_nfev=config['max_nfev_local'] if window is not None else config['max_nfev'])
+                           max_nfev=config['max_nfev_local'] if window is not None else config['max_nfev'],
+                           refine_focal=bool(config.get('refine_focal',False) and window is None and len(ids)>=4))
     if not np.isfinite(result.final_rms):
         raise RuntimeError('Bundle adjustment produced nonfinite residuals')
     for slot, i in enumerate(ids):
         recon.cameras[i].R, recon.cameras[i].t = result.rotations[slot], result.translations[slot]
     for slot, k in enumerate(point_ids):
         recon.points[k] = result.points[slot]
+    if result.focal_scale!=1.:
+        # Shared camera/lens correction also applies to unregistered images.
+        # Modify K in place so the PnP intrinsics lookup sees the same update.
+        for camera in recon.cameras.values():
+            camera.K[0,0]*=result.focal_scale;camera.K[1,1]*=result.focal_scale
+        logger.info('Global BA focal multiplier %.6f (principal points fixed)',result.focal_scale)
     logger.info('BA RMS %.3f -> %.3f px, %d evaluations', result.initial_rms, result.final_rms, result.nfev)
 
 

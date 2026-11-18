@@ -31,6 +31,12 @@ def test_registration_retries_after_failed_candidate(tmp_path, monkeypatch):
         return original(*args, **kwargs)
     monkeypatch.setattr(cv2, 'solvePnPRansac', reject_once)
     config = yaml.safe_load((ROOT/'configs/sfm_default.yaml').read_text())
-    reconstruction = run_sfm(ROOT/'sample_data/scene_small/images', tmp_path/'retry', config)
+    updates = []
+    reconstruction = run_sfm(ROOT/'sample_data/scene_small/images', tmp_path/'retry', config,
+                             progress=lambda phase, done, total, message: updates.append((phase, done, total)))
     assert len(reconstruction.registered_ids()) == 8
     assert len(calls) >= 7
+    matching = [(done,total) for phase,done,total in updates if phase == 'matching']
+    assert matching[0] == (0,28) and matching[-1] == (28,28)
+    assert [done for done,total in matching] == list(range(29))
+    assert updates[-1] == ('sfm_export',1,1)

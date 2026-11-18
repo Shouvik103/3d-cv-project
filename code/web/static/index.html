@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reconstruction Lab · Images to 3D</title>
+  <script src="/static/theme.js"></script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='%231c7869' d='M20 2 37 12v17L20 39 3 29V12z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/theme.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script defer src="/static/viewer.js"></script>
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="Reconstruction Lab home"><span class="brand-mark">◈</span> Reconstruction<span class="brand-light">Lab</span></a><div class="header-actions"><span class="local-badge"><i></i> Running locally</span><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg><span>Dark mode</span></button></div></header>
+  <main>
+    <section class="intro"><div><div class="eyebrow">YOUR PHOTOS, ANOTHER DIMENSION</div><h1>From every angle.<br><span>Into one 3D view.</span></h1><p>Upload overlapping photos of an object. Reconstruct its shape, explore it in 3D, and take the results with you.</p></div><div class="intro-note"><span>01 — Capture</span><span>02 — Reconstruct</span><span>03 — Explore</span></div></section>
+    <div class="workspace">
+      <aside class="upload-panel panel">
+        <div class="panel-heading"><h2>Start a reconstruction</h2><span class="step-pill">01</span></div>
+        <form id="upload-form">
+          <label class="field-label" for="run-name">Project name</label><input id="run-name" type="text" maxlength="80" placeholder="e.g. My chair" autocomplete="off">
+          <input id="images" type="file" accept=".jpg,.jpeg,.png,.tif,.tiff" multiple hidden>
+          <div id="dropzone" role="button" tabindex="0" aria-label="Choose images to upload"><div class="upload-icon">↥</div><strong>Drop your images here</strong><span>or <u>browse files</u></span><small>JPG, PNG, TIFF · 3–200 photos · 25 MB each</small></div>
+          <div id="selection-info" class="selection-info" hidden><span id="selection-count"></span><button id="clear-images" type="button" class="text-button">Clear</button></div>
+          <div id="photo-preview" class="photo-preview"></div>
+          <div class="settings-row"><div><label class="field-label" for="output-type">Output</label><select id="output-type"><option value="mesh">Point cloud + mesh</option><option value="cloud">Point cloud only</option></select></div><div><label class="field-label" for="resolution">Photo matching size</label><select id="resolution"><option value="800">Fast · 800 px</option><option value="1200" selected>Balanced · 1200 px</option><option value="1600">Detailed · 1600 px</option></select></div></div>
+          <div id="mesh-quality-field" class="mesh-quality-field"><label class="field-label" for="mesh-quality">Mesh quality</label><select id="mesh-quality" aria-describedby="mesh-quality-help"><option value="balanced">Balanced · 640 px depth</option><option value="high" selected>High · 960 px depth</option><option value="ultra">Ultra · 1280 px depth</option></select><p id="mesh-quality-help">High: sharper depth maps and a finer surface grid. More time and memory than Balanced.</p></div>
+          <details class="advanced"><summary>Camera settings</summary><label class="field-label" for="focal">Focal length in pixels <span>(optional)</span></label><input id="focal" type="number" min="50" max="100000" step="any" placeholder="Auto from EXIF, otherwise estimated"><p>At the original photo resolution. Use photos from the same camera and lens.</p></details>
+          <button id="start-button" type="submit" class="primary" disabled><span>Reconstruct in 3D</span><span>↗</span></button>
+          <div id="upload-status" class="upload-status" role="status" aria-live="polite"></div>
+          <p id="form-error" class="error" role="alert" hidden></p>
+        </form>
+        <div class="capture-tip"><span class="tip-icon">◎</span><div><strong>A good capture makes the difference</strong><p>Walk around a stationary, textured object. Keep neighboring shots overlapping, and cover the back, sides and top. Start with 12–60 sharp photos.</p></div></div>
+      </aside>
+      <section class="result-panel panel" aria-label="Reconstruction output">
+        <div class="result-heading"><div><div class="eyebrow">LIVE WORKSPACE</div><h2 id="result-title">Your next perspective</h2></div><span id="result-status" class="status-pill">Ready to begin</span></div>
+        <div class="viewer-toolbar"><div class="view-tabs" role="group" aria-label="Geometry type"><button type="button" id="cloud-tab" class="active" disabled>Point cloud</button><button type="button" id="mesh-tab" disabled>Triangle mesh</button></div><div class="viewer-actions"><label id="point-size-control" class="point-size-control" hidden><span>Point size</span><input id="point-size" aria-label="Point size" type="range" min="0.3" max="3" step="0.1" value="1"><output id="point-size-value" for="point-size">1.0×</output></label><label for="appearance" class="sr-only">Appearance</label><select id="appearance" disabled><option value="colored">Photo colors</option><option value="shaded">Shaded surface</option><option value="wireframe">Wireframe</option><option value="normals">Surface normals</option></select><button id="fit-view" type="button" title="Fit geometry in view" disabled>Fit view ↗</button></div></div>
+        <div id="viewer-stage" class="viewer-stage"><div id="canvas-host"></div>
+          <div id="viewer-empty" class="viewer-empty"><div class="empty-object" aria-hidden="true"><span></span><span></span><span></span></div><strong>A new dimension is waiting.</strong><p>Your interactive reconstruction appears here.<br>Or open a finished example below.</p></div>
+          <div id="viewer-loading" class="viewer-loading" hidden><span class="spinner"></span><span id="loading-text">Loading geometry…</span></div>
+          <div class="canvas-corner"><span id="geometry-label">3D VIEWPORT</span><span id="geometry-count"></span></div>
+          <div id="hover-coordinates" class="hover-coordinates" hidden></div>
+          <div class="canvas-bottom"><span id="viewer-hint">Drag to orbit · Scroll to zoom · Right-drag to pan</span><label><input id="axes" type="checkbox" checked> XYZ axes</label></div>
+        </div>
+        <div class="progress-area" id="progress-area" hidden><div class="progress-caption"><span id="stage-message"></span><div class="progress-actions"><output id="run-percent" aria-live="polite">0%</output><button id="cancel-run" type="button" class="text-button">Cancel run</button></div></div><progress id="run-progress" aria-label="Estimated reconstruction progress" max="100" value="0"></progress><div class="stage-list"><span data-stage="preparing">Prepare</span><span data-stage="reconstructing">Camera poses</span><span data-stage="meshing">Mesh</span><span data-stage="finished">Ready</span></div><p class="progress-note">Estimated overall progress, based on completed work. Processing time varies by stage.</p></div>
+        <div id="metrics" class="metrics"><div><span>INPUT</span><strong>—</strong></div><div><span>REGISTERED</span><strong>—</strong></div><div><span>POINTS</span><strong>—</strong></div><div><span>TRIANGLES</span><strong>—</strong></div></div>
+        <div id="result-message" class="result-message" role="status" aria-live="polite" hidden></div>
+        <div id="downloads" class="downloads" hidden></div>
+        <details id="run-details" class="run-details" hidden><summary>Run details &amp; input images</summary><p id="coordinate-note">Geometry has arbitrary scale. Hover coordinates use the upright display frame, normalized to fit the viewport.</p><div id="run-photos" class="run-photos"></div><button id="refresh-log" class="secondary" type="button">Refresh log</button><pre id="run-log"></pre></details>
+      </section>
+    </div>
+    <section class="library"><div class="library-heading"><div><div class="eyebrow">PICK UP WHERE YOU LEFT OFF</div><h2>Your reconstructions</h2></div><button type="button" id="refresh-runs" class="text-button">Refresh ↻</button></div><div id="run-library" class="run-library"><p class="muted">Loading your local runs…</p></div></section>
+    <footer><span>RECONSTRUCTION LAB</span><p>Photos stay on this computer. Stereo reconstruction runs on your CPU; viewing in 3D needs an internet connection to load Three.js.</p></footer>
+  </main>
+  <dialog id="delete-dialog" aria-labelledby="delete-title"><form method="dialog"><h2 id="delete-title">Delete reconstruction?</h2><p id="delete-description"></p><p id="delete-error" class="error" hidden></p><div class="dialog-actions"><button class="secondary" value="cancel">Keep reconstruction</button><button id="confirm-delete" class="danger-button" type="button">Delete</button></div></form></dialog>
+</body>
+</html>

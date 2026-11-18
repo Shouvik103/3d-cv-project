@@ -44,9 +44,12 @@ def load_intrinsics(images, names, color_images):
     return result
 
 
-def run_sfm(images: Path, output: Path, config: dict, max_images=None):
+def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=None):
     started = time.perf_counter()
     config = deepcopy(config)
+    def report(phase, done, total, message):
+        if progress is not None:
+            progress(phase, done, total, message)
     cv2.setRNGSeed(config['seed']); cv2.setNumThreads(1)
     names = sorted(p.name for p in images.iterdir() if p.suffix.lower() in {'.jpg', '.jpeg', '.png'})
     if max_images is not None:
@@ -60,14 +63,18 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
     if any(im is None for im in color_images):
         raise ValueError('One or more images could not be decoded')
     Ks = load_intrinsics(images, names, color_images)
+    initial_focal={n:float(Ks[n][0,0]) for n in names} if config['ba'].get('refine_focal',False) else None
     fcfg, mcfg = config['features'], config['matching']
     keypoints, descriptors = [], []
-    for name, image in zip(names, color_images):
+    for feature_index, (name, image) in enumerate(zip(names, color_images), 1):
         xy, desc = cached_features(image, images/name, fcfg, images.parent/'cache')
         keypoints.append(xy); descriptors.append(desc)
         logger.info('Features %s: %d', name, len(xy))
+        report('features', feature_index, len(names), f'Extracting features · {feature_index}/{len(names)} images')
     pairs, matrices, hf = {}, {}, {}
-    for i, j in combinations(range(len(names)), 2):
+    pair_count = len(names) * (len(names) - 1) // 2
+    for pair_index, (i, j) in enumerate(combinations(range(len(names)), 2)):
+        report('matching', pair_index, pair_count, f'Matching views · {pair_index:,}/{pair_count:,} pairs checked')
         tentative = match_images(descriptors[i], descriptors[j], mcfg['ratio'], mcfg['mutual'], fcfg['detector'] == 'orb')
         try:
             F, matches = verify_pair(keypoints[i], keypoints[j], tentative, threshold=mcfg['ransac_thresh_px'],
@@ -80,10 +87,12 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
         pairs[(i, j)], matrices[(i, j)] = matches, F
         hf[(i, j)] = float(mask.sum()/len(matches)) if mask is not None else 0.
         logger.info('Pair %s/%s: %d inliers, H/F %.2f', names[i], names[j], len(matches), hf[(i, j)])
+    report('matching', pair_count, pair_count, f'Matching views · {pair_count:,}/{pair_count:,} pairs checked')
     if not pairs:
         raise RuntimeError('No image pair passed geometric verification')
     recon = Reconstruction(cameras={i: Camera(i, n, Ks[n], np.eye(3), np.zeros(3), False) for i, n in enumerate(names)})
     recon.tracks = build_tracks(pairs)
+    report('initialization', 0, 1, 'Initializing the camera geometry')
     i0, i1, R, t = choose_initial_pair(pairs, matrices, hf, keypoints, recon.cameras, config['init'])
     recon.cameras[i0].registered = True
     recon.cameras[i1].R, recon.cameras[i1].t, recon.cameras[i1].registered = R, t, True
@@ -117,6 +126,8 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
     if mode != 'none':
         run_ba(recon, keypoints, ba, anchors)
     snapshot()
+    report('initialization', 1, 1, 'Initial camera pair reconstructed')
+    report('registration', 2, len(names), f'Estimating camera poses · 2/{len(names)} registered')
     while True:
         candidates = []
         for i in range(len(names)):
@@ -151,9 +162,13 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
                 if mode == 'local_global' and len(recon.registered_ids()) % ba['global_every'] == 0:
                     run_ba(recon, keypoints, ba, anchors)
                 filter_points(recon, keypoints, config['filter']['final_reproj_px'])
-            snapshot(); success = True; break
+            snapshot()
+            count_registered = len(recon.registered_ids())
+            report('registration', count_registered, len(names), f'Estimating camera poses · {count_registered}/{len(names)} registered')
+            success = True; break
         if not success:
             break
+    report('optimization', 0, 1, 'Refining camera poses and 3D points')
     if mode == 'local_global':
         run_ba(recon, keypoints, ba, anchors)
     removed = filter_points(recon, keypoints, config['filter']['final_reproj_px'])
@@ -163,6 +178,7 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
     if not recon.points:
         raise RuntimeError('No 3D points survived final filtering')
     snapshot()
+    report('optimization', 1, 1, 'Camera poses and points refined')
     colors = []
     for k in recon.points:
         i, kp = next((i, kp) for i, kp in recon.tracks[k].items() if recon.cameras[i].registered)
@@ -175,7 +191,11 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None):
     summary = dict(manifest(config), **history[-1], total_images=len(names), runtime_seconds=time.perf_counter()-started,
                    init_pair=[names[i0], names[i1]], image_names=names, history=history,
                    mean_track_length=float(np.mean([len(observations[str(k)]) for k in recon.points])) if recon.points else 0.)
+    if initial_focal:
+        summary['focal_refinement']=dict(initial_fx=initial_focal,final_fx={c.name:float(c.K[0,0]) for c in recon.cameras.values()},
+                                          scope='Shared fx/fy multiplier in global BA with at least four registered views; principal points fixed; per-call multiplier bounded [0.5,2]')
     write_json(output / 'summary.json', summary)
+    report('sfm_export', 1, 1, 'Sparse reconstruction saved')
     return recon
 
 

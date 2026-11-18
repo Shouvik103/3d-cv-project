@@ -52,6 +52,20 @@ def test_ba_multiple_free_cameras():
     assert np.linalg.norm(centers(result.rotations, result.translations)-centers(Rs, ts)) < np.linalg.norm(centers(init_R, init_t)-centers(Rs, ts))
 
 
+def test_shared_focal_refinement_recovers_calibration_with_known_cameras():
+    K,Rs,ts,X,xy=make_scene(n_points=60,n_cameras=5,noise=.15)
+    ci=np.repeat(np.arange(5),len(X));pi=np.tile(np.arange(len(X)),5)
+    guessed=K.copy();guessed[0,0]*=1.25;guessed[1,1]*=1.25
+    intrinsics=np.tile(guessed,(len(ci),1,1));rng=np.random.default_rng(8)
+    initial=X+rng.normal(0,.02,X.shape)
+    fixed=bundle_adjust(Rs,ts,initial,ci,pi,xy.reshape(-1,2),intrinsics,fixed_camera_ids=tuple(range(5)),max_nfev=100)
+    refined=bundle_adjust(Rs,ts,initial,ci,pi,xy.reshape(-1,2),intrinsics,fixed_camera_ids=tuple(range(5)),max_nfev=150,refine_focal=True)
+    assert fixed.focal_scale==1.
+    assert abs(refined.focal_scale-.8)<.02
+    assert refined.final_rms<.3 and refined.final_rms<fixed.final_rms/3
+    assert np.allclose(refined.rotations,Rs) and np.allclose(refined.translations,ts)
+
+
 def test_alignment_and_metrics():
     rng = np.random.default_rng(2); X = rng.normal(size=(10, 3))
     Q = Rotation.from_rotvec([.2, -.4, .1]).as_matrix(); Y = 2.3*X @ Q.T + [2, 1, -3]

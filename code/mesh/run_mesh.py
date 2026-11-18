@@ -21,7 +21,7 @@ def merge(base,patch):
     return out
 
 
-def run(scene_path,out,config,images=None,backend=None,cache_only=False):
+def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress=None):
     start=time.perf_counter();out=Path(out);out.mkdir(parents=True,exist_ok=True);cv2.setNumThreads(2)
     cfg=copy.deepcopy(config);method=backend or cfg['depth_backend'];cfg['depth_backend']=method
     cfg['cache_only']=bool(cache_only or cfg.get('cache_only',False))
@@ -32,7 +32,10 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False):
     registered=[i for i,v in enumerate(scene.registered) if v];rng=np.random.default_rng(cfg['heldout'].get('seed',cfg['seed']))
     n=min(cfg['heldout']['num_views'],max(0,len(registered)-3));heldout=sorted(rng.choice(registered,n,replace=False).tolist()) if n else [];training=[i for i in registered if i not in heldout]
     roi=roi_bounds(scene.points,cfg['filter']['roi_percentiles'],cfg['filter']['roi_margin_frac']);predictor=MonoDepth(cfg['mono']);frames=[];records=[];depth_time=0.;align_time=0.
-    for i in training:
+    def notify(phase, done, total, message):
+        if progress is not None:progress(phase,done,total,message)
+    notify('depth',0,len(training),'Estimating stereo depth')
+    for depth_index,i in enumerate(training,1):
         record=dict(image=scene.names[i],index=i)
         if method=='mono':record.update(s=None,b=None,n_inliers=0,median_rel_residual=None)
         try:
@@ -57,13 +60,17 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False):
         except (ValueError,RuntimeError,OSError) as e:
             record.update(getattr(e,'details',{}));record.update(status='skipped',reason=str(e));logging.warning('%s: %s',scene.names[i],e)
         records.append(record);write_json(out/'alignment.json',dict(backend=method,images=records));logging.info('%s: %s',scene.names[i],record['status'])
+        notify('depth',depth_index,len(training),f'Estimating depth · {depth_index}/{len(training)} views checked')
     if len(frames)<2:raise RuntimeError('Fewer than two depth maps passed the gates; inspect alignment.json or use --backend sgbm')
+    notify('filtering',0,1,'Checking depth consistency across views')
     tick=time.perf_counter()
     if cfg['filter']['consistency']:frames=consistency_filter(frames,cfg['filter']['consistency_rel_tol'],cfg['filter']['consistency_min_views'])
     frames=[f for f in frames if (f['depth']>0).sum()>=30]
     if len(frames)<2:raise RuntimeError('Consistency rejected too much depth; inspect data or explicitly ablate consistency')
     filtering_time=time.perf_counter()-tick;voxel=scene.extent/cfg['tsdf']['voxel_div'];trunc=max(float(f['depth'].max()) for f in frames)*1.01
+    notify('fusion',0,1,'Fusing depth maps into a surface')
     tick=time.perf_counter();mesh,volume=fuse(frames,voxel,cfg['tsdf']['sdf_trunc_voxels']*voxel,trunc);fusion_time=time.perf_counter()-tick
+    notify('cleanup',0,1,'Cleaning and exporting triangle meshes')
     import open3d as o3d
     cloud=volume.extract_point_cloud()
     if cloud.has_colors():cloud.colors=o3d.utility.Vector3dVector(np.clip(np.asarray(cloud.colors),0,1))
@@ -73,6 +80,7 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False):
         from mesh.poisson_mesh import reconstruct
         mesh=reconstruct(cloud,cfg['poisson']['depth'],cfg['poisson']['density_quantile'])
     full,light=clean(mesh,roi,cfg['clean']['min_component_frac'],cfg['clean']['light_target_triangles']);export_meshes(full,light,out,cfg['export']);extraction_time=time.perf_counter()-tick
+    notify('mesh_preview',0,1,'Preparing mesh preview and measurements')
     held=heldout_metrics(full,scene,heldout)
     from mesh.rendering import Renderer,orbit_camera
     K,R,t=orbit_camera(light);rendered=Renderer(light).render(K,R,t,640,480);cv2.imwrite(str(out/'preview.png'),rendered['color'][:,:,::-1])
