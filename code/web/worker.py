@@ -36,7 +36,7 @@ def run_job(job):
     started = time.time()
     artifacts, warnings, metrics = {}, [], {}
     method=metadata.get('method','ours')
-    metrics['method']=method
+    metrics.update(method=method,quality_profile=metadata.get('quality_profile','standard'))
     import resource
 
     def state(stage, message, progress, **extra):
@@ -89,14 +89,32 @@ def run_job(job):
                     record['K'][0][0] = record['K'][1][1] = metadata['focal_px'] * scale
                     record['source'] = 'user_focal_px_at_original_resolution'
             path.write_text(yaml.safe_dump(intrinsics))
+        object_quality=metadata.get('quality_profile')=='object'
+        if object_quality:
+            import shutil
+            from web.foreground import prepare_foreground
+            masks=prepare_foreground(job)
+            shutil.copytree(masks,job/'input/masks',dirs_exist_ok=True)
+            artifacts['foreground_report']='foreground.json'
         state('reconstructing',METHOD_NAMES[method]+': estimating cameras and geometry',15)
         if method=='ours':
             cfg = yaml.safe_load((ROOT / 'configs/sfm_relaxed.yaml').read_text())
             cfg['export']['save_growth_snapshots'] = False
             cfg['matching']['ratio']=metadata.get('matching_ratio',.85)
+            if object_quality:
+                cfg['conflict_aware_tracks']=True
+                cfg['triangulation']['robust']=True
+                cfg['filter']['prune_observations']=True
+                cfg['matching']['bounded_pairs']=True
+                cfg['features']['n_features']=6000
+                cfg['init']['top_k_pairs']=40
+                cfg['init']['max_hf_ratio']=.9
+                cfg['ba'].update(max_points_global=2500,max_nfev=40,max_nfev_local=20,global_every=10)
+                cfg['ba']['refine_focal']=not bool(metadata.get('camera_matrix') or metadata.get('focal_px'))
             run_sfm(job / 'input/images', job / 'reconstruction', cfg, progress=work_progress)
         elif method=='colmap':
             command=[sys.executable,str(ROOT/'code/web/colmap_job.py'),'--images',str(job/'input/images'),'--out',str(job/'reconstruction')]
+            if object_quality:command+=['--object-quality']
             process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,env=dict(os.environ,PYTHONUNBUFFERED='1'))
             for line in process.stdout:
                 logging.info('%s',line.rstrip())
@@ -109,13 +127,21 @@ def run_job(job):
             if masks:command+=['--masks',str(masks)]
             process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,
                                      env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
+            window_index,window_count=0,1
             for line in process.stdout:
                 logging.info('%s',line.rstrip())
-                if 'aggregator: input shape' in line:state('reconstructing','VGGT: joint multi-view aggregation',25)
-                elif 'prediction heads (' in line:state('reconstructing','VGGT: predicting cameras, depth and world points',40)
+                if 'VGGT window ' in line:
+                    import re
+                    found=re.search(r'VGGT window (\d+)/(\d+)',line)
+                    if found:window_index,window_count=int(found[1])-1,int(found[2])
+                if 'aggregator: input shape' in line:state('reconstructing',f'VGGT: aggregating window {window_index+1}/{window_count}',round(15+35*(window_index+.2)/window_count,1))
+                elif 'prediction heads (' in line:state('reconstructing',f'VGGT: predicting window {window_index+1}/{window_count}',round(15+35*(window_index+.7)/window_count,1))
             if process.wait()!=0:raise RuntimeError('VGGT inference failed; inspect the run log for the model/runtime error.')
             artifacts.update(raw_predictions='reconstruction/raw.npz',vggt_metadata='reconstruction/raw.json')
             warnings.append('VGGT cameras are predictions, not feature-verified registrations. The point export is confidence-filtered and capped at 1 million; raw dense arrays are available.')
+            if len(metadata['uploads'])>16:
+                warnings.append('VGGT uses overlapping batches of at most 16 views with checked shared-camera Sim(3) alignment. This bounds memory but can introduce stitching seams; it is not one joint 60-view prediction.')
+                metrics['inference_mode']='Overlapping 16-view batches'
         else:raise ValueError('Unknown reconstruction method')
         summary = json.loads((job / 'reconstruction/summary.json').read_text())
         metrics.update(images=summary['total_images'], registered=summary['registered'],
@@ -126,7 +152,7 @@ def run_job(job):
         artifacts.update(sparse_cloud='reconstruction/points.ply', poses='reconstruction/poses.json',
                          reconstruction_summary='reconstruction/summary.json')
         if summary['registered'] < summary['total_images']:
-            warnings.append(f"Only {summary['registered']} of {summary['total_images']} images registered. More overlapping views may help.")
+            warnings.append(f"Only {summary['registered']} of {summary['total_images']} images registered. Some views failed camera/track checks; inspect overlap, blur and calibration.")
         state('point_cloud', 'Preparing the interactive point cloud', 55)
         export_geometry(job / artifacts['sparse_cloud'], job / 'cloud.json', job / artifacts['poses'])
         artifacts['cloud_view'] = 'cloud.json'

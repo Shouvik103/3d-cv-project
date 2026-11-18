@@ -27,7 +27,7 @@ def build_comparison(folder):
         for p,m,s in jobs:
             metrics=s.get('metrics',{});row=dict(id=p.name,method=m['method'],name=m['name'],status=s['status'],progress=s.get('progress',0),prior_attempts=m.get('prior_attempts',0),depth_backend=metrics.get('depth_backend'),
                 registered=metrics.get('registered'),total=len(m['uploads']),points=metrics.get('dense_points',metrics.get('sparse_points')),
-                triangles=metrics.get('triangles'),reprojection_px=metrics.get('reprojection_px'),reprojection_statistic=metrics.get('reprojection_statistic'),
+                triangles=metrics.get('triangles'),inference_mode=metrics.get('inference_mode','Single scene'),reprojection_px=metrics.get('reprojection_px'),reprojection_statistic=metrics.get('reprojection_statistic'),
                 seconds=s.get('elapsed_seconds'),reconstruction_seconds=metrics.get('reconstruction_seconds'),mesh_seconds=metrics.get('mesh_seconds'),
                 peak_rss_mb=metrics.get('peak_rss_mb'),watertight=metrics.get('watertight'),
                 ate_percent_extent=None,auc5=None,reference='colmap' if reference else None,
@@ -48,7 +48,7 @@ def build_comparison(folder):
                     reference_scope='Camera ATE/AUC measure agreement with this upload’s COLMAP reconstruction, not ground truth. Missing camera pairs are penalized; undefined alignment is unavailable.',
                     timing_scope='Total job seconds include preparation, camera/depth inference, mesh fusion and browser export. The serial queue runs one method at a time. Hardware and caches affect timings.')
         write_json(cached,output)
-        columns=['method','status','registered','total','points','triangles','reprojection_px','reprojection_statistic','seconds','reconstruction_seconds','mesh_seconds','peak_rss_mb','watertight','ate_percent_extent','auc5','reference','error']
+        columns=['method','status','registered','total','points','triangles','inference_mode','reprojection_px','reprojection_statistic','seconds','reconstruction_seconds','mesh_seconds','peak_rss_mb','watertight','ate_percent_extent','auc5','reference','error']
         with (folder/'comparison.csv').open('w',newline='') as stream:
             writer=csv.DictWriter(stream,fieldnames=columns,extrasaction='ignore',lineterminator='\n');writer.writeheader();writer.writerows(rows)
         render_plot(folder,rows)

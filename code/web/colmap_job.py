@@ -7,8 +7,8 @@ from runtime import write_json
 
 def main():
     from baselines.run_colmap import run
-    p=argparse.ArgumentParser();p.add_argument('--images',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
-    run(a.images,a.out,progress=lambda phase,done,total,message:print('WEB_PROGRESS '+json.dumps([phase,done,total,message]),flush=True))
+    p=argparse.ArgumentParser();p.add_argument('--images',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--object-quality',action='store_true');a=p.parse_args()
+    run(a.images,a.out,object_quality=a.object_quality,progress=lambda phase,done,total,message:print('WEB_PROGRESS '+json.dumps([phase,done,total,message]),flush=True))
     summary=json.loads((a.out/'summary.json').read_text())
     summary['peak_rss_mb']=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**2 if sys.platform=='darwin' else 1024)
     write_json(a.out/'summary.json',summary)

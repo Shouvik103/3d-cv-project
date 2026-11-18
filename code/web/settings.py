@@ -5,7 +5,7 @@ MESH_QUALITIES = {
     'ultra': dict(label='Ultra', depth_side=1280, voxel_div=384),
 }
 METHOD_NAMES = {'ours':'Our SfM','colmap':'COLMAP','vggt':'VGGT'}
-VGGT_MAX_VIEWS = 30
+VGGT_MAX_VIEWS = 60
 
 
 def method_settings(settings):
@@ -31,7 +31,9 @@ def method_settings(settings):
                 K[0][1]==0 and K[1][0]==0 and K[2]==[0,0,1]):
             raise ValueError('Use positive fx/fy, nonnegative cx/cy, zero skew and last row [0,0,1]')
         if settings.get('focal_px') is not None:raise ValueError('Supply either a full camera matrix or a focal length')
-    return dict(method=method,matching_ratio=float(ratio),camera_matrix=K,depth_backend=depth)
+    profile=settings.get('quality_profile','object')
+    if profile not in ('object','standard'):raise ValueError('Choose object or standard reconstruction quality')
+    return dict(method=method,matching_ratio=float(ratio),camera_matrix=K,depth_backend=depth,quality_profile=profile)
 
 
 def mesh_quality(metadata):

@@ -31,6 +31,16 @@ def prepare_mesh_scene(job, long_side):
     job = Path(job)
     target = job / 'mesh_input'
     prepare(job / 'uploads', target / 'images', long_side)
+    if (job/'foreground.json').exists():
+        # Spend the depth-pixel budget on the object, using precisely the same
+        # original crop as matching. K and observations are scaled below.
+        crops={row['image']:row['crop_original'] for row in json.loads((job/'foreground.json').read_text())}
+        for upload in (job/'uploads').iterdir():
+            name=upload.stem+'.jpg'
+            with Image.open(upload) as raw:
+                photo=ImageOps.exif_transpose(raw).convert('RGB').crop(crops[name])
+                photo.thumbnail((long_side,long_side),Image.Resampling.LANCZOS)
+                photo.save(target/'images'/name,quality=95)
     source = job / 'reconstruction'
     poses = json.loads((source / 'poses.json').read_text())
     calibration_path=job/'input/intrinsics.yaml'
@@ -62,5 +72,10 @@ def prepare_mesh_scene(job, long_side):
     shutil.copyfile(source / 'points.ply', reconstruction / 'points.ply')
     (target / 'intrinsics.yaml').write_text(yaml.safe_dump(dict(images=records)))
     masks=upload_masks(job,target/'images',target/'masks')
+    if (job/'foreground.json').exists():
+        masks=target/'masks';masks.mkdir(exist_ok=True)
+        for name in poses['image_names']:
+            with Image.open(job/'input_masks'/(name+'.png')) as mask,Image.open(target/'images'/name) as photo:
+                mask.resize(photo.size,Image.Resampling.NEAREST).save(masks/(name+'.png'))
     (target / 'scene.json').write_text(json.dumps(dict(reconstruction='reconstruction', images='images',**({'masks':'masks'} if masks else {}))))
     return target

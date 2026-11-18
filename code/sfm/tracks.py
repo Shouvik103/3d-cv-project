@@ -22,12 +22,20 @@ class UnionFind:
             self.parent[b] = a
 
 
-def build_tracks(verified_matches: dict[tuple[int, int], object]) -> dict[int, dict[int, int]]:
+def build_tracks(verified_matches: dict[tuple[int, int], object],conflict_aware=False) -> dict[int, dict[int, int]]:
     """Return tracks after discarding components with duplicate views."""
     uf = UnionFind()
-    for (left, right), pairs in verified_matches.items():
+    views={}
+    items=sorted(verified_matches.items(),key=lambda item:-len(item[1])) if conflict_aware else verified_matches.items()
+    for (left, right), pairs in items:
         for a, b in pairs:
-            uf.union((left, int(a)), (right, int(b)))
+            x,y=(left,int(a)),(right,int(b))
+            if conflict_aware:
+                ra,rb=uf.find(x),uf.find(y);va=views.setdefault(ra,{left});vb=views.setdefault(rb,{right})
+                if ra==rb:continue
+                if va&vb:continue
+                uf.union(ra,rb);views[uf.find(ra)]=va|vb
+            else:uf.union(x,y)
     components: dict[tuple[int, int], list[tuple[int, int]]] = defaultdict(list)
     for node in uf.parent:
         components[uf.find(node)].append(node)

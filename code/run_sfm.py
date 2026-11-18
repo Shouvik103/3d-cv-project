@@ -67,13 +67,19 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     fcfg, mcfg = config['features'], config['matching']
     keypoints, descriptors = [], []
     for feature_index, (name, image) in enumerate(zip(names, color_images), 1):
-        xy, desc = cached_features(image, images/name, fcfg, images.parent/'cache')
+        mask_path=images.parent/'masks'/(name+'.png')
+        mask=cv2.imread(str(mask_path),0) if mask_path.exists() else None
+        xy, desc = cached_features(image, images/name, fcfg, images.parent/'cache',mask)
         keypoints.append(xy); descriptors.append(desc)
         logger.info('Features %s: %d', name, len(xy))
         report('features', feature_index, len(names), f'Extracting features · {feature_index}/{len(names)} images')
     pairs, matrices, hf = {}, {}, {}
-    pair_count = len(names) * (len(names) - 1) // 2
-    for pair_index, (i, j) in enumerate(combinations(range(len(names)), 2)):
+    if mcfg.get('bounded_pairs',False):
+        from sfm.pair_selection import select_pairs
+        pair_list=select_pairs(color_images,features=descriptors)
+    else:pair_list=list(combinations(range(len(names)),2))
+    pair_count = len(pair_list)
+    for pair_index, (i, j) in enumerate(pair_list):
         report('matching', pair_index, pair_count, f'Matching views · {pair_index:,}/{pair_count:,} pairs checked')
         tentative = match_images(descriptors[i], descriptors[j], mcfg['ratio'], mcfg['mutual'], fcfg['detector'] == 'orb')
         try:
@@ -91,9 +97,10 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     if not pairs:
         raise RuntimeError('No image pair passed geometric verification')
     recon = Reconstruction(cameras={i: Camera(i, n, Ks[n], np.eye(3), np.zeros(3), False) for i, n in enumerate(names)})
-    recon.tracks = build_tracks(pairs)
+    recon.tracks = build_tracks(pairs,conflict_aware=config.get('conflict_aware_tracks',False))
     report('initialization', 0, 1, 'Initializing the camera geometry')
-    i0, i1, R, t = choose_initial_pair(pairs, matrices, hf, keypoints, recon.cameras, config['init'])
+    i0, i1, R, t = choose_initial_pair(pairs, matrices, hf, keypoints, recon.cameras, config['init'],
+                                     recon.tracks if config.get('conflict_aware_tracks') else None,config['triangulation'])
     recon.cameras[i0].registered = True
     recon.cameras[i1].R, recon.cameras[i1].t, recon.cameras[i1].registered = R, t, True
     anchors = (i0, i1)
@@ -161,7 +168,7 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
                 run_ba(recon, keypoints, ba, anchors, local_window(recon, i, ba['local_neighbors']))
                 if mode == 'local_global' and len(recon.registered_ids()) % ba['global_every'] == 0:
                     run_ba(recon, keypoints, ba, anchors)
-                filter_points(recon, keypoints, config['filter']['final_reproj_px'])
+                filter_points(recon, keypoints, config['filter']['final_reproj_px'],config['filter'].get('prune_observations',False))
             snapshot()
             count_registered = len(recon.registered_ids())
             report('registration', count_registered, len(names), f'Estimating camera poses · {count_registered}/{len(names)} registered')
@@ -171,10 +178,10 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     report('optimization', 0, 1, 'Refining camera poses and 3D points')
     if mode == 'local_global':
         run_ba(recon, keypoints, ba, anchors)
-    removed = filter_points(recon, keypoints, config['filter']['final_reproj_px'])
+    removed = filter_points(recon, keypoints, config['filter']['final_reproj_px'],config['filter'].get('prune_observations',False))
     if mode == 'local_global' and removed:
         run_ba(recon, keypoints, ba, anchors)
-        filter_points(recon, keypoints, config['filter']['final_reproj_px'])
+        filter_points(recon, keypoints, config['filter']['final_reproj_px'],config['filter'].get('prune_observations',False))
     if not recon.points:
         raise RuntimeError('No 3D points survived final filtering')
     snapshot()

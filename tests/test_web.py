@@ -150,7 +150,7 @@ def test_method_calibration_and_vggt_limit_are_validated(workbench_api):
     K=[[800,0,320],[0,810,240],[0,0,1]]
     assert request('POST','/api/jobs',dict(camera_matrix=K,focal_px=800))[0]==400
     _,job=request('POST','/api/jobs',dict(method='vggt',camera_matrix=K))
-    folder=app.folder(job['id']);metadata=json.loads((folder/'job.json').read_text());metadata['uploads']=[dict(index=i) for i in range(31)]
+    folder=app.folder(job['id']);metadata=json.loads((folder/'job.json').read_text());metadata['uploads']=[dict(index=i) for i in range(61)]
     (folder/'job.json').write_text(json.dumps(metadata))
     assert request('POST',f'/api/jobs/{job["id"]}/start',{})[0]==400
 

@@ -14,20 +14,46 @@ def triangulate_track(recon, track, keypoints, config):
         return None
     cams = [recon.cameras[i] for i in ids]
     obs = np.array([keypoints[i][track[i]] for i in ids])
+    def solve(indices):
+        selected=[cams[i] for i in indices]
+        return triangulate_dlt(obs[indices],[c.R for c in selected],[c.t for c in selected],[c.K for c in selected])
+    def consensus(X):
+        if not np.isfinite(X).all():return []
+        return [i for i,(xy,c) in enumerate(zip(obs,cams)) if (c.R@X+c.t)[2]>0 and reprojection_error(X,xy,c.K,c.R,c.t)<=config['max_reproj_px']]
+    def parallax(X,indices):
+        return max((triangulation_angle_deg(X,cams[a].R,cams[a].t,cams[b].R,cams[b].t) for a,b in combinations(indices,2)),default=0)
     try:
-        X = triangulate_dlt(obs, [c.R for c in cams], [c.t for c in cams], [c.K for c in cams])
-    except (ValueError, np.linalg.LinAlgError):
-        return None
-    if not np.isfinite(X).all() or any((c.R @ X + c.t)[2] <= 0 for c in cams):
-        return None
-    if max(reprojection_error(X, xy, c.K, c.R, c.t) for xy, c in zip(obs, cams)) > config['max_reproj_px']:
-        return None
-    angle = max(triangulation_angle_deg(X, a.R, a.t, b.R, b.t) for a, b in combinations(cams, 2))
-    return X if angle >= config['min_angle_deg'] else None
+        X=solve(list(range(len(ids))));valid=consensus(X)
+        if len(valid)==len(ids) and parallax(X,valid)>=config['min_angle_deg']:return X
+    except (ValueError,np.linalg.LinAlgError):pass
+    if not config.get('robust',False) or len(ids)<3:return None
+    # Bounded triangulation consensus salvages a track with a bad observation.
+    centers=[-c.R.T@c.t for c in cams]
+    pairs=sorted(combinations(range(len(ids)),2),key=lambda ij:-np.linalg.norm(centers[ij[0]]-centers[ij[1]]))[:8]
+    best=None
+    for pair in pairs:
+        try:X=solve(list(pair));valid=consensus(X)
+        except (ValueError,np.linalg.LinAlgError):continue
+        if len(valid)<max(2,int(np.ceil(.6*len(ids)))) or parallax(X,valid)<config['min_angle_deg']:continue
+        error=np.median([reprojection_error(X,obs[i],cams[i].K,cams[i].R,cams[i].t) for i in valid])
+        if best is None or (len(valid),-error)>best[0]:best=((len(valid),-error),X,valid)
+    if best is None:return None
+    _,X,valid=best
+    try:
+        refined=solve(valid);refined_valid=consensus(refined)
+        if len(refined_valid)>=len(valid) and parallax(refined,refined_valid)>=config['min_angle_deg']:X,valid=refined,refined_valid
+    except (ValueError,np.linalg.LinAlgError):pass
+    for i in set(range(len(ids)))-set(valid):track.pop(ids[i])
+    return X
 
 
-def choose_initial_pair(pairs, matrices, homography_ratios, keypoints, cameras, config):
+def choose_initial_pair(pairs, matrices, homography_ratios, keypoints, cameras, config,tracks=None,triangulation=None):
     candidates = sorted(pairs, key=lambda pair: len(pairs[pair]), reverse=True)[:config['top_k_pairs']]
+    if tracks is not None:
+        strongest={}
+        for pair in sorted(pairs,key=lambda pair:-len(pairs[pair])):
+            for view in pair:strongest.setdefault(view,pair)
+        candidates=list(dict.fromkeys(candidates+list(strongest.values())))
     best = None
     for i, j in candidates:
         if homography_ratios[(i, j)] > config['max_hf_ratio']:
@@ -48,7 +74,28 @@ def choose_initial_pair(pairs, matrices, homography_ratios, keypoints, cameras, 
             continue
         if len(angles) < 0.7 * len(matches) or np.median(angles) < config['min_median_angle_deg']:
             continue
-        score = len(pairs[(i, j)]) * min(float(np.median(angles)), 15)
+        support=len(pairs[(i,j)])
+        coverage={}
+        if tracks is not None:
+            # Score only observations that survived track conflict resolution and
+            # can actually seed triangulation, not merely pairwise F inliers.
+            support=0
+            for track in tracks.values():
+                if i not in track or j not in track:continue
+                xy=np.array([keypoints[i][track[i]],keypoints[j][track[j]]])
+                X=triangulate_dlt(xy,[np.eye(3),R],[np.zeros(3),t],[a.K,b.K])
+                if X[2]<=0 or (R@X+t)[2]<=0:continue
+                if max(reprojection_error(X,xy[0],a.K,np.eye(3),np.zeros(3)),reprojection_error(X,xy[1],b.K,R,t))>triangulation['max_reproj_px']:continue
+                if triangulation_angle_deg(X,np.eye(3),np.zeros(3),R,t)<triangulation['min_angle_deg']:continue
+                support+=1
+                for view in track:coverage[view]=coverage.get(view,0)+1
+            if support<20:continue
+        score = support * min(float(np.median(angles)), 15)
+        if tracks is not None:
+            # Prefer a seed connected to many future PnP views over an isolated
+            # highly textured cluster (e.g. only the roof of a toy car).
+            reachable=sum(count>=15 for count in coverage.values())
+            score=reachable**2*np.sqrt(support)*min(float(np.median(angles)),10)
         if best is None or score > best[0]:
             best = (score, i, j, R, t)
     if best is None:
@@ -102,11 +149,16 @@ def local_window(recon, image_id, count):
     return {image_id, *sorted(neighbors, key=neighbors.get, reverse=True)[:count]}
 
 
-def filter_points(recon, keypoints, threshold):
+def filter_points(recon, keypoints, threshold,prune_observations=False):
     removed = []
     for k, X in recon.points.items():
-        errors = [reprojection_error(X, keypoints[i][kp], c.K, c.R, c.t)
-                  for i, kp in recon.tracks[k].items() if (c := recon.cameras[i]).registered]
+        records=[(i,reprojection_error(X,keypoints[i][kp],c.K,c.R,c.t) if not prune_observations or (c.R@X+c.t)[2]>0 else float('inf'))
+                 for i,kp in recon.tracks[k].items() if (c:=recon.cameras[i]).registered]
+        errors=[error for _,error in records]
+        if prune_observations and sum(error<=threshold for error in errors)>=2:
+            for i,error in records:
+                if error>threshold:recon.tracks[k].pop(i)
+            continue
         if not errors or max(errors) > threshold:
             removed.append(k)
     for k in removed:

@@ -4,6 +4,7 @@ __pycache__/
 .DS_Store
 .pytest_cache/
 /data/
+/datasets/
 /results/
 /outputs/
 /cars/
