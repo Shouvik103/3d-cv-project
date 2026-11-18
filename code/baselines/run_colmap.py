@@ -10,7 +10,7 @@ from runtime import manifest, write_json
 from baselines.convert_to_common import export_colmap
 
 
-def run(images, out, min_matches=15):
+def run(images, out, min_matches=15, progress=None):
     import pycolmap
     if (out/'database.db').exists():
         raise ValueError('Output already contains a COLMAP database; choose a fresh output directory')
@@ -28,9 +28,16 @@ def run(images, out, min_matches=15):
     K = Ks[0]; reader.camera_params = ','.join(map(str, [K[0, 0], K[1, 1], K[0, 2], K[1, 2]]))
     extraction = pycolmap.FeatureExtractionOptions(); extraction.num_threads = 4
     matching = pycolmap.FeatureMatchingOptions(); matching.num_threads = 4
+    def report(phase,done,total,message):
+        if progress:progress(phase,done,total,message)
+    report('features',0,1,'COLMAP: extracting SIFT features on CPU')
     pycolmap.extract_features(database_path=out/'database.db', image_path=images,
                              camera_mode=pycolmap.CameraMode.SINGLE, reader_options=reader, extraction_options=extraction, device=pycolmap.Device.cpu)
+    report('features',1,1,'COLMAP: features extracted')
+    report('matching',0,1,'COLMAP: exhaustive matching on CPU')
     pycolmap.match_exhaustive(database_path=out/'database.db', matching_options=matching, device=pycolmap.Device.cpu)
+    report('matching',1,1,'COLMAP: matching complete')
+    report('registration',0,len(names),'COLMAP: incremental mapping and bundle adjustment')
     options = pycolmap.IncrementalPipelineOptions()
     options.ba_refine_focal_length = False; options.ba_refine_principal_point = False; options.ba_refine_extra_params = False
     options.min_num_matches = min_matches
@@ -38,9 +45,11 @@ def run(images, out, min_matches=15):
     if not models: raise RuntimeError('COLMAP did not reconstruct a model')
     model = max(models.values(), key=lambda m: m.num_reg_images())
     poses = export_colmap(model, out, names)
+    report('registration',len(poses['registered']),len(names),'COLMAP: largest reconstructed model exported')
     write_json(out/'summary.json', dict(manifest(dict(camera_model='PINHOLE', fixed_intrinsics=True, device='cpu')),
                                        registered=len(poses['registered']), total_images=len(names), points=model.num_points3D(),
-                                       runtime_seconds=time.perf_counter()-started, models=len(models)))
+                                       runtime_seconds=time.perf_counter()-started, models=len(models),
+                                       mean_reprojection_px=float(model.compute_mean_reprojection_error())))
 
 
 if __name__ == '__main__':

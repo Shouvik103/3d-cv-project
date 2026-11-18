@@ -46,6 +46,7 @@ def export_vggt(path, out, quantile=.5, max_points=50000):
         points = data['world_points'].reshape(-1, 3)
         conf = data['world_points_conf'].reshape(-1)
         finite = np.isfinite(points).all(axis=1) & np.isfinite(conf)
+        if 'valid_masks' in data:finite &= data['valid_masks'].reshape(-1).astype(bool)
         if not finite.any(): raise ValueError('No finite VGGT points')
         keep = np.flatnonzero(finite & (conf >= np.quantile(conf[finite], quantile)))
         if len(keep) > max_points:

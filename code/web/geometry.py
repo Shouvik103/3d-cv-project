@@ -5,6 +5,17 @@ import json
 import numpy as np
 
 
+def render_preview(source,poses,output):
+    from mesh.mesh_export import read_mesh
+    from mesh.rendering import Renderer,orbit_camera,orient_for_display
+    from PIL import Image
+    mesh=read_mesh(source)
+    try:orient_for_display(mesh,json.loads(Path(poses).read_text()))
+    except ValueError:pass
+    K,R,t=orbit_camera(mesh,angle=.45,elevation=.25,width=480,height=320)
+    Image.fromarray(Renderer(mesh).render(K,R,t,480,320)['color']).save(output)
+
+
 def export_geometry(source, output, poses=None, kind='cloud', limit=115000):
     import open3d as o3d
     source, output = Path(source), Path(output)

@@ -58,3 +58,17 @@ def test_prepare_reads_nested_phone_focal_length(tmp_path):
     record = result['images']['phone.jpg']
     assert record['source'] == 'exif_35mm'
     assert np.isclose(record['K'][0][0], 400.)
+
+
+def test_vggt_alpha_mask_excludes_background_points(tmp_path):
+    import numpy as np,json
+    from baselines.convert_to_common import export_vggt
+    from mesh.adapters import load_vggt
+    names=np.array(['a.jpg','b.jpg']);world=np.arange(36,dtype='f4').reshape(2,2,3,3)
+    masks=np.zeros((2,2,3),bool);masks[:,:,:2]=True
+    path=tmp_path/'raw.npz';ext=np.tile(np.c_[np.eye(3),np.zeros(3)],(2,1,1))
+    np.savez(path,image_names=names,extrinsic=ext,intrinsic=np.tile(np.eye(3),(2,1,1)),world_points=world,
+             world_points_conf=np.ones((2,2,3)),images=np.ones((2,2,3,3)),depth=np.ones((2,2,3)),valid_masks=masks)
+    out=tmp_path/'common';out.mkdir();export_vggt(path,out,max_points=100)
+    assert 'element vertex 8' in (out/'points.ply').read_text()
+    scene=load_vggt(path);assert len(scene.points)==8 and scene.mask(0).sum()==4

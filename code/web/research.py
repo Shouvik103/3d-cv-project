@@ -19,7 +19,7 @@ METHODS = [
          description='Incremental structure from motion built from feature correspondences, triangulation and bundle adjustment.',
          steps=['Prepare images + intrinsics', 'SIFT / RootSIFT / ORB features', 'Mutual matching + ratio test', 'RANSAC epipolar geometry', 'Initial pair + triangulation', 'PnP camera registration', 'Local + global bundle adjustment', 'Filter and export sparse geometry'],
          outputs='Camera poses, sparse colored points, observed tracks, reprojection residuals and growth history.',
-         mesh='Uploads use SGBM stereo depth + TSDF. The M4/M5 study instead uses pinned Depth Anything V2 Small + affine depth alignment + TSDF.',
+         mesh='Uploads offer SGBM stereo or pinned Depth Anything V2 Small + sparse depth alignment, followed by TSDF. M4/M5 used the monocular option.',
          limits='Depends on texture, sharpness and overlap. Partial registration, bad initialization and globally wrong geometry can remain despite small pixel residuals. No loop closure or multicomponent merging.',
          calibration='Fixed supplied/estimated K by default. Optional shared-focal global BA is an experiment; it did not recover the correct Temple calibration in E5.',
          source='https://github.com/Shouvik103/3d-cv-project',license='Project implementation; third-party library terms apply.'),
@@ -94,7 +94,7 @@ def catalog(project):
                   verification=read(base/'verification.json',{}),
                   vggt=read(base/'E1/temple_gt/vggt/raw.json',{}),
                   notes=[
-                      'Recorded development results, not a new benchmark of your upload. Uploads run Our SfM + optional SGBM / TSDF; COLMAP and VGGT results here are saved experiments.',
+                      'The benchmark tabs show recorded development experiments. Your comparisons shows fresh same-upload runs; method selection is available in Workspace.',
                       'Car curation previously used COLMAP poses; the relaxed SfM configuration was tuned on Temple. These are not unseen generalization results.',
                       'E5 uses calibrated Temple as approved because no real car checkerboard calibration was available. Shared-focal BA did not recover the true calibration.',
                       'Mesh scores use the full fountain GT scan without visibility masking. Missing or unseen scan regions affect completeness; this is not the official EPFL scorer.',
@@ -107,10 +107,12 @@ def run_analysis(folder,metadata,state):
     """Selected-run details only; never infer GT accuracy for an uploaded object."""
     folder=Path(folder);sfm=read(folder/'reconstruction/summary.json',{})
     mesh=read(folder/'mesh/summary.json',{})
-    return dict(name=metadata['name'],method='Our SfM',mesh_backend=mesh.get('backend','sgbm' if metadata.get('make_mesh') else None),
+    from web.settings import METHOD_NAMES
+    method=metadata.get('method','ours')
+    return dict(name=metadata['name'],method=METHOD_NAMES.get(method,method),mesh_backend=mesh.get('backend',('vggt' if method=='vggt' else metadata.get('depth_backend','sgbm')) if metadata.get('make_mesh') else None),
         status=state.get('status'),elapsed_seconds=state.get('elapsed_seconds'),
-        settings={key:metadata.get(key) for key in ['max_side','focal_px','make_mesh','mesh_quality']},
-        reconstruction={key:sfm.get(key) for key in ['total_images','registered','points','median_reprojection_px','mean_track_length','runtime_seconds','init_pair','focal_refinement']},
+        settings={key:metadata.get(key) for key in ['method','max_side','focal_px','camera_matrix','matching_ratio','depth_backend','make_mesh','mesh_quality']},prior_attempts=metadata.get('prior_attempts',0),
+        reconstruction={key:sfm.get(key) for key in ['total_images','registered','points','median_reprojection_px','mean_reprojection_px','mean_track_length','runtime_seconds','init_pair','focal_refinement','registration_scope','cloud_scope']},
         history=sfm.get('history',[]),configuration=sfm.get('config',{}),versions=sfm.get('versions',{}),
         mesh={key:mesh.get(key) for key in ['backend','registered_views','frames_fused','full','light','timing_seconds','heldout','peak_rss_mb']},
         warnings=state.get('warnings',[]),reference='No ground-truth cameras or surface were supplied for this upload. ATE and GT F-scores are unavailable.')

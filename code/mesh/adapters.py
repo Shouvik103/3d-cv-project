@@ -24,6 +24,7 @@ class SceneData:
     depth_cache: Path | None = None
     inline_images: np.ndarray | None = None
     vggt_path: Path | None = None
+    inline_masks: np.ndarray | None = None
 
     @property
     def extent(self):
@@ -41,6 +42,7 @@ class SceneData:
         return cv2.undistort(rgb,self.K[i],self.distortion[i]) if np.any(self.distortion[i]) else rgb
 
     def mask(self,i):
+        if self.inline_masks is not None:return self.inline_masks[i].astype(bool)
         if self.mask_directory:
             p=self.mask_directory/(self.names[i]+'.png')
             if not p.exists(): p=self.mask_directory/(Path(self.names[i]).stem+'.png')
@@ -121,9 +123,12 @@ def load_vggt(path):
         if 'depth' not in d or 'images' not in d:raise ValueError('VGGT mesh input requires depth and preprocessed RGB images')
         names=d['image_names'].astype(str).tolist();ext=d['extrinsic'];K=d['intrinsic'];rgb=d['images'].copy()
         if ext.shape!=(len(names),3,4) or K.shape!=(len(names),3,3):raise ValueError('Expected unbatched VGGT camera arrays')
-        points=d['world_points'].reshape(-1,3);finite=np.isfinite(points).all(1);points=points[finite][::max(1,int(finite.sum())//50000)]
+        points=d['world_points'].reshape(-1,3);finite=np.isfinite(points).all(1)
+        masks=d['valid_masks'].copy() if 'valid_masks' in d else None
+        if masks is not None:finite &= masks.reshape(-1).astype(bool)
+        points=points[finite][::max(1,int(finite.sum())//50000)]
         if rgb.shape[-1]!=3:raise ValueError('VGGT images must be N,H,W,3, as exported by our adapter')
-    return SceneData([path.parent/n for n in names],list(K),list(ext[:,:,:3]),list(ext[:,:,3]),[True]*len(names),points,None,None,path.parent,names,[np.zeros(5)]*len(names),inline_images=rgb,vggt_path=path)
+    return SceneData([path.parent/n for n in names],list(K),list(ext[:,:,:3]),list(ext[:,:,3]),[True]*len(names),points,None,None,path.parent,names,[np.zeros(5)]*len(names),inline_images=rgb,vggt_path=path,inline_masks=masks)
 
 
 def project(scene,i,points=None):

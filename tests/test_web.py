@@ -118,6 +118,72 @@ def test_example_analysis_preserves_mean_residual_and_source_method(workbench_ap
     assert details['versions']['pycolmap']=='4.2.1'
 
 
+def test_all_methods_create_independent_queued_jobs_with_identical_uploads(workbench_api):
+    app,request=workbench_api;gate=threading.Event();blocked=app.pool.submit(gate.wait,20)
+    try:
+        status,parent=request('POST','/api/jobs',dict(name='Same object',method='all',matching_ratio=.7))
+        assert status==201
+        for i in range(3):
+            buffer=io.BytesIO();Image.new('RGB',(24,24),(20+i,40,60)).save(buffer,format='PNG')
+            assert request('PUT',f'/api/jobs/{parent["id"]}/images/{i}?name={i}.png',buffer.getvalue())[0]==200
+        code,result=request('POST',f'/api/jobs/{parent["id"]}/start',{})
+        assert code==202 and len(result['children'])==3
+        catalog=request('GET','/api/jobs')[1];assert len(catalog['jobs'])==3 and len(catalog['comparisons'])==1
+        assert {j['method'] for j in catalog['jobs']}=={'ours','colmap','vggt'}
+        original=(app.folder(parent['id'])/'uploads/000_0.png').read_bytes()
+        for child in result['children']:
+            metadata=json.loads((app.folder(child)/'job.json').read_text())
+            assert metadata['comparison_id']==parent['id'] and metadata['matching_ratio']==.7
+            assert (app.folder(child)/'uploads/000_0.png').read_bytes()==original
+            request('POST',f'/api/jobs/{child}/cancel',{})
+        report=request('GET',f'/api/comparisons/{parent["id"]}')[1]
+        assert len(report['rows'])==3 and all(r['ate_percent_extent'] is None for r in report['rows'])
+        assert request('GET',f'/api/comparisons/{parent["id"]}/files/comparison.csv')[0]==200
+    finally:gate.set();blocked.result(timeout=10)
+
+
+def test_method_calibration_and_vggt_limit_are_validated(workbench_api):
+    app,request=workbench_api
+    assert request('POST','/api/jobs',dict(method='pretend'))[0]==400
+    assert request('POST','/api/jobs',dict(matching_ratio=2))[0]==400
+    assert request('POST','/api/jobs',dict(camera_matrix=[[1,2,3]]))[0]==400
+    K=[[800,0,320],[0,810,240],[0,0,1]]
+    assert request('POST','/api/jobs',dict(camera_matrix=K,focal_px=800))[0]==400
+    _,job=request('POST','/api/jobs',dict(method='vggt',camera_matrix=K))
+    folder=app.folder(job['id']);metadata=json.loads((folder/'job.json').read_text());metadata['uploads']=[dict(index=i) for i in range(31)]
+    (folder/'job.json').write_text(json.dumps(metadata))
+    assert request('POST',f'/api/jobs/{job["id"]}/start',{})[0]==400
+
+
+def test_retry_preserves_previous_outputs_and_invalidates_old_queue_generation(workbench_api):
+    app,request=workbench_api;gate=threading.Event();blocked=app.pool.submit(gate.wait,20)
+    try:
+        _,job=request('POST','/api/jobs',dict(method='colmap'))
+        folder=app.folder(job['id']);(folder/'reconstruction').mkdir();(folder/'reconstruction/points.ply').write_text('previous geometry')
+        (folder/'run.log').write_text('previous failure');write_state(folder,status='partial',artifacts={'sparse_cloud':'reconstruction/points.ply'})
+        code,new=request('POST',f'/api/jobs/{job["id"]}/retry',dict(depth_backend='mono',matching_ratio=.85))
+        assert code==202 and new['prior_attempts']==1 and new['method']=='colmap' and new['status']=='queued'
+        archived=next((folder/'attempts').iterdir());assert (archived/'reconstruction/points.ply').read_text()=='previous geometry'
+        assert (archived/'run.log').read_text()=='previous failure'
+        assert not (folder/'reconstruction').exists()
+        assert request('POST',f'/api/jobs/{job["id"]}/retry',dict(method='ours'))[0]==400
+        app.execute(folder,'stale-generation')
+        assert not (folder/'run.log').exists()
+        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
+    finally:gate.set();blocked.result(timeout=10)
+
+
+def test_retry_without_new_options_preserves_saved_run_configuration(workbench_api):
+    app,request=workbench_api;gate=threading.Event();blocked=app.pool.submit(gate.wait,20)
+    try:
+        _,job=request('POST','/api/jobs',dict(method='ours',matching_ratio=.7,depth_backend='mono',mesh_quality='balanced'))
+        folder=app.folder(job['id']);write_state(folder,status='failed',message='First attempt')
+        code,new=request('POST',f'/api/jobs/{job["id"]}/retry',{})
+        assert code==202 and new['matching_ratio']==.7 and new['depth_backend']=='mono' and new['mesh_quality']=='balanced'
+        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
+    finally:gate.set();blocked.result(timeout=10)
+
+
 def test_restart_preserves_finished_runs_and_marks_interrupted(tmp_path):
     app = Workbench(tmp_path)
     active = app.create({})

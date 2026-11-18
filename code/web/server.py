@@ -19,7 +19,7 @@ import uuid
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from web.worker import write_state
 from web.progress import legacy_progress
-from web.settings import mesh_quality
+from web.settings import mesh_quality,method_settings,METHOD_NAMES,VGGT_MAX_VIEWS
 from web.research import catalog, asset_path, run_analysis
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -128,6 +128,7 @@ class Workbench:
 
     def create(self, settings):
         mesh_quality(settings)
+        methods=method_settings(settings)
         name = str(settings.get('name', 'Untitled reconstruction')).strip()[:80] or 'Untitled reconstruction'
         size = settings.get('max_side', 1200)
         focal = settings.get('focal_px')
@@ -143,6 +144,7 @@ class Workbench:
         metadata = dict(id=job_id, name=name, created_at=time.time(), max_side=size,
                         focal_px=focal, make_mesh=settings.get('make_mesh', True),
                         mesh_quality=settings.get('mesh_quality', 'balanced'), uploads=[])
+        metadata.update(methods)
         save_metadata(folder, metadata)
         write_state(folder, status='uploading', stage='upload', progress=0, message='Waiting for images', artifacts={}, metrics={}, warnings=[])
         return self.describe(folder)
@@ -185,14 +187,67 @@ class Workbench:
                 raise ValueError('This run has already started')
             if len(read_json(folder / 'job.json')['uploads']) < 3:
                 raise ValueError('Upload at least three overlapping views; 12–60 are recommended')
+            metadata=read_json(folder/'job.json')
+            if metadata.get('method') in ('all','vggt') and len(metadata['uploads'])>VGGT_MAX_VIEWS:
+                raise ValueError(f'VGGT / All three supports at most {VGGT_MAX_VIEWS} views per local run; choose fewer images or a classical method')
+            if metadata.get('method')=='all':
+                import shutil
+                children=[]
+                for method in METHOD_NAMES:
+                    child=self.create(dict(metadata,method=method,name=metadata['name']+' · '+METHOD_NAMES[method]))
+                    child_folder=self.folder(child['id']);child_meta=read_json(child_folder/'job.json')
+                    for photo in metadata['uploads']:
+                        source=folder/'uploads'/photo['stored'];target=child_folder/'uploads'/photo['stored']
+                        try:os.link(source,target)
+                        except OSError:shutil.copy2(source,target)
+                    child_meta.update(uploads=metadata['uploads'],comparison_id=job_id)
+                    save_metadata(child_folder,child_meta);children.append(child['id'])
+                metadata.update(is_comparison=True,children=children);save_metadata(folder,metadata)
+                write_state(folder,status='grouped',stage='finished',message='Three method runs created',progress=0)
+                for child in children:self.start(child)
+                return dict(self.describe(folder),children=children)
+            metadata['generation']=uuid.uuid4().hex;save_metadata(folder,metadata)
             write_state(folder, status='queued', stage='queued', progress=0, message='Queued for reconstruction')
-            self.pool.submit(self.execute, folder)
+            self.pool.submit(self.execute,folder,metadata['generation'])
         return self.describe(folder)
 
-    def execute(self, folder):
+    def comparisons(self):
+        groups=[]
+        for folder in self.root.iterdir():
+            metadata=read_json(folder/'job.json',{})
+            if metadata.get('is_comparison'):
+                children=[]
+                for child in metadata['children']:
+                    p=self.root/child
+                    if (p/'job.json').exists():children.append(self.describe(p))
+                groups.append(dict(id=metadata['id'],name=metadata['name'],created_at=metadata['created_at'],children=children,
+                                   missing_children=len(metadata['children'])-len(children)))
+        return sorted(groups,key=lambda x:x['created_at'],reverse=True)
+
+    def retry(self,job_id,settings):
+        """Keep the full previous attempt; rerun identical uploads with explicit settings."""
+        import shutil
+        with self.lock:
+            folder=self.folder(job_id);metadata=read_json(folder/'job.json');state=read_json(folder/'state.json',{})
+            if metadata.get('is_comparison') or state.get('status') not in TERMINAL:raise ValueError('Retry an individual finished method run')
+            if job_id in self.processes:raise ValueError('The previous worker is still stopping; retry shortly')
+            allowed={'matching_ratio','camera_matrix','focal_px','mesh_quality','depth_backend'}
+            if set(settings)-allowed:raise ValueError('Retry cannot change the method or input photos')
+            updated=dict(metadata,**settings);updated.update(method_settings(updated));mesh_quality(updated)
+            archive=folder/'attempts'/str(time.time_ns());archive.mkdir(parents=True)
+            for p in list(folder.iterdir()):
+                if p.name not in ('attempts','uploads','thumbs'):shutil.move(str(p),archive/p.name)
+            metadata=updated;metadata['prior_attempts']=metadata.get('prior_attempts',0)+1;metadata['generation']=uuid.uuid4().hex
+            save_metadata(folder,metadata);write_state(folder,status='queued',stage='queued',progress=0,message='Retry queued; previous attempt retained',artifacts={},metrics={},warnings=[])
+            self.pool.submit(self.execute,folder,metadata['generation'])
+        return self.describe(folder)
+
+    def execute(self, folder,generation=None):
         with self.lock:
             if not (folder / 'job.json').exists() or (folder / 'cancelled').exists():
                 return
+            if generation is not None and read_json(folder/'job.json').get('generation')!=generation:return
+            if read_json(folder/'state.json',{}).get('status')!='queued':return
             log = (folder / 'run.log').open('ab')
             env = dict(os.environ, PYTHONUNBUFFERED='1', MPLCONFIGDIR=str(folder / 'mpl-cache'))
             try:
@@ -313,9 +368,20 @@ def make_handler(workbench):
                         return self.file(target)
                     if path == '/api/jobs':
                         with workbench.lock:
-                            jobs = [workbench.describe(p) for p in workbench.root.iterdir() if (p / 'job.json').exists()]
+                            jobs = [workbench.describe(p) for p in workbench.root.iterdir() if (p / 'job.json').exists() and not read_json(p/'job.json').get('is_comparison')]
                             examples = workbench.examples()
-                        return self.reply(200, dict(jobs=sorted(jobs, key=lambda x: x['created_at'], reverse=True), examples=examples))
+                        return self.reply(200, dict(jobs=sorted(jobs, key=lambda x: x['created_at'], reverse=True), examples=examples,comparisons=workbench.comparisons()))
+                    if path=='/api/capabilities':
+                        return self.reply(200,dict(methods=METHOD_NAMES,vggt_max_views=VGGT_MAX_VIEWS,
+                                                  vggt_ready=(ROOT/'outputs/vggt_env/bin/python').exists()))
+                    if len(parts)>=3 and parts[:2]==['api','comparisons']:
+                        folder=workbench.folder(parts[2])
+                        if not read_json(folder/'job.json').get('is_comparison'):raise ValueError('Unknown comparison')
+                        from web.comparisons import build_comparison
+                        report=build_comparison(folder)
+                        if len(parts)==3:return self.reply(200,report)
+                        if len(parts)==5 and parts[3]=='files' and parts[4] in ('comparison.json','comparison.csv','comparison.png'):
+                            return self.file(folder/parts[4],download='download' in query)
                     if path == '/api/research':
                         return self.reply(200, catalog(ROOT))
                     if path.startswith('/api/research/files/'):
@@ -326,6 +392,18 @@ def make_handler(workbench):
                             return self.reply(200, workbench.describe(folder))
                         if parts[3:] == ['analysis']:
                             return self.reply(200, run_analysis(folder,read_json(folder/'job.json'),read_json(folder/'state.json',{})))
+                        if parts[3:]==['preview']:
+                            artifacts=read_json(folder/'state.json',{}).get('artifacts',{})
+                            source=(folder/artifacts.get('mesh_ply','unavailable')).resolve()
+                            poses=(folder/artifacts.get('poses','unavailable')).resolve()
+                            if not source.is_relative_to(folder) or not poses.is_relative_to(folder):raise ValueError('Invalid preview source')
+                            if not source.is_file() or not poses.is_file():return self.reply(404,dict(error='Mesh preview is not ready'))
+                            target=folder/f'mesh-preview-{source.stat().st_mtime_ns}.png'
+                            with workbench.lock:
+                                if not target.exists():
+                                    from web.geometry import render_preview
+                                    render_preview(source,poses,target)
+                            return self.file(target)
                         if parts[3:] == ['log']:
                             log = folder / 'run.log'
                             if log.exists():
@@ -403,6 +481,8 @@ def make_handler(workbench):
                                 return self.reply(202, workbench.start(parts[2]))
                             if parts[3] == 'cancel':
                                 return self.reply(200, workbench.cancel(parts[2]))
+                            if parts[3] == 'retry':
+                                return self.reply(202,workbench.retry(parts[2],json.loads(self.body(8192))))
                 return self.reply(404, dict(error='Not found'))
             except (ValueError, KeyError, StopIteration) as exc:
                 self.reply(400, dict(error=str(exc) or 'Invalid request'))
