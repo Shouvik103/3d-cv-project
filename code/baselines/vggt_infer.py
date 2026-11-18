@@ -17,7 +17,7 @@ MODEL_REVISION='860abec7937da0a4c03c41d3c269c366e82abdf9'
 CODE_REVISION='a288dd0f14786c93483e45524328726ab7b1b4ce'
 
 
-def infer(images_path,out,device='auto',max_images=None,model_revision=MODEL_REVISION):
+def infer(images_path,out,device='auto',max_images=None,model_revision=MODEL_REVISION,preprocess_mode='crop'):
     import torch
     from accelerate import init_empty_weights
     from huggingface_hub import hf_hub_download
@@ -55,7 +55,7 @@ def infer(images_path,out,device='auto',max_images=None,model_revision=MODEL_REV
     model.aggregator.to(device=device,dtype=dtype)
     for head in [model.camera_head,model.depth_head,model.point_head]:head.to(device=device,dtype=torch.float32)
     model.eval()
-    images=load_and_preprocess_images([str(p) for p in paths]).to(device)
+    images=load_and_preprocess_images([str(p) for p in paths],mode=preprocess_mode).to(device)
     loading_seconds=time.perf_counter()-loading_start
     def synchronize():
         if device=='cuda':torch.cuda.synchronize()
@@ -101,7 +101,7 @@ def infer(images_path,out,device='auto',max_images=None,model_revision=MODEL_REV
                   checkpoint_resolution_seconds=download_seconds,
                   timing_scope='Synchronized aggregator plus all prediction heads; excludes model loading and NPZ export',
                   precision='FP16 aggregator and FP32 heads' if device=='mps' else ('CUDA autocast aggregator and FP32 heads' if device=='cuda' else 'FP32'),
-                  preprocessing='Unmodified official crop preprocessing, width 518 px',input_shape=list(images.shape),
+                  preprocessing='Official '+preprocess_mode+' preprocessing, 518 px',preprocessing_mode=preprocess_mode,input_shape=list(images.shape),
                   unused_track_head_disabled=True,dense_head_chunk_frames=1,image_names=[p.name for p in paths],
                   peak_gpu_bytes=torch.cuda.max_memory_allocated() if device=='cuda' else None,
                   sampled_mps_peak=peaks if device=='mps' else None)
@@ -115,8 +115,9 @@ def main():
     parser.add_argument('--images',type=Path,required=True);parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--max-images',type=int);parser.add_argument('--device',choices=['auto','cuda','mps','cpu'],default='auto')
     parser.add_argument('--model-revision',default=MODEL_REVISION)
+    parser.add_argument('--preprocess-mode',choices=['crop','pad'],default='crop')
     args=parser.parse_args();logging.basicConfig(level=logging.INFO,format='%(asctime)s %(message)s')
-    infer(args.images,args.out,args.device,args.max_images,args.model_revision)
+    infer(args.images,args.out,args.device,args.max_images,args.model_revision,args.preprocess_mode)
 
 
 if __name__=='__main__':main()

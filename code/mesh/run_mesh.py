@@ -67,6 +67,10 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress
     if cfg['filter']['consistency']:frames=consistency_filter(frames,cfg['filter']['consistency_rel_tol'],cfg['filter']['consistency_min_views'])
     frames=[f for f in frames if (f['depth']>0).sum()>=30]
     if len(frames)<2:raise RuntimeError('Consistency rejected too much depth; inspect data or explicitly ablate consistency')
+    sample_record=None
+    if cfg.get('export_depth_samples',False):
+        from mesh.depth_cloud import export_depth_samples
+        sample_record=export_depth_samples(frames,out/'depth_samples.ply')
     filtering_time=time.perf_counter()-tick;voxel=scene.extent/cfg['tsdf']['voxel_div'];trunc=max(float(f['depth'].max()) for f in frames)*1.01
     notify('fusion',0,1,'Fusing depth maps into a surface')
     tick=time.perf_counter();mesh,volume=fuse(frames,voxel,cfg['tsdf']['sdf_trunc_voxels']*voxel,trunc);fusion_time=time.perf_counter()-tick
@@ -86,7 +90,7 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress
     K,R,t=orbit_camera(light);rendered=Renderer(light).render(K,R,t,640,480);cv2.imwrite(str(out/'preview.png'),rendered['color'][:,:,::-1])
     timing=dict(depth=depth_time,alignment=align_time,filtering=filtering_time,fusion=fusion_time,clean_export=extraction_time,total=time.perf_counter()-start)
     memory=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**2 if sys.platform=='darwin' else 1024)
-    summary=dict(manifest(cfg),scene=str(Path(scene_path)),backend=method,frames_fused=len(frames),registered_views=len(registered),fusion_images=[scene.names[f['index']] for f in frames],heldout_images=[scene.names[i] for i in heldout],heldout=held,convention=check,roi=[x.tolist() for x in roi],voxel_length=voxel,full=mesh_statistics(full),light=mesh_statistics(light),timing_seconds=timing,peak_rss_mb=float(memory))
+    summary=dict(manifest(cfg),depth_samples=sample_record,tsdf_cloud_points=len(cloud.points),scene=str(Path(scene_path)),backend=method,frames_fused=len(frames),registered_views=len(registered),fusion_images=[scene.names[f['index']] for f in frames],heldout_images=[scene.names[i] for i in heldout],heldout=held,convention=check,roi=[x.tolist() for x in roi],voxel_length=voxel,full=mesh_statistics(full),light=mesh_statistics(light),timing_seconds=timing,peak_rss_mb=float(memory))
     for package in ['open3d','torch','torchvision','transformers','trimesh','scikit-image']:
         try:summary['versions'][package]=importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:pass

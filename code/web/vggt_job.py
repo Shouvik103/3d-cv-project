@@ -8,19 +8,19 @@ from runtime import write_json,manifest
 def main():
     from baselines.vggt_infer import infer
     from baselines.convert_to_common import export_vggt
-    p=argparse.ArgumentParser();p.add_argument('--images',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--masks',type=Path);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--images',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--masks',type=Path);p.add_argument('--cached-windows',type=Path);p.add_argument('--preprocess-mode',choices=['crop','pad'],default='crop');a=p.parse_args()
     logging.basicConfig(level=logging.INFO,format='%(asctime)s %(message)s');a.out.mkdir(parents=True,exist_ok=True);start=time.perf_counter()
     paths=[p for p in a.images.iterdir() if p.suffix.lower() in ('.jpg','.jpeg','.png')]
     if len(paths)>16:
         from web.vggt_batches import infer_batched
-        meta=infer_batched(a.images,a.out/'raw.npz')
-    else:meta=infer(a.images,a.out/'raw.npz')
+        meta=infer_batched(a.images,a.out/'raw.npz',a.cached_windows,a.preprocess_mode)
+    else:meta=infer(a.images,a.out/'raw.npz',preprocess_mode=a.preprocess_mode)
     if a.masks:
         import numpy as np
         from web.vggt_batches import preprocess_masks
         with np.load(a.out/'raw.npz',allow_pickle=False) as archive:arrays={key:archive[key] for key in archive.files}
         paths=[str(a.masks/(name+'.png') if (a.masks/(name+'.png')).exists() else a.masks/(Path(name).stem+'.png')) for name in arrays['image_names'].astype(str)]
-        mask=preprocess_masks(paths,*arrays['images'].shape[1:3])
+        mask=preprocess_masks(paths,*arrays['images'].shape[1:3],mode=a.preprocess_mode)
         if mask.shape!=arrays['images'].shape[:3]:raise ValueError('VGGT alpha mask preprocessing shape mismatch')
         arrays['valid_masks']=mask;np.savez_compressed(a.out/'raw.npz',**arrays)
         meta['foreground_mask']='Object/alpha masks, transformed with official VGGT preprocessing; predictions unchanged'

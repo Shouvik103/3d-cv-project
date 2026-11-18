@@ -384,3 +384,43 @@ def test_high_resolution_stereo_keeps_depth_scale(long_side):
     assert depth.shape == (long_side*3//4,long_side)
     assert (depth>0).sum()>10000
     assert np.median(abs(depth[depth>0]-3)/3)<.03
+
+
+def test_mesh_only_retry_keeps_saved_geometry_and_rejects_camera_changes(workbench_api):
+    app,request=workbench_api;gate=threading.Event();app.pool.submit(gate.wait,20)
+    try:
+        _,job=request('POST','/api/jobs',dict(method='ours',matching_ratio=.8))
+        folder=app.folder(job['id']);(folder/'input/images').mkdir(parents=True);(folder/'reconstruction').mkdir()
+        for path in ['input/intrinsics.yaml','reconstruction/poses.json','reconstruction/summary.json','reconstruction/points.ply']:(folder/path).write_text('saved')
+        (folder/'input/images/a.jpg').write_bytes(b'prepared pixels');write_state(folder,status='partial',artifacts={'poses':'reconstruction/poses.json'})
+        assert request('POST',f'/api/jobs/{job["id"]}/retry',dict(reuse_geometry=True,matching_ratio=.7))[0]==400
+        assert request('POST',f'/api/jobs/{job["id"]}/retry',dict(reuse_geometry='yes'))[0]==400
+        code,retry=request('POST',f'/api/jobs/{job["id"]}/retry',dict(reuse_geometry=True,mesh_quality='high'))
+        assert code==202 and retry['reuse_geometry'] is True and retry['mesh_quality']=='high'
+        assert (folder/'reconstruction/poses.json').read_text()=='saved'
+        previous=next((folder/'attempts').iterdir());assert (previous/'reconstruction/poses.json').read_text()=='saved'
+        assert (folder/'input/images/a.jpg').read_bytes()==b'prepared pixels'
+        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
+        code,retry=request('POST',f'/api/jobs/{job["id"]}/retry',{})
+        assert code==202 and retry['reuse_geometry'] is False
+        assert not (folder/'reconstruction').exists()
+        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
+    finally:gate.set()
+
+
+def test_vggt_overview_refresh_keeps_original_windows_in_prior_attempt(workbench_api):
+    app,request=workbench_api;gate=threading.Event();app.pool.submit(gate.wait,20)
+    try:
+        _,job=request('POST','/api/jobs',dict(method='vggt'))
+        folder=app.folder(job['id']);(folder/'reconstruction/windows/00').mkdir(parents=True)
+        (folder/'reconstruction/windows/00/raw.npz').write_bytes(b'original window')
+        (folder/'reconstruction/windows/00/raw.json').write_text(json.dumps(dict(preprocessing_mode='pad')))
+        write_state(folder,status='completed')
+        assert request('POST',f'/api/jobs/{job["id"]}/retry',dict(refresh_vggt_alignment=True,reuse_geometry=True))[0]==400
+        code,retry=request('POST',f'/api/jobs/{job["id"]}/retry',dict(refresh_vggt_alignment=True))
+        assert code==202 and retry['reuse_geometry'] is False
+        cached=Path(retry['vggt_cached_windows'])
+        assert cached.is_relative_to(folder/'attempts') and (cached/'00/raw.npz').read_bytes()==b'original window'
+        assert not (folder/'reconstruction').exists()
+        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
+    finally:gate.set()

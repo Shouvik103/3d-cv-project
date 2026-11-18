@@ -232,12 +232,38 @@ class Workbench:
             folder=self.folder(job_id);metadata=read_json(folder/'job.json');state=read_json(folder/'state.json',{})
             if metadata.get('is_comparison') or state.get('status') not in TERMINAL:raise ValueError('Retry an individual finished method run')
             if job_id in self.processes:raise ValueError('The previous worker is still stopping; retry shortly')
-            allowed={'matching_ratio','camera_matrix','focal_px','mesh_quality','depth_backend'}
+            allowed={'matching_ratio','camera_matrix','focal_px','mesh_quality','depth_backend','reuse_geometry','refresh_vggt_alignment'}
             if set(settings)-allowed:raise ValueError('Retry cannot change the method or input photos')
-            updated=dict(metadata,**settings);updated.update(method_settings(updated));mesh_quality(updated)
+            reuse=settings.get('reuse_geometry',False)
+            if not isinstance(reuse,bool):raise ValueError('Invalid geometry reuse option')
+            if reuse:
+                if not metadata.get('make_mesh'):raise ValueError('This run was created without mesh output')
+                if any(key in settings and settings[key]!=metadata.get(key) for key in ('matching_ratio','camera_matrix','focal_px')):
+                    raise ValueError('Camera and matching settings must stay unchanged when reusing geometry')
+                if not all((folder/path).exists() for path in ('input/images','input/intrinsics.yaml','reconstruction/poses.json','reconstruction/summary.json','reconstruction/points.ply')):
+                    raise ValueError('No complete saved camera reconstruction is available')
+                if metadata.get('method')=='vggt' and not (folder/'reconstruction/raw.npz').exists():raise ValueError('VGGT raw predictions are unavailable')
+            refresh=settings.get('refresh_vggt_alignment',False)
+            if not isinstance(refresh,bool):raise ValueError('Invalid VGGT refresh option')
+            if refresh and (reuse or metadata.get('method')!='vggt' or not (folder/'reconstruction/windows').is_dir()):raise ValueError('Realignment requires a completed VGGT window run and new overview inference')
+            if refresh:
+                window=next((folder/'reconstruction/windows').glob('*/raw.json'),None)
+                if not window or read_json(window,{}).get('preprocessing_mode','crop')!=('pad' if metadata.get('quality_profile')=='object' else 'crop'):raise ValueError('Saved window preprocessing differs; use a full reconstruction retry')
+            updated=dict(metadata,**settings);updated['reuse_geometry']=reuse;updated['vggt_cached_windows']=None;updated['refresh_vggt_alignment']=refresh;updated.update(method_settings(updated));mesh_quality(updated)
             archive=folder/'attempts'/str(time.time_ns());archive.mkdir(parents=True)
+            if refresh:updated['vggt_cached_windows']=str(archive/'reconstruction/windows')
+            retained={'attempts','uploads','thumbs'}
+            if reuse:
+                retained.update(('reconstruction','input','input_masks','foreground.json'))
+                def snapshot(source,target):
+                    try:return os.link(source,target)
+                    except OSError:return shutil.copy2(source,target)
+                for name in retained-{'attempts','uploads','thumbs'}:
+                    source=folder/name
+                    if source.is_dir():shutil.copytree(source,archive/name,copy_function=snapshot)
+                    elif source.exists():snapshot(source,archive/name)
             for p in list(folder.iterdir()):
-                if p.name not in ('attempts','uploads','thumbs'):shutil.move(str(p),archive/p.name)
+                if p.name not in retained:shutil.move(str(p),archive/p.name)
             metadata=updated;metadata['prior_attempts']=metadata.get('prior_attempts',0)+1;metadata['generation']=uuid.uuid4().hex
             save_metadata(folder,metadata);write_state(folder,status='queued',stage='queued',progress=0,message='Retry queued; previous attempt retained',artifacts={},metrics={},warnings=[])
             self.pool.submit(self.execute,folder,metadata['generation'])

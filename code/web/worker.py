@@ -65,39 +65,50 @@ def run_job(job):
         state(stage, message, round(value,1), progress_units=dict(phase=phase,done=done,total=total))
 
     try:
-        state('preparing', 'Preparing images and camera intrinsics', 5)
-        prepare(job / 'uploads', job / 'input/images', metadata['max_side'])
-        masks=upload_masks(job,job/'input/images',job/'input_masks')
-        # User-supplied intrinsics are measured at the original upload resolution.
-        if metadata.get('focal_px') or metadata.get('camera_matrix'):
-            import numpy as np
-            from PIL import Image, ImageOps
-            path = job / 'input/intrinsics.yaml'
-            intrinsics = yaml.safe_load(path.read_text())
-            for upload in metadata['uploads']:
-                with Image.open(job / 'uploads' / upload['stored']) as raw:
-                    width, height = ImageOps.exif_transpose(raw).size
-                name = Path(upload['stored']).stem + '.jpg'
-                record = intrinsics['images'][name]
-                scale = record['image_size'][0] / width
-                if metadata.get('camera_matrix'):
-                    K=np.array(metadata['camera_matrix'],float)
-                    if K[0,2]>=width or K[1,2]>=height:raise ValueError('Camera principal point must be inside the original image')
-                    K[0]*=record['image_size'][0]/width;K[1]*=record['image_size'][1]/height
-                    record['K']=K.tolist();record['source']='user_camera_matrix_at_original_resolution'
-                else:
-                    record['K'][0][0] = record['K'][1][1] = metadata['focal_px'] * scale
-                    record['source'] = 'user_focal_px_at_original_resolution'
-            path.write_text(yaml.safe_dump(intrinsics))
         object_quality=metadata.get('quality_profile')=='object'
-        if object_quality:
-            import shutil
-            from web.foreground import prepare_foreground
-            masks=prepare_foreground(job)
-            shutil.copytree(masks,job/'input/masks',dirs_exist_ok=True)
-            artifacts['foreground_report']='foreground.json'
+        reuse_geometry=bool(metadata.get('reuse_geometry',False))
+        masks=job/'input_masks' if (job/'input_masks').exists() else None
+        if not reuse_geometry:
+            state('preparing', 'Preparing images and camera intrinsics', 5)
+            prepare(job / 'uploads', job / 'input/images', metadata['max_side'])
+            masks=upload_masks(job,job/'input/images',job/'input_masks')
+            # User-supplied intrinsics are measured at the original upload resolution.
+            if metadata.get('focal_px') or metadata.get('camera_matrix'):
+                import numpy as np
+                from PIL import Image, ImageOps
+                path = job / 'input/intrinsics.yaml'
+                intrinsics = yaml.safe_load(path.read_text())
+                for upload in metadata['uploads']:
+                    with Image.open(job / 'uploads' / upload['stored']) as raw:
+                        width, height = ImageOps.exif_transpose(raw).size
+                    name = Path(upload['stored']).stem + '.jpg'
+                    record = intrinsics['images'][name]
+                    scale = record['image_size'][0] / width
+                    if metadata.get('camera_matrix'):
+                        K=np.array(metadata['camera_matrix'],float)
+                        if K[0,2]>=width or K[1,2]>=height:raise ValueError('Camera principal point must be inside the original image')
+                        K[0]*=record['image_size'][0]/width;K[1]*=record['image_size'][1]/height
+                        record['K']=K.tolist();record['source']='user_camera_matrix_at_original_resolution'
+                    else:
+                        record['K'][0][0] = record['K'][1][1] = metadata['focal_px'] * scale
+                        record['source'] = 'user_focal_px_at_original_resolution'
+                path.write_text(yaml.safe_dump(intrinsics))
+            if object_quality:
+                import shutil
+                from web.foreground import prepare_foreground
+                masks=prepare_foreground(job)
+                shutil.copytree(masks,job/'input/masks',dirs_exist_ok=True)
+                artifacts['foreground_report']='foreground.json'
         state('reconstructing',METHOD_NAMES[method]+': estimating cameras and geometry',15)
-        if method=='ours':
+        if reuse_geometry:
+            state('reconstructing','Reusing saved cameras and geometry; rebuilding the mesh',55)
+            logging.info('Reusing saved reconstruction; no camera or model inference in this attempt')
+            warnings.append('Saved cameras reused. This attempt rebuilds the mesh; camera-solve measurements belong to the original reconstruction.')
+            if (job/'foreground.json').exists():artifacts['foreground_report']='foreground.json'
+            if method=='vggt':
+                artifacts.update(raw_predictions='reconstruction/raw.npz',vggt_metadata='reconstruction/raw.json')
+                warnings.append('Reusing VGGT predictions and their original processing mode; no new model inference.')
+        elif method=='ours':
             cfg = yaml.safe_load((ROOT / 'configs/sfm_relaxed.yaml').read_text())
             cfg['export']['save_growth_snapshots'] = False
             cfg['matching']['ratio']=metadata.get('matching_ratio',.85)
@@ -124,7 +135,9 @@ def run_job(job):
             python=ROOT/'outputs/vggt_env/bin/python'
             if not python.exists():raise RuntimeError('VGGT runtime is not installed. Run .venv/bin/python code/experiments/setup_vggt.py first.')
             command=[str(python),str(ROOT/'code/web/vggt_job.py'),'--images',str(job/'input/images'),'--out',str(job/'reconstruction')]
+            command+=['--preprocess-mode','pad' if object_quality else 'crop']
             if masks:command+=['--masks',str(masks)]
+            if metadata.get('vggt_cached_windows'):command+=['--cached-windows',metadata['vggt_cached_windows']]
             process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,
                                      env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
             window_index,window_count=0,1
@@ -134,6 +147,7 @@ def run_job(job):
                     import re
                     found=re.search(r'VGGT window (\d+)/(\d+)',line)
                     if found:window_index,window_count=int(found[1])-1,int(found[2])
+                    if 'aligning cached predictions' in line:state('reconstructing',f'VGGT: aligning cached window {window_index+1}/{window_count}',round(15+35*(window_index+.7)/window_count,1))
                 if 'aggregator: input shape' in line:state('reconstructing',f'VGGT: aggregating window {window_index+1}/{window_count}',round(15+35*(window_index+.2)/window_count,1))
                 elif 'prediction heads (' in line:state('reconstructing',f'VGGT: predicting window {window_index+1}/{window_count}',round(15+35*(window_index+.7)/window_count,1))
             if process.wait()!=0:raise RuntimeError('VGGT inference failed; inspect the run log for the model/runtime error.')
@@ -147,8 +161,12 @@ def run_job(job):
         metrics.update(images=summary['total_images'], registered=summary['registered'],
                        sparse_points=summary['points'], reprojection_px=summary.get('median_reprojection_px',summary.get('mean_reprojection_px')),
                        reprojection_statistic='median' if 'median_reprojection_px' in summary else ('mean' if 'mean_reprojection_px' in summary else None),
-                       reconstruction_seconds=summary.get('runtime_seconds'))
-        if method=='vggt':metrics['dense_points']=summary['points']
+                       reconstruction_seconds=0 if reuse_geometry else summary.get('runtime_seconds'),geometry_reused=reuse_geometry,original_reconstruction_seconds=summary.get('runtime_seconds'))
+        if method=='vggt':
+            metrics['dense_points']=summary['points']
+            if summary.get('vggt',{}).get('joint_all_views') is False:metrics['inference_mode']='Global overview + 16-view batches' if 'overview' in summary['vggt'].get('mode','') else 'Overlapping 16-view batches'
+            metrics['inference_partially_reused']=bool(summary.get('vggt',{}).get('partially_reused_predictions'))
+            if metrics['inference_partially_reused']:warnings.append('Saved local VGGT predictions were realigned to a newly inferred global overview. This attempt includes only the overview inference and realignment; original window timings are retained in the model record.')
         artifacts.update(sparse_cloud='reconstruction/points.ply', poses='reconstruction/poses.json',
                          reconstruction_summary='reconstruction/summary.json')
         if summary['registered'] < summary['total_images']:
@@ -172,6 +190,7 @@ def run_job(job):
                 # This is a user reconstruction, rather than an evaluation run:
                 # every registered view is available for stereo fusion.
                 cfg['heldout']['num_views'] = 0
+                cfg['export_depth_samples']=object_quality and method!='vggt'
                 cfg['sgbm']['input_long_side'] = quality['depth_side']
                 cfg['mono']['input_long_side']=quality['depth_side']
                 cfg['tsdf']['voxel_div'] = quality['voxel_div']
@@ -183,7 +202,7 @@ def run_job(job):
                 mesh = run(mesh_scene, job / 'mesh', cfg, backend=depth_backend, progress=work_progress)
                 artifacts.update(mesh_ply='mesh/mesh_light.ply', mesh_obj='mesh/mesh_light.obj',
                                  mesh_glb='mesh/mesh_light.glb', full_mesh='mesh/mesh_full.ply',
-                                 dense_cloud='mesh/dense.ply', mesh_summary='mesh/summary.json')
+                                 dense_cloud='mesh/dense.ply', depth_sample_cloud='mesh/depth_samples.ply', mesh_summary='mesh/summary.json')
                 artifacts = {k: v for k, v in artifacts.items() if (job / v).is_file()}
                 metrics.update(triangles=mesh['light']['faces'], vertices=mesh['light']['vertices'],
                                watertight=mesh['light']['watertight'],mesh_seconds=mesh['timing_seconds']['total'],
@@ -193,7 +212,10 @@ def run_job(job):
                 artifacts['mesh_view'] = 'mesh.json'
                 state('exporting', 'Preparing the dense point cloud', 96)
                 if method!='vggt':
-                    export_geometry(job / artifacts['dense_cloud'], job / 'cloud.json', job / artifacts['poses'])
+                    cloud_source=artifacts.get('depth_sample_cloud',artifacts['dense_cloud'])
+                    export_geometry(job / cloud_source, job / 'cloud.json', job / artifacts['poses'])
+                    metrics['cloud_scope']='Accepted depth estimates, capped at 1 million exported samples' if 'depth_sample_cloud' in artifacts else 'TSDF surface cloud'
+                    metrics['tsdf_cloud_points']=mesh.get('tsdf_cloud_points')
                     metrics['dense_points'] = json.loads((job / 'cloud.json').read_text())['total_points']
             except InterruptedError:
                 raise
