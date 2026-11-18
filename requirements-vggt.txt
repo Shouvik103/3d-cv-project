@@ -1,0 +1,11 @@
+# Optional VGGT benchmark; weights remain outside the repository/archive.
+# Isolated runtime ONLY: use code/experiments/setup_vggt.py, not the UI venv.
+numpy==1.26.4
+opencv-python==4.11.0.86
+pandas==2.2.3
+einops==0.8.2
+accelerate==1.16.0
+huggingface_hub==2.4.0
+safetensors==0.8.0
+psutil==7.2.2
+vggt @ git+https://github.com/facebookresearch/vggt.git@a288dd0f14786c93483e45524328726ab7b1b4ce

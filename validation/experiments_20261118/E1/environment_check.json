@@ -1,0 +1,27 @@
+[
+  {
+    "scene": "car_s1",
+    "max_extrinsic_difference": 0.0,
+    "same_preprocessed_images": true
+  },
+  {
+    "scene": "fountain_s2",
+    "max_extrinsic_difference": 0.0,
+    "same_preprocessed_images": true
+  },
+  {
+    "scene": "temple_gt",
+    "max_extrinsic_difference": 0.0,
+    "same_preprocessed_images": true
+  },
+  {
+    "environment": "main",
+    "returncode": 0,
+    "message": "No broken requirements found.\n"
+  },
+  {
+    "environment": "vggt",
+    "returncode": 0,
+    "message": "No broken requirements found.\n"
+  }
+]

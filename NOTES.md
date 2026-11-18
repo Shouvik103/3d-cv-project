@@ -1,5 +1,27 @@
 # Implementation and validation notes
 
+## Current status — 18 November 2026
+
+The dated entries below preserve earlier milestones. Statements in the November
+14 entries about absent VGGT inference, GT mesh files and the experiment matrix
+describe that earlier state, not the current implementation. The sequential
+E1–E7/M4/M5 protocol is in `docs/EXPERIMENTS.md`; the measured consolidated record
+is `docs/EXPERIMENT_RESULTS.md` and `validation/experiments_20261118/`.
+Real VGGT predictions now run on Apple MPS in an isolated compatible runtime.
+E5 uses calibrated Temple with the user's approval; no car checkerboard capture
+or calibration is claimed. Failed and partial reconstructions remain recorded.
+
+All nine requested stages were executed in order. M4/M5 use the original EPFL
+fountain-P11 GT triangle mesh, with camera-only Sim(3), GT-box crop, 200k surface
+samples per direction, error colors and three interactive mesh exports. Source
+landmarks/ROI and VGGT's different depth backend remain explicit confounds.
+The full current test suite passes 59 tests; main/VGGT dependency checks,
+compilation and Git whitespace checks pass. A real VGGT no-track mesh path exposed
+a NumPy-boolean JSON serialization bug, now fixed and regression-tested; its
+failed attempt remains archived. Final measurements include poor and partial
+results, not just successful-looking previews. No new commit/push was made for
+this experiment task.
+
 ## 14 November 2026 — implementation milestone
 
 Work was executed with Codex on the development Mac (Apple Silicon), using a
@@ -258,3 +280,101 @@ Actual browser validation exercised modes, orbit/zoom/pan, axes and a 360px mobi
 layout. Hover XYZ was checked against the selected triangle's plane, within
 0.0002 display units. Both fragments are below 1 MB and include every triangle.
 Validation JSONs and screenshots accompany the exports under `results/mesh/`.
+# Local image-upload workbench (2026-11-15)
+
+Added `code/web/server.py`: a loopback-only browser application that queues
+image reconstructions in separate processes and saves jobs under
+`outputs/web_ui/`. Launch with `.venv/bin/python code/web/server.py` and open
+`http://127.0.0.1:8765`. It supports upload/drop previews, project names,
+resolution and optional focal settings, progress, cancellation, persistent run
+history, run logs, source thumbnails and downloadable geometry. Existing image
+and video CLIs are unchanged. No additional Python dependencies are required.
+
+The worker calls the existing preparation, SfM, SGBM / TSDF and mesh-export code.
+Every registered view is eligible for fusion (`heldout.num_views=0` in this
+user-facing reconstruction path). Point output survives a failed mesh stage.
+The browser switches between point clouds and actual triangle surfaces, with
+orbit/zoom/pan, fit, XYZ axes and hover coordinates, and colored / shaded /
+wireframe / normal mesh modes. Display coordinates are upright and normalized;
+original PLY / OBJ / GLB geometry is untouched. Point previews cap at 115,000 and
+state both counts; mesh previews retain every light-mesh face. Three.js and web
+fonts load externally; image bytes go only to the local server.
+
+Validation: 39 project tests passed (one existing external Dash deprecation
+warning). Three new tests cover upload validation and cross-origin/path
+boundaries, restart state, and geometry export fidelity / point preview limits.
+An actual Chrome upload of the eight included tile views, with original focal
+length 700 px, registered 8/8 cameras and produced 3,116 sparse points,
+40,957 dense points and a 74,950-face mesh. Both geometry views, XYZ hover,
+all seven download links and a 390 px mobile layout passed browser checks with
+no JavaScript exceptions. Existing 80,000-face car and 79,999-face chair
+examples loaded. Actual blank-image failure and running-job cancellation were
+verified separately. Browser screenshots / run JSON are retained locally under
+`outputs/web_ui/qa/`. The sample upload was subsequently removed from the UI
+library at the user's request, with its validation artifacts retained in QA.
+
+Corrected the existing car / chair cloud previews to read their original
+foreground PLYs rather than TSDF-extracted mesh clouds. Cache names now include
+source identity and size / modification time so earlier smaller cached clouds
+cannot be reused. Chrome verified exactly 115,000 displayed vertices from
+2,232,430 car points and 3,186,516 chair points, plus XYZ hover, full-cloud
+download links, a 0.3×–3× point-size slider, persistence across geometry switches
+and page reloads, and no overflow at 390px. All three web tests passed; browser
+evidence is in `outputs/web_ui/qa/cloud_fix_validation.json` and adjacent PNGs.
+
+Added per-card deletion with a confirmation dialog, including original car /
+chair entries and every uploaded run state. Uploaded runs move into local
+`.trash/`; active workers stop before their files move, and deleted queued jobs
+are skipped by the executor. Original car/chair source files are retained while
+their library entries are hidden persistently. Selection clears after deletion.
+
+Added optional work-counter callbacks to SfM and mesh reconstruction, without
+changing the geometry algorithms. The worker writes throttled progress for
+feature images, every attempted image pair, camera registration, depth views,
+fusion, cleanup and export. The browser shows estimated overall percentages and
+bars in the workspace and cards; percentages represent stage-weighted work,
+rather than an elapsed-time estimate. Logs provide conservative progress for
+runs started before callbacks existed. Dense-cloud completion refreshes an
+already-open sparse preview instead of retaining the earlier browser geometry.
+
+Isolated Chrome QA verified progress increasing from 0 to 100 through an actual
+successful image-to-mesh run, confirmation cancellation, uploaded-run deletion,
+persistent example removal and mobile layout, with no JavaScript exceptions.
+User runs and saved entries were not deleted by QA. Evidence is retained under
+`outputs/web_ui/qa/delete_progress_validation.json` and adjacent screenshots.
+Final regression suite: 44 passed, with the existing external Dash warning.
+This includes actual SGBM mesh progress, complete pair-attempt counters,
+running/queued deletion, persistent example removal and source preservation.
+
+Added a separate mesh-quality setting: Balanced uses depth-side 640 and voxel
+division 192; High uses 960 / 256; Ultra uses 1280 / 384. The UI defaults new
+runs to High, while jobs without the setting retain Balanced behavior. Renamed
+the original control to Photo matching size. Mesh preparation now reads original
+uploads separately, scales camera K and tracked pixel observations to those
+dimensions, and leaves sparse world coordinates / original SfM files unchanged.
+Small photos are not enlarged. This prevents Fast photo matching from discarding
+pixels needed for higher-quality depth. Full mesh PLY is exposed in downloads;
+the interactive light mesh still retains at most 80,000 triangles.
+
+Validation covers persisted / rejected quality choices, restoring 80px originals
+from a 40px matching copy with exact calibration / reprojection and unchanged
+world points, plus actual 960px and 1280px textured stereo planes with depth
+scale error below 3%. A Chrome High-quality upload completed, with its measured
+config confirming depth-side 960 and voxel division 256, working outputs,
+progress, deletion and responsive layout. That sample's originals are only
+800px, so they remain 800px in depth processing; no pixels were invented.
+Evidence: `outputs/web_ui/qa/mesh_quality_validation.json` and adjacent PNGs.
+Final mesh-quality regression: 50 tests passed, with the existing external Dash warning.
+
+Added dark mode (2026-11-18): a header toggle with accessible pressed state,
+keyboard operation and per-browser persistence. A small independent script
+applies the stored / system theme before styles render, follows system changes
+until a manual choice, and remains usable when local storage is blocked. Dark
+colors cover fields, upload panels, saved cards, statuses, progress, downloads,
+logs and confirmation dialogs. Mesh / photo colors and backend code are unchanged.
+
+Chrome validation checked system defaults and changes, keyboard toggle, both
+themes across reloads, storage restrictions, dialog dismissal without deleting,
+and layouts at 390px and 320px. Measured body, muted and input text contrast
+exceeded 4.5:1. Screenshots and results are retained in
+`outputs/web_ui/qa/theme_validation.json` and adjacent `theme-*.png` files.

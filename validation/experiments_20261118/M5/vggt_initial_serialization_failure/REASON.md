@@ -1,0 +1,1 @@
+Initial real VGGT mesh attempt stopped before meshing: the no-feature-track convention gate returned a NumPy boolean that JSON could not serialize. Converted the gate to a Python bool, added a regression test, then repeated with identical reconstruction settings. No model/geometry settings were tuned.

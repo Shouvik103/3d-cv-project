@@ -1,0 +1,35 @@
+{
+  "source_sha256": "9d347cd97e560a5d38e146015415d47d5014cf0400a8e2a87b2934e60d94138f",
+  "timestamp_utc": "2026-11-18T14:34:02.376701+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": null,
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 59,
+    "failed": 0,
+    "warning": "Existing external Dash plugin deprecation warning",
+    "log_sha256": "b4e38a89d7c9c45351144fd95b9e4939b09b9889ce22c95451844af100afc223"
+  },
+  "dependency_checks": {
+    "main": "No broken requirements found",
+    "vggt": "No broken requirements found"
+  },
+  "compileall": "passed",
+  "git_diff_check": "passed",
+  "visual_review": [
+    "E7 comparison and input conditions",
+    "M4 GT comparison/error colors",
+    "M5 aligned colored/shaded side-by-side"
+  ],
+  "scope": "Numerical, image-pipeline, video, mesh, web/API, and benchmark provenance tests; no claim of new manual browser review in this task."
+}

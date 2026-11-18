@@ -1,0 +1,241 @@
+{
+  "method": "ours",
+  "reference_kind": "gt",
+  "performance": {
+    "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+    "timestamp_utc": "2026-11-18T14:22:54.437526+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "schema_version": 1,
+      "seed": 0,
+      "image_max_side": 1200,
+      "sfm_config": "configs/sfm_relaxed.yaml",
+      "vggt": {
+        "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "model": "facebook/VGGT-1B",
+        "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "device": "auto",
+        "preprocessing": "official_crop_518"
+      },
+      "scenes": {
+        "car_s1": {
+          "images": "outputs/cars_curated_60/calibrated_2400/images",
+          "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+          "views": 20,
+          "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+          "reference_kind": "colmap",
+          "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+        },
+        "fountain_s2": {
+          "images": "outputs/fountain_urd/input/images",
+          "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+          "views": 11,
+          "reference": "outputs/fountain_urd/colmap/poses.json",
+          "reference_kind": "colmap",
+          "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+        },
+        "temple_gt": {
+          "images": "data/temple/images",
+          "intrinsics": "data/temple/intrinsics.yaml",
+          "views": 16,
+          "reference": "data/temple/gt_poses.json",
+          "reference_kind": "gt",
+          "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+        }
+      }
+    },
+    "method": "ours",
+    "status": "completed",
+    "error": null,
+    "wall_seconds": 15.947247332999723,
+    "peak_process_rss_mb": 191.125,
+    "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+  },
+  "input_sha256": "8acec43a39b55ac1fe4f62e1f2e810b9b2eac44d097533146e8976b7400fac62",
+  "estimated_registered": 4,
+  "total_images": 16,
+  "metrics": {
+    "registered": 4,
+    "total_images": 16,
+    "registration_rate": 0.25,
+    "ate_rmse": 0.09738415604820742,
+    "ate_percent_extent": 5.498353738965931,
+    "median_rotation_deg": 12.741911527806586,
+    "median_translation_deg": 40.00117585165644,
+    "auc": {
+      "5": 0.0,
+      "10": 0.0,
+      "30": 0.0042071847217074925
+    },
+    "pose_pairs": 120,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 0.20207542981973098,
+      "rotation": [
+        [
+          0.17848458748753224,
+          0.980318228175699,
+          0.08437667649216492
+        ],
+        [
+          0.8301476341227904,
+          -0.10399736248992798,
+          -0.5477585728726401
+        ],
+        [
+          -0.5282027618157054,
+          0.1678115612870475,
+          -0.8323707841513089
+        ]
+      ],
+      "translation": [
+        -0.4429914690199763,
+        0.22988182148068426,
+        0.3959667838136731
+      ]
+    },
+    "alignment_error": null,
+    "compared_images": [
+      "dinoSR0008.jpg",
+      "dinoSR0009.jpg",
+      "dinoSR0010.jpg",
+      "dinoSR0011.jpg"
+    ]
+  },
+  "run": {
+    "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+    "timestamp_utc": "2026-11-18T14:22:54.408103+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": true,
+        "contrast_threshold": 0.01
+      },
+      "matching": {
+        "ratio": 0.85,
+        "mutual": true,
+        "min_inliers": 20,
+        "ransac_thresh_px": 1.5,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 20,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 3.0,
+        "min_angle_deg": 1.0
+      },
+      "registration": {
+        "pnp_reproj_px": 6.0,
+        "pnp_iters": 2000,
+        "min_inliers": 15
+      },
+      "ba": {
+        "mode": "local_global",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    },
+    "registered": 4,
+    "points": 41,
+    "median_reprojection_px": 0.6271568611358814,
+    "elapsed_seconds": 15.680335750000268,
+    "total_images": 16,
+    "runtime_seconds": 15.714164875000279,
+    "init_pair": [
+      "dinoSR0009.jpg",
+      "dinoSR0010.jpg"
+    ],
+    "image_names": [
+      "dinoSR0001.jpg",
+      "dinoSR0002.jpg",
+      "dinoSR0003.jpg",
+      "dinoSR0004.jpg",
+      "dinoSR0005.jpg",
+      "dinoSR0006.jpg",
+      "dinoSR0007.jpg",
+      "dinoSR0008.jpg",
+      "dinoSR0009.jpg",
+      "dinoSR0010.jpg",
+      "dinoSR0011.jpg",
+      "dinoSR0012.jpg",
+      "dinoSR0013.jpg",
+      "dinoSR0014.jpg",
+      "dinoSR0015.jpg",
+      "dinoSR0016.jpg"
+    ],
+    "history": [
+      {
+        "registered": 2,
+        "points": 30,
+        "median_reprojection_px": 0.7992859644462356,
+        "elapsed_seconds": 15.377256791000036
+      },
+      {
+        "registered": 3,
+        "points": 29,
+        "median_reprojection_px": 0.6997222401941681,
+        "elapsed_seconds": 15.43325758300034
+      },
+      {
+        "registered": 4,
+        "points": 45,
+        "median_reprojection_px": 0.919004653315449,
+        "elapsed_seconds": 15.458886415999586
+      },
+      {
+        "registered": 4,
+        "points": 41,
+        "median_reprojection_px": 0.6271568611358814,
+        "elapsed_seconds": 15.680335750000268
+      }
+    ],
+    "mean_track_length": 2.6341463414634148
+  },
+  "reprojection": {
+    "median_px": 0.6271556075243648,
+    "mean_px": 0.7963677657838208,
+    "scope": "Processed input pixels; VGGT has no matching observed tracks"
+  },
+  "mean_track_length": 2.6341463414634148
+}

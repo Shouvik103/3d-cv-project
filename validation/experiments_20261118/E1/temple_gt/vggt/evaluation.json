@@ -1,0 +1,136 @@
+{
+  "method": "vggt",
+  "reference_kind": "gt",
+  "performance": {
+    "source_sha256": "13632cea14325dca72e5481102cbd9f6d48af2de22f1da7e89ec1dc7f748e9d7",
+    "timestamp_utc": "2026-11-18T13:54:05.613002+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "1.26.4",
+      "scipy": "1.17.1",
+      "opencv-python": "4.11.0.86",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "schema_version": 1,
+      "seed": 0,
+      "image_max_side": 1200,
+      "sfm_config": "configs/sfm_relaxed.yaml",
+      "vggt": {
+        "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "model": "facebook/VGGT-1B",
+        "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "device": "auto",
+        "preprocessing": "official_crop_518"
+      },
+      "scenes": {
+        "car_s1": {
+          "images": "outputs/cars_curated_60/calibrated_2400/images",
+          "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+          "views": 20,
+          "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+          "reference_kind": "colmap",
+          "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+        },
+        "fountain_s2": {
+          "images": "outputs/fountain_urd/input/images",
+          "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+          "views": 11,
+          "reference": "outputs/fountain_urd/colmap/poses.json",
+          "reference_kind": "colmap",
+          "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+        },
+        "temple_gt": {
+          "images": "data/temple/images",
+          "intrinsics": "data/temple/intrinsics.yaml",
+          "views": 16,
+          "reference": "data/temple/gt_poses.json",
+          "reference_kind": "gt",
+          "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+        }
+      }
+    },
+    "method": "vggt",
+    "status": "completed",
+    "error": null,
+    "wall_seconds": 39.88642345800008,
+    "peak_process_rss_mb": 3820.921875,
+    "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+  },
+  "input_sha256": "d535b9d6caa1c520e27f71036fcfc3c394adfbeebaa6c15460f9095d830f5596",
+  "estimated_registered": 16,
+  "total_images": 16,
+  "metrics": {
+    "registered": 16,
+    "total_images": 16,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.011227496407651277,
+    "ate_percent_extent": 0.7104353193815959,
+    "median_rotation_deg": 1.836347686325086,
+    "median_translation_deg": 1.3073719626682978,
+    "auc": {
+      "5": 0.5540704601736762,
+      "10": 0.7757968190192724,
+      "30": 0.9252656063397574
+    },
+    "pose_pairs": 119,
+    "undefined_reference_pairs": 1,
+    "alignment": {
+      "scale": 0.5763120997887586,
+      "rotation": [
+        [
+          0.021032867640612934,
+          0.9990911307468937,
+          0.037074667115243695
+        ],
+        [
+          0.9872806012535049,
+          -0.014910465639640975,
+          -0.15828674108379273
+        ],
+        [
+          -0.1575900785815242,
+          0.03993232371529055,
+          -0.9866969021210954
+        ]
+      ],
+      "translation": [
+        -0.05296354336598299,
+        0.18466265023373135,
+        0.5896337550199794
+      ]
+    },
+    "compared_images": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0003.jpg",
+      "templeSR0004.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0014.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ]
+  },
+  "points": 50000,
+  "pointcloud_agreement_to_colmap": {
+    "chamfer": 0.09724938656378207,
+    "precision": 0.07438715131022823,
+    "recall": 0.1352493660185968,
+    "fscore": 0.09598342104545578,
+    "tau": 0.022816578880131666,
+    "sampled_points": 1183,
+    "scope": "Density-matched agreement with the matched-input COLMAP sparse cloud, NOT GT geometry accuracy"
+  }
+}

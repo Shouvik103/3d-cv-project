@@ -1,0 +1,119 @@
+{
+  "source_sha256": "0f28f294cca8192e638c663fe2d4758dacf4ff4d20a4776870973678129a46b8",
+  "timestamp_utc": "2026-11-18T14:03:52.521265+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "schema_version": 1,
+    "seed": 0,
+    "image_max_side": 1200,
+    "sfm_config": "configs/sfm_relaxed.yaml",
+    "vggt": {
+      "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+      "model": "facebook/VGGT-1B",
+      "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+      "device": "auto",
+      "preprocessing": "official_crop_518"
+    },
+    "scenes": {
+      "car_s1": {
+        "images": "outputs/cars_curated_60/calibrated_2400/images",
+        "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+        "views": 20,
+        "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+        "reference_kind": "colmap",
+        "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+      },
+      "fountain_s2": {
+        "images": "outputs/fountain_urd/input/images",
+        "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+        "views": 11,
+        "reference": "outputs/fountain_urd/colmap/poses.json",
+        "reference_kind": "colmap",
+        "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+      },
+      "temple_gt": {
+        "images": "data/temple/images",
+        "intrinsics": "data/temple/intrinsics.yaml",
+        "views": 16,
+        "reference": "data/temple/gt_poses.json",
+        "reference_kind": "gt",
+        "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+      }
+    }
+  },
+  "inputs": {
+    "scene": "temple_gt_16",
+    "selected_images": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0003.jpg",
+      "templeSR0004.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0014.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ],
+    "source_images": "data/temple/images",
+    "source_sha256": {
+      "templeSR0001.jpg": "ac8e0cccef84bb9562764e2b9c3c92cf65e75925f3f414f08b60205b5101f4ca",
+      "templeSR0002.jpg": "91b498b0bd23f65ffd0b5ac29ca5ec2913451ac49223284f5da8ebef8df382a7",
+      "templeSR0003.jpg": "78567605f1d1b6ace9796041e61bc507337c11139aac055d3b736ddc7ec7f02a",
+      "templeSR0004.jpg": "9091e679e343d8a4c83b80e430ff73da394c23e0f07fa79474cd8b68c5d282d7",
+      "templeSR0005.jpg": "8960cd94c6f565a0a8081bbe067bc1cf213a04616cb93d71e73bd8e4603047b5",
+      "templeSR0006.jpg": "44eb2929018ebb978d9c975242d99e9f3d9c3ce61803d925f39ed63a5e9ef612",
+      "templeSR0007.jpg": "3fdb2f664bcf7e0236d9607a8730d999d39fdae388807c7964076dffb84400bd",
+      "templeSR0008.jpg": "25a2feaf8a9803849db6d416b9e8cb61bd7d7fbc54a612735e1d9136bd14c0e5",
+      "templeSR0009.jpg": "badc2c4e778d475a164190c6e628bc7921f93c42d8902120c290423907622086",
+      "templeSR0010.jpg": "83e24f39cf66d0506bba73f6065f5f1feb8438055c5cc248a29c588544418ec7",
+      "templeSR0011.jpg": "046b6168c9903cf2e6edd3af6dcc145bdad652bc3a65c3484e4781222a81dcc8",
+      "templeSR0012.jpg": "058262c3a4cd0f9d8e24af9c2d08d07848169d539bd7394409d4e214c7c45708",
+      "templeSR0013.jpg": "e8968c02290d3e8169792c5b2f2295c38b12ab734bd8b98e6daf0b17a4ff597f",
+      "templeSR0014.jpg": "e083dc897c55bdfbb308c1a5aa6c78fd10ef9ebf0b68558800e4958dfd62c24d",
+      "templeSR0015.jpg": "cd4ad189256e81b075a8b2aee015123d320a56d91a03ab9265f34948e032fbda",
+      "templeSR0016.jpg": "53e068f98cfca868ac0c9408105d6a7c70a49bb197d0ab2702df96382ed7b0cc"
+    },
+    "intrinsics_sha256": "32e56b8e26286ca529faa3b36c3faa49f8a9f68a4bdf0490b728dd825087e14c",
+    "reference_sha256": "b18f1f6259b1c137267d425970ede78d5b80fa31f8827caee37dd9bdbc60d2fe",
+    "max_side": 1200,
+    "seed": 0
+  },
+  "reference_kind": "gt",
+  "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation.",
+  "reference_camera_frame": "Native reference cameras, used only for pose evaluation",
+  "prepared_sha256": {
+    "templeSR0001.jpg": "c4854bb82d0bc6c2df9024bcb2184ed8bb00888d418cb14fd4e16a72f856598c",
+    "templeSR0002.jpg": "d1b43433b3f21a2996ea0a7efd709b99407eefefbb8407de613e91ab70fbe5f3",
+    "templeSR0003.jpg": "9708f508f3429629b642fafe6da7f96c722cdb232b6abbca14e0ac23d618e510",
+    "templeSR0004.jpg": "eac4a2888ca62772853fcdccb414dec0bbdee70b9da1996c5a2a8a765d3d9489",
+    "templeSR0005.jpg": "2aacd022f58d49a2e4a1e3f2579b94e5ffd37930b611e5c3c703c3a83cb66f75",
+    "templeSR0006.jpg": "8e3622c62a0aad3931f5264a1aafceb5d582c75b69dbc774a3105dc22c389c9c",
+    "templeSR0007.jpg": "b581bebcea3a1634660216e6e6125cf3b1b620a575b353697274a5bb03889bd3",
+    "templeSR0008.jpg": "68e75723a30c638c4cc9e18df73d80cdf2cd40aef5b9276d271678620ebba5a7",
+    "templeSR0009.jpg": "d3bc765b014f9799cd8e5731de6528ac8263243cd73b513dc5f1c0dbc939099c",
+    "templeSR0010.jpg": "602a83f7767776b084f7399c89567765b7d95bcba21af70042610a3bd075e214",
+    "templeSR0011.jpg": "3c02db4ebfbeb10725b206b044ab1193a2c85e60d44d151f13aaa2c67e2373de",
+    "templeSR0012.jpg": "249fe0ca56a27f7772366847ba12f75a4ff6b2ab927ea9190f9f4e98c74e8e42",
+    "templeSR0013.jpg": "bcc5724256e1c5950da559b7bb3d67f41f7a3ee39a124981163f3cdac3427e4e",
+    "templeSR0014.jpg": "e871c18d1fa758dde541dc4bfc7dafa86a45d7c81a9f0739b8206234821d2be7",
+    "templeSR0015.jpg": "a380d7550f67fe57b43b3ecfe1727b71308f3c8baaa551599a8c4011b83bbc02",
+    "templeSR0016.jpg": "fa6778b42308ed5c02eeb30ee2dcf6cd103146c2d90dbe1cbae0e0cf727bab3a"
+  }
+}

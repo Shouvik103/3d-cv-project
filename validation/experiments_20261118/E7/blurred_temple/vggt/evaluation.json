@@ -1,0 +1,127 @@
+{
+  "method": "vggt",
+  "reference_kind": "gt",
+  "performance": {
+    "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+    "timestamp_utc": "2026-11-18T14:22:37.878997+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "1.26.4",
+      "scipy": "1.17.1",
+      "opencv-python": "4.11.0.86",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "schema_version": 1,
+      "seed": 0,
+      "image_max_side": 1200,
+      "sfm_config": "configs/sfm_relaxed.yaml",
+      "vggt": {
+        "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "model": "facebook/VGGT-1B",
+        "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "device": "auto",
+        "preprocessing": "official_crop_518"
+      },
+      "scenes": {
+        "car_s1": {
+          "images": "outputs/cars_curated_60/calibrated_2400/images",
+          "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+          "views": 20,
+          "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+          "reference_kind": "colmap",
+          "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+        },
+        "fountain_s2": {
+          "images": "outputs/fountain_urd/input/images",
+          "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+          "views": 11,
+          "reference": "outputs/fountain_urd/colmap/poses.json",
+          "reference_kind": "colmap",
+          "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+        },
+        "temple_gt": {
+          "images": "data/temple/images",
+          "intrinsics": "data/temple/intrinsics.yaml",
+          "views": 16,
+          "reference": "data/temple/gt_poses.json",
+          "reference_kind": "gt",
+          "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+        }
+      }
+    },
+    "method": "vggt",
+    "status": "completed",
+    "error": null,
+    "wall_seconds": 42.28179949999958,
+    "peak_process_rss_mb": 3605.421875,
+    "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+  },
+  "input_sha256": "af88a42d746e157ccb9bf4b389bc40069bc6563f5110f36b5190d4b02d6116c6",
+  "estimated_registered": 16,
+  "total_images": 16,
+  "metrics": {
+    "registered": 16,
+    "total_images": 16,
+    "registration_rate": 1.0,
+    "ate_rmse": 0.025950324949122177,
+    "ate_percent_extent": 1.6420426000512531,
+    "median_rotation_deg": 2.8126202814767223,
+    "median_translation_deg": 2.2063669721017614,
+    "auc": {
+      "5": 0.3178962331935024,
+      "10": 0.6341490030084563,
+      "30": 0.8777268495503082
+    },
+    "pose_pairs": 119,
+    "undefined_reference_pairs": 1,
+    "alignment": {
+      "scale": 0.5465199648236719,
+      "rotation": [
+        [
+          0.03303064221370282,
+          0.999038242169579,
+          0.028836909641436363
+        ],
+        [
+          0.9864395241474964,
+          -0.027945859204381803,
+          -0.1617284580801762
+        ],
+        [
+          -0.16076704225248653,
+          0.033787862259203306,
+          -0.9864138778876446
+        ]
+      ],
+      "translation": [
+        -0.05773745658742887,
+        0.17798837745632584,
+        0.5691002824370179
+      ]
+    },
+    "alignment_error": null,
+    "compared_images": [
+      "templeSR0001.jpg",
+      "templeSR0002.jpg",
+      "templeSR0003.jpg",
+      "templeSR0004.jpg",
+      "templeSR0005.jpg",
+      "templeSR0006.jpg",
+      "templeSR0007.jpg",
+      "templeSR0008.jpg",
+      "templeSR0009.jpg",
+      "templeSR0010.jpg",
+      "templeSR0011.jpg",
+      "templeSR0012.jpg",
+      "templeSR0013.jpg",
+      "templeSR0014.jpg",
+      "templeSR0015.jpg",
+      "templeSR0016.jpg"
+    ]
+  }
+}

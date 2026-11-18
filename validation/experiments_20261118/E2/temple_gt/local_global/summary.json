@@ -1,0 +1,192 @@
+{
+  "source_sha256": "7b9ddd82dd4f1c2a8470408267cb1b075d99e3fc4cc15e321dc3bebf28f6a223",
+  "timestamp_utc": "2026-11-18T13:58:03.472804+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.85,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 16,
+  "points": 3933,
+  "median_reprojection_px": 0.13913401365999015,
+  "elapsed_seconds": 28.840819750000264,
+  "total_images": 16,
+  "runtime_seconds": 28.928486750000047,
+  "init_pair": [
+    "templeSR0003.jpg",
+    "templeSR0014.jpg"
+  ],
+  "image_names": [
+    "templeSR0001.jpg",
+    "templeSR0002.jpg",
+    "templeSR0003.jpg",
+    "templeSR0004.jpg",
+    "templeSR0005.jpg",
+    "templeSR0006.jpg",
+    "templeSR0007.jpg",
+    "templeSR0008.jpg",
+    "templeSR0009.jpg",
+    "templeSR0010.jpg",
+    "templeSR0011.jpg",
+    "templeSR0012.jpg",
+    "templeSR0013.jpg",
+    "templeSR0014.jpg",
+    "templeSR0015.jpg",
+    "templeSR0016.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 720,
+      "median_reprojection_px": 0.07556178309576021,
+      "elapsed_seconds": 20.534222333999878
+    },
+    {
+      "registered": 3,
+      "points": 861,
+      "median_reprojection_px": 0.0963867116859907,
+      "elapsed_seconds": 20.64868287499985
+    },
+    {
+      "registered": 4,
+      "points": 934,
+      "median_reprojection_px": 0.10340267287200257,
+      "elapsed_seconds": 20.771801834000144
+    },
+    {
+      "registered": 5,
+      "points": 969,
+      "median_reprojection_px": 0.10719379756327695,
+      "elapsed_seconds": 21.204797709000104
+    },
+    {
+      "registered": 6,
+      "points": 1477,
+      "median_reprojection_px": 0.1026235141005862,
+      "elapsed_seconds": 21.402018624999982
+    },
+    {
+      "registered": 7,
+      "points": 1559,
+      "median_reprojection_px": 0.10722589038166286,
+      "elapsed_seconds": 21.664115375000165
+    },
+    {
+      "registered": 8,
+      "points": 1851,
+      "median_reprojection_px": 0.11658514280974307,
+      "elapsed_seconds": 21.962256374999924
+    },
+    {
+      "registered": 9,
+      "points": 2031,
+      "median_reprojection_px": 0.12073003176740765,
+      "elapsed_seconds": 22.256425417000173
+    },
+    {
+      "registered": 10,
+      "points": 2267,
+      "median_reprojection_px": 0.12170306813352454,
+      "elapsed_seconds": 23.25377000000026
+    },
+    {
+      "registered": 11,
+      "points": 2498,
+      "median_reprojection_px": 0.12483892837320698,
+      "elapsed_seconds": 23.548980292000124
+    },
+    {
+      "registered": 12,
+      "points": 2679,
+      "median_reprojection_px": 0.12992284904595197,
+      "elapsed_seconds": 23.822074084000178
+    },
+    {
+      "registered": 13,
+      "points": 2948,
+      "median_reprojection_px": 0.13203825214351805,
+      "elapsed_seconds": 24.086224292000225
+    },
+    {
+      "registered": 14,
+      "points": 3260,
+      "median_reprojection_px": 0.13117942306594635,
+      "elapsed_seconds": 24.38038349999988
+    },
+    {
+      "registered": 15,
+      "points": 3601,
+      "median_reprojection_px": 0.1329946419513988,
+      "elapsed_seconds": 25.865183291999983
+    },
+    {
+      "registered": 16,
+      "points": 3937,
+      "median_reprojection_px": 0.13891675240832588,
+      "elapsed_seconds": 26.1918908749999
+    },
+    {
+      "registered": 16,
+      "points": 3933,
+      "median_reprojection_px": 0.13913401365999015,
+      "elapsed_seconds": 28.840819750000264
+    }
+  ],
+  "mean_track_length": 2.5822527332824814
+}

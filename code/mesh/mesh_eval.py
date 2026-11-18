@@ -11,10 +11,17 @@ def mesh_statistics(mesh):
 
 
 def sample_surface(mesh,count,seed):
-    rng=np.random.default_rng(seed);v=np.asarray(mesh.vertices);t=np.asarray(mesh.triangles);p=v[t];area=np.linalg.norm(np.cross(p[:,1]-p[:,0],p[:,2]-p[:,0]),axis=1)
+    rng=np.random.default_rng(seed);v=np.asarray(mesh.vertices);t=np.asarray(mesh.triangles)
+    # GT scans can have tens of millions of faces. Avoid materializing all F*3*3
+    # coordinates and cross products at once; only the selected triangles need them.
+    area=np.empty(len(t),dtype='f8')
+    for start in range(0,len(t),100000):
+        p=v[t[start:start+100000]]
+        area[start:start+len(p)]=np.linalg.norm(np.cross(p[:,1]-p[:,0],p[:,2]-p[:,0]),axis=1)
     if area.sum()<=0:raise ValueError('Mesh has zero surface area')
     ids=rng.choice(len(t),count,p=area/area.sum());uv=rng.random((count,2));flip=uv.sum(1)>1;uv[flip]=1-uv[flip]
-    return p[ids,0]+uv[:,:1]*(p[ids,1]-p[ids,0])+uv[:,1:]*(p[ids,2]-p[ids,0])
+    p=v[t[ids]]
+    return p[:,0]+uv[:,:1]*(p[:,1]-p[:,0])+uv[:,1:]*(p[:,2]-p[:,0])
 
 
 def compare_meshes(estimate,reference,samples=200000,seed=0,sim3=None,crop=False):

@@ -1,0 +1,154 @@
+{
+  "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+  "timestamp_utc": "2026-11-18T14:15:01.369811+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.8,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 9,
+  "points": 261,
+  "median_reprojection_px": 0.7578531691756187,
+  "elapsed_seconds": 24.63344112499999,
+  "total_images": 20,
+  "runtime_seconds": 24.668733874999816,
+  "init_pair": [
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182304.jpg"
+  ],
+  "image_names": [
+    "IMG_20261114_181828.jpg",
+    "IMG_20261114_181839.jpg",
+    "IMG_20261114_181857.jpg",
+    "IMG_20261114_181910.jpg",
+    "IMG_20261114_181941.jpg",
+    "IMG_20261114_182009.jpg",
+    "IMG_20261114_182042.jpg",
+    "IMG_20261114_182048.jpg",
+    "IMG_20261114_182054.jpg",
+    "IMG_20261114_182121.jpg",
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182220.jpg",
+    "IMG_20261114_182226.jpg",
+    "IMG_20261114_182230.jpg",
+    "IMG_20261114_182239.jpg",
+    "IMG_20261114_182247.jpg",
+    "IMG_20261114_182255.jpg",
+    "IMG_20261114_182300.jpg",
+    "IMG_20261114_182304.jpg",
+    "IMG_20261114_182325.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 108,
+      "median_reprojection_px": 0.8548634154888596,
+      "elapsed_seconds": 23.892940916000043
+    },
+    {
+      "registered": 3,
+      "points": 157,
+      "median_reprojection_px": 0.8969221072618485,
+      "elapsed_seconds": 23.9168690409997
+    },
+    {
+      "registered": 4,
+      "points": 194,
+      "median_reprojection_px": 0.9884816979194299,
+      "elapsed_seconds": 23.945350625000174
+    },
+    {
+      "registered": 5,
+      "points": 194,
+      "median_reprojection_px": 0.8435798159937696,
+      "elapsed_seconds": 24.135106457999427
+    },
+    {
+      "registered": 6,
+      "points": 257,
+      "median_reprojection_px": 0.8699166076679566,
+      "elapsed_seconds": 24.166005166000105
+    },
+    {
+      "registered": 7,
+      "points": 260,
+      "median_reprojection_px": 0.9032219207605952,
+      "elapsed_seconds": 24.197350458000074
+    },
+    {
+      "registered": 8,
+      "points": 282,
+      "median_reprojection_px": 0.9281596420790919,
+      "elapsed_seconds": 24.231643291000182
+    },
+    {
+      "registered": 9,
+      "points": 293,
+      "median_reprojection_px": 0.9257221446784643,
+      "elapsed_seconds": 24.266689665999365
+    },
+    {
+      "registered": 9,
+      "points": 261,
+      "median_reprojection_px": 0.7578531691756187,
+      "elapsed_seconds": 24.63344112499999
+    }
+  ],
+  "mean_track_length": 2.367816091954023
+}

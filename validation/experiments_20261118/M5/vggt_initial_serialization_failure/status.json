@@ -1,0 +1,4 @@
+{
+  "status": "failed",
+  "error": "Object of type bool is not JSON serializable"
+}

@@ -1,0 +1,147 @@
+{
+  "method": "colmap",
+  "reference_kind": "colmap",
+  "performance": {
+    "source_sha256": "7b9ddd82dd4f1c2a8470408267cb1b075d99e3fc4cc15e321dc3bebf28f6a223",
+    "timestamp_utc": "2026-11-18T13:59:40.868338+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "schema_version": 1,
+      "seed": 0,
+      "image_max_side": 1200,
+      "sfm_config": "configs/sfm_relaxed.yaml",
+      "vggt": {
+        "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "model": "facebook/VGGT-1B",
+        "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "device": "auto",
+        "preprocessing": "official_crop_518"
+      },
+      "scenes": {
+        "car_s1": {
+          "images": "outputs/cars_curated_60/calibrated_2400/images",
+          "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+          "views": 20,
+          "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+          "reference_kind": "colmap",
+          "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+        },
+        "fountain_s2": {
+          "images": "outputs/fountain_urd/input/images",
+          "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+          "views": 11,
+          "reference": "outputs/fountain_urd/colmap/poses.json",
+          "reference_kind": "colmap",
+          "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+        },
+        "temple_gt": {
+          "images": "data/temple/images",
+          "intrinsics": "data/temple/intrinsics.yaml",
+          "views": 16,
+          "reference": "data/temple/gt_poses.json",
+          "reference_kind": "gt",
+          "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+        }
+      }
+    },
+    "method": "colmap",
+    "status": "completed",
+    "error": null,
+    "wall_seconds": 2.0586132909998014,
+    "peak_process_rss_mb": 1312.375,
+    "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+  },
+  "input_sha256": "6ccca9b136f39cc5d818d0cf5841e33cfe58aa444336439ac5ba8726a027a1f4",
+  "estimated_registered": 5,
+  "total_images": 10,
+  "metrics": {
+    "registered": 5,
+    "total_images": 10,
+    "registration_rate": 0.5,
+    "ate_rmse": 0.06676779079924679,
+    "ate_percent_extent": 0.5203379358575494,
+    "median_rotation_deg": 2.7073067856182935,
+    "median_translation_deg": 2.398231315303984,
+    "auc": {
+      "5": 0.09891386104467301,
+      "10": 0.16056804163344762,
+      "30": 0.20167082869263067
+    },
+    "pose_pairs": 45,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 0.46385030986786363,
+      "rotation": [
+        [
+          -0.9274579557956615,
+          0.3121046152624369,
+          0.20594283032730243
+        ],
+        [
+          -0.21344360814284574,
+          -0.8940924014992582,
+          0.39375195710530075
+        ],
+        [
+          0.3070237228200737,
+          0.3212312044512137,
+          0.8958498461865856
+        ]
+      ],
+      "translation": [
+        0.3169610122804081,
+        0.3222942586032522,
+        -0.6269397712664818
+      ]
+    },
+    "alignment_error": null,
+    "compared_images": [
+      "IMG_20261114_182208.jpg",
+      "IMG_20261114_182229.jpg",
+      "IMG_20261114_182245.jpg",
+      "IMG_20261114_182300.jpg",
+      "IMG_20261114_182325.jpg"
+    ]
+  },
+  "run": {
+    "source_sha256": "7b9ddd82dd4f1c2a8470408267cb1b075d99e3fc4cc15e321dc3bebf28f6a223",
+    "timestamp_utc": "2026-11-18T13:59:40.842330+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "camera_model": "PINHOLE",
+      "fixed_intrinsics": true,
+      "device": "cpu"
+    },
+    "registered": 5,
+    "total_images": 10,
+    "points": 100,
+    "runtime_seconds": 1.9383512079998582,
+    "models": 1
+  },
+  "reprojection": {
+    "median_px": 0.5948299725241828,
+    "mean_px": 0.6803348143167373,
+    "scope": "Processed input pixels; VGGT has no matching observed tracks"
+  },
+  "mean_track_length": 3.34
+}

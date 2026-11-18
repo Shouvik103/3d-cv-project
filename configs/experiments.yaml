@@ -1,0 +1,34 @@
+# Fixed development benchmark. All methods receive identical prepared photos.
+# Existing car curation used COLMAP poses; this is disclosed, not an unseen test.
+schema_version: 1
+seed: 0
+image_max_side: 1200
+sfm_config: configs/sfm_relaxed.yaml
+vggt:
+  repository_revision: a288dd0f14786c93483e45524328726ab7b1b4ce
+  model: facebook/VGGT-1B
+  model_revision: 860abec7937da0a4c03c41d3c269c366e82abdf9
+  device: auto
+  preprocessing: official_crop_518
+scenes:
+  car_s1:
+    images: outputs/cars_curated_60/calibrated_2400/images
+    intrinsics: outputs/cars_curated_60/calibrated_2400/intrinsics.yaml
+    views: 20
+    reference: outputs/cars_curated_60/colmap_car_2400/poses.json
+    reference_kind: colmap
+    notes: Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth.
+  fountain_s2:
+    images: outputs/fountain_urd/input/images
+    intrinsics: outputs/fountain_urd/input/intrinsics.yaml
+    views: 11
+    reference: outputs/fountain_urd/colmap/poses.json
+    reference_kind: colmap
+    notes: User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied.
+  temple_gt:
+    images: data/temple/images
+    intrinsics: data/temple/intrinsics.yaml
+    views: 16
+    reference: data/temple/gt_poses.json
+    reference_kind: gt
+    notes: Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation.

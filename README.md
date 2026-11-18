@@ -24,7 +24,97 @@ Dependencies are pinned to the versions used for local validation. VGGT's torch,
 GPU libraries, and weights are installed separately on Colab. The core demo needs
 no GPU, model weights, Homebrew tools, or dataset download.
 
-## Quick demo
+## Local upload interface
+
+Launch the browser interface from the repository root:
+
+```bash
+.venv/bin/python code/web/server.py
+```
+
+Open [the local interface](http://127.0.0.1:8765). Choose or drag in JPEG, PNG or TIFF photos,
+enter a project name, then click **Reconstruct in 3D**. The page shows upload
+thumbnails, reconstruction stages, registration counts, an interactive point
+cloud and triangle mesh, and PLY / OBJ / GLB downloads. Drag to orbit, scroll
+to zoom, right-drag to pan, and hover for XYZ coordinates. Point size can be
+adjusted from 0.3× to 3× and is remembered across views and reloads. Mesh appearance
+can switch between photo colors, shading, wireframe and normals.
+
+Use **Dark mode** in the header to switch themes. The interface follows the
+system appearance until you choose a theme, then remembers that choice locally
+across reloads. On narrow screens the toggle appears as a moon icon. Uploads,
+geometry colors and reconstruction settings are unaffected by theme changes.
+
+Use 12–60 sharp, overlapping views around a stationary object for a first run;
+the interface accepts 3–200 images, up to 25 MB per image and 1 GB per run.
+All uploaded images are used as reconstruction candidates. Photo matching size
+controls the images used to estimate camera poses. Camera settings optionally accept a known focal length
+in pixels at the original image resolution; otherwise the existing EXIF /
+estimated-intrinsics preparation is used. Keep the same camera and lens.
+
+**Mesh quality** is independent of photo matching size:
+
+| Preset | Maximum depth-map longest edge | TSDF grid setting |
+| --- | ---: | ---: |
+| Balanced | 640 px | extent / 192 |
+| High (new UI default) | 960 px | extent / 256 |
+| Ultra | 1280 px | extent / 384 |
+
+Higher presets estimate depth from more pixels and use smaller surface voxels;
+they take more CPU time and memory. Mesh images are prepared separately from
+original uploads, with camera intrinsics and tracked pixel observations scaled
+to the new image size. A smaller photo matching size does not cap mesh resolution.
+Photos smaller than the selected depth size are not enlarged. Original uploads
+and the sparse reconstruction are unchanged. Older jobs without a stored quality
+continue using Balanced. The choice applies to new runs; existing car/chair
+results are not regenerated automatically.
+
+The interactive light mesh remains capped at 80,000 triangles for responsiveness.
+Use **Full mesh PLY** to download the full extracted mesh. Higher settings can
+preserve finer observed detail, but cannot recover unseen surfaces or fix blurry,
+reflective or poorly overlapping photos.
+
+Reconstruction uses the existing SfM and CPU stereo / TSDF mesh pipeline, with
+all registered views eligible for fusion. No model weights are downloaded.
+The point cloud stays available when mesh generation fails, with the reason
+shown in the page. Partial registration, failed reconstruction and cancellation
+are shown explicitly. Queued runs execute one at a time; the page can be closed
+while the server continues processing. Saved runs can be reopened from the
+reconstruction library. Stopping the server interrupts processing.
+
+Every library card has a **Delete** button with confirmation. Deleting an active
+run stops its worker; deleting a queued run prevents it from starting. Uploaded
+runs and their outputs move to `outputs/web_ui/.trash/`. Deleting a saved car /
+chair entry removes it from the library while preserving its original source
+files. The removal persists across page reloads and server restarts.
+
+Active runs show an estimated percentage and progress bar in both their library
+card and workspace. Feature extraction, pair matching, camera registration and
+depth estimation report completed work counts. The overall percentage weights
+these stages; it is not an elapsed-time estimate. Long optimization or fusion
+steps can stay at one percentage while their work finishes. Only a finished run
+reaches 100%.
+
+Photos, logs and outputs stay under `outputs/web_ui/<run-id>/`. The server binds
+only to this computer's loopback address. The browser loads Three.js from
+jsDelivr and fonts from Google Fonts; internet access is needed for the 3D
+viewer, while images are sent only to the local server. Existing car and chair
+results appear as examples when their local `results/mesh/` files are present.
+Those original datasets/results are not bundled in the repository.
+
+The point preview shows up to 115,000 points and labels the displayed and full
+counts separately; downloads retain the full cloud. The saved car and chair use
+their original foreground clouds (2,232,430 and 3,186,516 points respectively),
+each previewed with exactly 115,000 sampled points. The mesh viewer shows all
+triangles from the exported light mesh. Coordinates use a normalized upright
+display frame in arbitrary units; exported geometry keeps its native frame.
+Unobserved surfaces and holes are not filled artificially.
+
+Use `--port 8766` for another port, or `--data-dir /path/to/local/runs` to choose
+the run directory. Stop with Ctrl+C. Existing image/video CLI commands remain
+available.
+
+## Command-line sample
 
 Eight original synthetic views, exact intrinsics, and ground-truth poses are
 included under `sample_data/scene_small/`. The images show textured tiles at
@@ -169,10 +259,12 @@ per-image K is rejected explicitly. It runs on CPU using pycolmap 4.2.1 and expo
 the largest reconstructed model, recording the number of models and registration
 rate. No dense COLMAP reconstruction is attempted.
 
-Run `notebooks/vggt_colab.ipynb` on a Colab GPU after publishing the current source
-or copying the adapter into Colab. It uploads your image ZIP and invokes
-`code/baselines/vggt_infer.py`. The adapter has not yet been run on a GPU here.
-Locally, convert and evaluate downloaded output:
+Real VGGT inference has now run locally on Apple MPS for the sequential E1–E7
+study, including car, fountain, Temple and Dino. Use the isolated runtime setup in
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md): upstream VGGT requires NumPy below 2,
+while the UI environment uses NumPy 2. The pinned checkpoint and source revision,
+precision, memory adaptations and runtime are recorded. CUDA timing is not claimed.
+The optional `notebooks/vggt_colab.ipynb` supports Colab instead. Convert and evaluate:
 
 ```bash
 python code/baselines/convert_to_common.py --vggt data/my_scene/vggt_out.npz --out outputs/my_scene_vggt
@@ -180,10 +272,10 @@ python code/eval/run_eval.py --estimate outputs/my_scene_vggt --reference data/m
 ```
 
 For self-captured scenes use COLMAP's `poses.json` with `--reference-kind colmap`;
-these metrics measure agreement with a pseudo-reference. VGGT forward-pass timing
-excludes model loading/preprocessing; it is not directly equivalent to end-to-end
-CPU pipeline runtime. Do not compare its resized-image intrinsics to original
-resolution pixels.
+these metrics measure agreement with a pseudo-reference. Experiment workers record
+end-to-end runtime; VGGT separately records synchronized forward-pass time. Those
+two timing scopes must not be mixed. Do not compare its resized-image intrinsics
+to original-resolution pixels.
 
 ```bash
 python code/run_experiments.py --scene sample_data/scene_small --out results/ba --ablation ba
@@ -231,10 +323,14 @@ produce incomplete models even with low residual errors.
 - `validation/`: retained measured summaries; large raw outputs remain local.
 - `NOTES.md`: validation commands, results, and remaining work.
 
-The sample can be regenerated with `python code/data/make_sample.py`. The project
-still needs broader real-scene validation, a VGGT GPU run, the complete mandatory
-experiment matrix, the final IEEE report, the narrated demo, and submission
-packaging. `AGENT_PIPELINE.md` is the original plan; it is not a completed-work log.
+The sample can be regenerated with `python code/data/make_sample.py`. Sequential
+E1–E7 and mesh M4/M5 runs, measured outcomes and limitations are documented in
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) and
+[docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md). E5 uses calibrated Temple
+as approved by the user; real car checkerboard calibration remains unavailable.
+The final IEEE report, narrated demo, contributor evidence and fresh submission
+packaging remain separate work. `AGENT_PIPELINE.md` is the original plan, not a
+completed-work log.
 
 ## Third-party software and team
 
@@ -283,8 +379,9 @@ manifest are relative to its folder. Alternatively pass `--scene outputs/my_scen
 --images data/my_scene/images`. Supported existing exports include our own SfM,
 common COLMAP exports (with radial undistortion on load), and raw VGGT NPZ files
 containing their own RGB, depth, confidence and poses. Old VGGT NPZ files without
-depth must be regenerated with the updated inference adapter. No VGGT GPU run is
-claimed here. An unregistered image never enters depth generation or fusion.
+depth must be regenerated with the updated inference adapter. Actual VGGT MPS
+outputs are used by the M5 mesh study. An unregistered image never enters depth
+generation or fusion.
 
 For new learned-depth predictions, the first run downloads the verified
 [Depth Anything V2 Small checkpoint](https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf),

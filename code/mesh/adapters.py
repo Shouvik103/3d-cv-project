@@ -156,7 +156,7 @@ def check_convention(scene,out=None,max_error=2.):
             for p in alluv[inside][::max(1,int(inside.sum())//1500)]:cv2.circle(overlay,tuple(np.rint(p).astype(int)),1,(255,0,0),-1)
             Path(out).mkdir(parents=True,exist_ok=True);cv2.imwrite(str(Path(out)/'projection_overlay.png'),overlay[:,:,::-1])
     median=float(np.median(errors)) if errors else None
-    passed=bool(rows) and (median<max_error if median is not None else np.median([r['positive_fraction'] for r in rows])>.8 and np.median([r['inside_fraction'] for r in rows])>.5)
+    passed=bool(rows) and bool(median<max_error if median is not None else np.median([r['positive_fraction'] for r in rows])>.8 and np.median([r['inside_fraction'] for r in rows])>.5)
     result=dict(convention='OpenCV world-to-camera; x_cam=R X+t',median_reprojection_px=median,passed=passed,automatic_no_track_check=not bool(errors),scene_extent=scene.extent,images=rows)
     if out:write_json(Path(out)/'convention.json',result)
     if not passed:raise ValueError('Pose convention/reprojection gate failed; inspect convention.json and overlay')

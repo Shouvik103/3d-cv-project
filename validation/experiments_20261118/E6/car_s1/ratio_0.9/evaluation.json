@@ -1,0 +1,287 @@
+{
+  "method": "ours",
+  "reference_kind": "colmap",
+  "performance": {
+    "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+    "timestamp_utc": "2026-11-18T14:15:36.321034+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "schema_version": 1,
+      "seed": 0,
+      "image_max_side": 1200,
+      "sfm_config": "configs/sfm_relaxed.yaml",
+      "vggt": {
+        "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "model": "facebook/VGGT-1B",
+        "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "device": "auto",
+        "preprocessing": "official_crop_518"
+      },
+      "scenes": {
+        "car_s1": {
+          "images": "outputs/cars_curated_60/calibrated_2400/images",
+          "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+          "views": 20,
+          "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+          "reference_kind": "colmap",
+          "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+        },
+        "fountain_s2": {
+          "images": "outputs/fountain_urd/input/images",
+          "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+          "views": 11,
+          "reference": "outputs/fountain_urd/colmap/poses.json",
+          "reference_kind": "colmap",
+          "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+        },
+        "temple_gt": {
+          "images": "data/temple/images",
+          "intrinsics": "data/temple/intrinsics.yaml",
+          "views": 16,
+          "reference": "data/temple/gt_poses.json",
+          "reference_kind": "gt",
+          "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+        }
+      }
+    },
+    "method": "ours",
+    "status": "completed",
+    "error": null,
+    "wall_seconds": 34.75519087500015,
+    "peak_process_rss_mb": 195.34375,
+    "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+  },
+  "input_sha256": "c9e486db4f622e8fa23c58ccc8a5e1dc7a287e3dcca0d2277f48917641d46915",
+  "estimated_registered": 10,
+  "total_images": 20,
+  "metrics": {
+    "registered": 10,
+    "total_images": 20,
+    "registration_rate": 0.5,
+    "ate_rmse": 0.23880875170057955,
+    "ate_percent_extent": 1.5389570420492766,
+    "median_rotation_deg": 5.674204002563883,
+    "median_translation_deg": 4.84712942649917,
+    "auc": {
+      "5": 0.04212435942525858,
+      "10": 0.09331350022459274,
+      "30": 0.1808114020059202
+    },
+    "pose_pairs": 190,
+    "undefined_reference_pairs": 0,
+    "alignment": {
+      "scale": 0.8098383694045482,
+      "rotation": [
+        [
+          -0.96241709925575,
+          0.11552495286607217,
+          0.2457789908137766
+        ],
+        [
+          -0.0680508165288859,
+          -0.9787247924856171,
+          0.19356359922190172
+        ],
+        [
+          0.26291141745823554,
+          0.16956345667412223,
+          0.9498030431256909
+        ]
+      ],
+      "translation": [
+        0.5307173467941309,
+        0.7978420358456315,
+        -0.7592292361111579
+      ]
+    },
+    "alignment_error": null,
+    "compared_images": [
+      "IMG_20261114_182205.jpg",
+      "IMG_20261114_182220.jpg",
+      "IMG_20261114_182226.jpg",
+      "IMG_20261114_182230.jpg",
+      "IMG_20261114_182239.jpg",
+      "IMG_20261114_182247.jpg",
+      "IMG_20261114_182255.jpg",
+      "IMG_20261114_182300.jpg",
+      "IMG_20261114_182304.jpg",
+      "IMG_20261114_182325.jpg"
+    ]
+  },
+  "run": {
+    "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+    "timestamp_utc": "2026-11-18T14:15:36.292901+00:00",
+    "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+    "python": "3.11.15",
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "opencv-python": "4.14.0.94",
+      "PyYAML": "6.0.3",
+      "Pillow": "12.3.0",
+      "pycolmap": "4.2.1"
+    },
+    "config": {
+      "seed": 0,
+      "image": {
+        "max_side": 1600
+      },
+      "features": {
+        "detector": "sift",
+        "n_features": 4000,
+        "rootsift": true,
+        "contrast_threshold": 0.01
+      },
+      "matching": {
+        "ratio": 0.9,
+        "mutual": true,
+        "min_inliers": 20,
+        "ransac_thresh_px": 1.5,
+        "ransac_iters": 2000,
+        "ransac_conf": 0.999
+      },
+      "init": {
+        "top_k_pairs": 20,
+        "max_hf_ratio": 0.7,
+        "min_median_angle_deg": 2.0
+      },
+      "triangulation": {
+        "max_reproj_px": 3.0,
+        "min_angle_deg": 1.0
+      },
+      "registration": {
+        "pnp_reproj_px": 6.0,
+        "pnp_iters": 2000,
+        "min_inliers": 15
+      },
+      "ba": {
+        "mode": "local_global",
+        "local_neighbors": 5,
+        "max_nfev_local": 30,
+        "global_every": 5,
+        "max_points_global": 5000,
+        "max_nfev": 80,
+        "loss": "huber",
+        "f_scale": 1.0
+      },
+      "filter": {
+        "final_reproj_px": 3.0
+      },
+      "export": {
+        "save_growth_snapshots": true
+      }
+    },
+    "registered": 10,
+    "points": 621,
+    "median_reprojection_px": 0.568334826319056,
+    "elapsed_seconds": 34.62934454200058,
+    "total_images": 20,
+    "runtime_seconds": 34.668668750000506,
+    "init_pair": [
+      "IMG_20261114_182205.jpg",
+      "IMG_20261114_182304.jpg"
+    ],
+    "image_names": [
+      "IMG_20261114_181828.jpg",
+      "IMG_20261114_181839.jpg",
+      "IMG_20261114_181857.jpg",
+      "IMG_20261114_181910.jpg",
+      "IMG_20261114_181941.jpg",
+      "IMG_20261114_182009.jpg",
+      "IMG_20261114_182042.jpg",
+      "IMG_20261114_182048.jpg",
+      "IMG_20261114_182054.jpg",
+      "IMG_20261114_182121.jpg",
+      "IMG_20261114_182205.jpg",
+      "IMG_20261114_182220.jpg",
+      "IMG_20261114_182226.jpg",
+      "IMG_20261114_182230.jpg",
+      "IMG_20261114_182239.jpg",
+      "IMG_20261114_182247.jpg",
+      "IMG_20261114_182255.jpg",
+      "IMG_20261114_182300.jpg",
+      "IMG_20261114_182304.jpg",
+      "IMG_20261114_182325.jpg"
+    ],
+    "history": [
+      {
+        "registered": 2,
+        "points": 220,
+        "median_reprojection_px": 1.1489881978826544,
+        "elapsed_seconds": 33.2050110830005
+      },
+      {
+        "registered": 3,
+        "points": 291,
+        "median_reprojection_px": 1.081151693094713,
+        "elapsed_seconds": 33.233423333000246
+      },
+      {
+        "registered": 4,
+        "points": 359,
+        "median_reprojection_px": 1.1370936415919626,
+        "elapsed_seconds": 33.26829583300059
+      },
+      {
+        "registered": 5,
+        "points": 441,
+        "median_reprojection_px": 0.5674833769404434,
+        "elapsed_seconds": 33.51079737500004
+      },
+      {
+        "registered": 6,
+        "points": 487,
+        "median_reprojection_px": 0.6258050128576358,
+        "elapsed_seconds": 33.55283225000039
+      },
+      {
+        "registered": 7,
+        "points": 536,
+        "median_reprojection_px": 0.6478906360210858,
+        "elapsed_seconds": 33.59723245799978
+      },
+      {
+        "registered": 8,
+        "points": 565,
+        "median_reprojection_px": 0.6692881171908776,
+        "elapsed_seconds": 33.63893075000033
+      },
+      {
+        "registered": 9,
+        "points": 600,
+        "median_reprojection_px": 0.6898520350666663,
+        "elapsed_seconds": 33.681576875000246
+      },
+      {
+        "registered": 10,
+        "points": 624,
+        "median_reprojection_px": 0.583824962501344,
+        "elapsed_seconds": 34.059465958000146
+      },
+      {
+        "registered": 10,
+        "points": 621,
+        "median_reprojection_px": 0.568334826319056,
+        "elapsed_seconds": 34.62934454200058
+      }
+    ],
+    "mean_track_length": 2.6650563607085345
+  },
+  "reprojection": {
+    "median_px": 0.5683349705467711,
+    "mean_px": 0.6923898625436886,
+    "scope": "Processed input pixels; VGGT has no matching observed tracks"
+  },
+  "mean_track_length": 2.6650563607085345
+}

@@ -90,6 +90,16 @@ def test_adapter_convention_and_resolution(tmp_path):
     with pytest.raises(ValueError,match='size'):load_scene(tmp_path)
 
 
+def test_no_track_convention_gate_writes_serializable_status(tmp_path):
+    from mesh.synthetic import write_sample
+    from mesh.adapters import load_scene,check_convention
+    write_sample(tmp_path/'sample',size=64,views=6)
+    scene=load_scene(tmp_path/'sample');scene.tracks=None
+    report=check_convention(scene,tmp_path/'check')
+    assert type(report['passed']) is bool and report['passed']
+    assert json.loads((tmp_path/'check/convention.json').read_text())['passed'] is True
+
+
 def test_cached_cli_heldout_and_relocation(tmp_path):
     from mesh.synthetic import write_sample
     from mesh.mesh_export import read_mesh

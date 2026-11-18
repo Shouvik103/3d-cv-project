@@ -32,12 +32,21 @@ def centers(poses, names):
     return np.array([-np.asarray(poses['R'][n]).T @ np.asarray(poses['t'][n]) for n in names])
 
 
-def evaluate_poses(estimate, reference, thresholds=(5, 10, 30)):
+def evaluate_poses(estimate, reference, thresholds=(5, 10, 30), allow_partial=False):
     names = reference['image_names']
     shared = sorted(set(estimate['registered']) & set(reference['registered']))
-    scale, Q, b = umeyama(centers(estimate, shared), centers(reference, shared))
-    target = centers(reference, shared)
-    residuals = np.linalg.norm(transform_points(centers(estimate, shared), scale, Q, b)-target, axis=1)
+    alignment_error = None
+    try:
+        scale, Q, b = umeyama(centers(estimate, shared), centers(reference, shared))
+        target = centers(reference, shared)
+        residuals = np.linalg.norm(transform_points(centers(estimate, shared), scale, Q, b)-target, axis=1)
+        alignment = dict(scale=scale, rotation=Q.tolist(), translation=b.tolist())
+        rmse = float(np.sqrt(np.mean(residuals**2)))
+    except ValueError as exc:
+        if not allow_partial:raise
+        alignment_error = str(exc)
+        alignment = None
+        rmse = None
     errors, rotations, translations = [], [], []
     shared_set = set(shared)
     undefined_reference_pairs = 0
@@ -59,14 +68,13 @@ def evaluate_poses(estimate, reference, thresholds=(5, 10, 30)):
         te = angle_deg(rel[0][1], rel[1][1])
         rotations.append(re); translations.append(te); errors.append(max(re, te))
     extent = float(np.linalg.norm(np.ptp(centers(reference, reference['registered']), axis=0)))
-    rmse = float(np.sqrt(np.mean(residuals**2)))
     metrics = dict(registered=len(shared), total_images=len(names), registration_rate=len(shared)/len(names), ate_rmse=rmse,
-                   ate_percent_extent=100*rmse/extent if extent else None,
-                   median_rotation_deg=float(np.median(rotations)),
-                   median_translation_deg=float(np.median(translations)) if np.isfinite(translations).all() else None,
+                   ate_percent_extent=100*rmse/extent if extent and rmse is not None else None,
+                   median_rotation_deg=float(np.median(rotations)) if rotations else None,
+                   median_translation_deg=float(np.median(translations)) if translations and np.isfinite(translations).all() else None,
                    auc={str(t): pose_auc(errors, t) for t in thresholds}, pose_pairs=len(errors),
                    undefined_reference_pairs=undefined_reference_pairs,
-                   alignment=dict(scale=scale, rotation=Q.tolist(), translation=b.tolist()), compared_images=shared)
+                   alignment=alignment, alignment_error=alignment_error, compared_images=shared)
     return metrics
 
 

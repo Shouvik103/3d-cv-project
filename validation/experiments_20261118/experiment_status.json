@@ -1,0 +1,60 @@
+{
+  "order": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "M4",
+    "M5"
+  ],
+  "experiments": {
+    "E1": {
+      "status": "completed",
+      "results": "E1/results.csv",
+      "notes": "No GT camera accuracy is claimed for the car/fountain; those metrics are COLMAP agreement."
+    },
+    "E2": {
+      "status": "completed",
+      "results": "E2/results.csv",
+      "failed_attempts": 0
+    },
+    "E3": {
+      "status": "completed",
+      "results": "E3/results.csv",
+      "failed_attempts": 4
+    },
+    "E4": {
+      "status": "completed",
+      "results": "E4/results.csv",
+      "failed_attempts": 1
+    },
+    "E5": {
+      "status": "completed",
+      "results": "E5/results.csv",
+      "scope": "Calibrated public Temple substitution explicitly approved by user; car checkerboard study unavailable"
+    },
+    "E6": {
+      "status": "completed",
+      "results": "E6/results.csv",
+      "failed_attempts": 0
+    },
+    "E7": {
+      "status": "completed",
+      "results": "E7/results.csv",
+      "failed_attempts": 4
+    },
+    "M4": {
+      "status": "completed",
+      "results": "M4/results.csv",
+      "failed_attempts": 0
+    },
+    "M5": {
+      "status": "completed",
+      "results": "M5/results.csv",
+      "failed_attempts": 0
+    }
+  }
+}

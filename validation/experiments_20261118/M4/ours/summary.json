@@ -1,0 +1,246 @@
+{
+  "source_sha256": "425753eb0a0fe4f9360a89c65eb694508068520b145e2f956745b52b5d636aa6",
+  "timestamp_utc": "2026-11-18T14:28:39.744733+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "mono",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 384,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        5,
+        95
+      ],
+      "roi_margin_frac": 0.15
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 192,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 3,
+      "seed": 0
+    }
+  },
+  "scene": "/Users/shouvikdas/Documents/ChatGPT/3d-cv-project/results/experiments_20261118/mesh_scenes/ours",
+  "backend": "mono",
+  "frames_fused": 8,
+  "registered_views": 11,
+  "fusion_images": [
+    "0000.jpg",
+    "0001.jpg",
+    "0002.jpg",
+    "0003.jpg",
+    "0004.jpg",
+    "0008.jpg",
+    "0009.jpg",
+    "0010.jpg"
+  ],
+  "heldout_images": [
+    "0005.jpg",
+    "0006.jpg",
+    "0007.jpg"
+  ],
+  "heldout": {
+    "views": 3,
+    "rows": [
+      {
+        "image": "0005.jpg",
+        "pixels": 754080,
+        "coverage": 0.7855,
+        "psnr_db": 22.31588456926165,
+        "ssim": 0.4798253583090094,
+        "mae": 0.05555529379868503
+      },
+      {
+        "image": "0006.jpg",
+        "pixels": 743607,
+        "coverage": 0.774590625,
+        "psnr_db": 21.315334018385034,
+        "ssim": 0.46590734755335306,
+        "mae": 0.06522409568178764
+      },
+      {
+        "image": "0007.jpg",
+        "pixels": 725858,
+        "coverage": 0.7561020833333333,
+        "psnr_db": 21.412476815331758,
+        "ssim": 0.47700052553734446,
+        "mae": 0.064110326625941
+      }
+    ],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": 0.7528281053949534,
+    "passed": true,
+    "automatic_no_track_check": false,
+    "scene_extent": 9.701190298064287,
+    "images": [
+      {
+        "image": "0000.jpg",
+        "positive_fraction": 0.9528993556987336,
+        "inside_fraction": 0.9057987113974673,
+        "tracked_points": 1228
+      },
+      {
+        "image": "0001.jpg",
+        "positive_fraction": 0.9840035547656076,
+        "inside_fraction": 0.9060208842479449,
+        "tracked_points": 1585
+      },
+      {
+        "image": "0002.jpg",
+        "positive_fraction": 0.9944456787380582,
+        "inside_fraction": 0.8840257720506554,
+        "tracked_points": 1580
+      },
+      {
+        "image": "0003.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.8751388580315486,
+        "tracked_points": 1463
+      },
+      {
+        "image": "0004.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.820706509664519,
+        "tracked_points": 1354
+      },
+      {
+        "image": "0005.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.8033770273272606,
+        "tracked_points": 1344
+      },
+      {
+        "image": "0006.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.7884914463452566,
+        "tracked_points": 903
+      },
+      {
+        "image": "0007.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.7707176183070429,
+        "tracked_points": 769
+      },
+      {
+        "image": "0008.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.804487891579649,
+        "tracked_points": 788
+      },
+      {
+        "image": "0009.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.8689180182181737,
+        "tracked_points": 1039
+      },
+      {
+        "image": "0010.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.8655854254610087,
+        "tracked_points": 648
+      }
+    ]
+  },
+  "roi": [
+    [
+      -2.5081289689999995,
+      -1.6157182805,
+      2.9976993705
+    ],
+    [
+      7.950861729,
+      0.8179871105000001,
+      4.1912329195
+    ]
+  ],
+  "voxel_length": 0.05052703280241816,
+  "full": {
+    "vertices": 4610,
+    "faces": 8632,
+    "components": 1,
+    "boundary_edges": 604,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 8.126958791032939,
+    "mean_edge_length": 0.05004060138412115
+  },
+  "light": {
+    "vertices": 4610,
+    "faces": 8632,
+    "components": 1,
+    "boundary_edges": 604,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 8.126958791032939,
+    "mean_edge_length": 0.05004060138412115
+  },
+  "timing_seconds": {
+    "depth": 3.444429460001629,
+    "alignment": 0.22699520799869788,
+    "filtering": 1.1672810840000238,
+    "fusion": 0.02408766700045817,
+    "clean_export": 0.06838929100013047,
+    "total": 7.680711832999805
+  },
+  "peak_rss_mb": 1322.75
+}

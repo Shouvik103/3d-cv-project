@@ -1,0 +1,97 @@
+{
+  "source_sha256": "0f28f294cca8192e638c663fe2d4758dacf4ff4d20a4776870973678129a46b8",
+  "timestamp_utc": "2026-11-18T14:02:57.658789+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.85,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 2,
+  "points": 18,
+  "median_reprojection_px": 0.030295328694074957,
+  "elapsed_seconds": 2.6663377080003556,
+  "total_images": 5,
+  "runtime_seconds": 2.6991637910000463,
+  "init_pair": [
+    "templeSR0012.jpg",
+    "templeSR0016.jpg"
+  ],
+  "image_names": [
+    "templeSR0001.jpg",
+    "templeSR0004.jpg",
+    "templeSR0008.jpg",
+    "templeSR0012.jpg",
+    "templeSR0016.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 19,
+      "median_reprojection_px": 0.5778368440159113,
+      "elapsed_seconds": 2.4483223330003057
+    },
+    {
+      "registered": 2,
+      "points": 18,
+      "median_reprojection_px": 0.030295328694074957,
+      "elapsed_seconds": 2.6663377080003556
+    }
+  ],
+  "mean_track_length": 2.0
+}

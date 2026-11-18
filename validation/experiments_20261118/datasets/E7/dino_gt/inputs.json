@@ -1,0 +1,119 @@
+{
+  "source_sha256": "67d3b4d99a228b1d251140e9caef29617ec80a8938f800cef536502db2a81a04",
+  "timestamp_utc": "2026-11-18T14:21:46.324644+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "schema_version": 1,
+    "seed": 0,
+    "image_max_side": 1200,
+    "sfm_config": "configs/sfm_relaxed.yaml",
+    "vggt": {
+      "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+      "model": "facebook/VGGT-1B",
+      "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+      "device": "auto",
+      "preprocessing": "official_crop_518"
+    },
+    "scenes": {
+      "car_s1": {
+        "images": "outputs/cars_curated_60/calibrated_2400/images",
+        "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+        "views": 20,
+        "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+        "reference_kind": "colmap",
+        "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+      },
+      "fountain_s2": {
+        "images": "outputs/fountain_urd/input/images",
+        "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+        "views": 11,
+        "reference": "outputs/fountain_urd/colmap/poses.json",
+        "reference_kind": "colmap",
+        "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+      },
+      "temple_gt": {
+        "images": "data/temple/images",
+        "intrinsics": "data/temple/intrinsics.yaml",
+        "views": 16,
+        "reference": "data/temple/gt_poses.json",
+        "reference_kind": "gt",
+        "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+      }
+    }
+  },
+  "inputs": {
+    "scene": "dino_gt",
+    "selected_images": [
+      "dinoSR0001.png",
+      "dinoSR0002.png",
+      "dinoSR0003.png",
+      "dinoSR0004.png",
+      "dinoSR0005.png",
+      "dinoSR0006.png",
+      "dinoSR0007.png",
+      "dinoSR0008.png",
+      "dinoSR0009.png",
+      "dinoSR0010.png",
+      "dinoSR0011.png",
+      "dinoSR0012.png",
+      "dinoSR0013.png",
+      "dinoSR0014.png",
+      "dinoSR0015.png",
+      "dinoSR0016.png"
+    ],
+    "source_images": "data/middlebury/dinoSparseRing",
+    "source_sha256": {
+      "dinoSR0001.png": "1478d5b402e807e806b814541c5024b82802285227f9c8e3a24e0c22903306b4",
+      "dinoSR0002.png": "f64bce0ac08d40999fd66af76a63cd851e9ac68578e709e543f3cb9d26c5bc86",
+      "dinoSR0003.png": "16c6650607bafcca055e4046820aa59779311c8b12456e47de3caab0a70225e8",
+      "dinoSR0004.png": "bda57cb4d8f7629966df1e4ead5cf88802c124d5933272f7c453588a870cd8e9",
+      "dinoSR0005.png": "22256ac305186da4e07c9f0c46b6401ca1a4592fce4ff1638b734ee8cef6547f",
+      "dinoSR0006.png": "918f271cd3746ac0a30d81ec98f74c858bbed7cb002199a1d4a9cf5b956f6686",
+      "dinoSR0007.png": "bd174f4bc1387ea8a47d110cf30e140c797af98da7d332415491053d06110e19",
+      "dinoSR0008.png": "7add640d4586b268dac447e479a8dce36b61bacd9ea5a0a34574a740f5ee6aff",
+      "dinoSR0009.png": "03c19cdecc459f1ca50fa3a9caee6af2d46f95128952d5e7b32a1ab240ad5350",
+      "dinoSR0010.png": "21240efe85000d2aef88718585a2b4164e1710f5276bb6cfee0eeac93ffb04d3",
+      "dinoSR0011.png": "1e1543ada1b112167c466c0e0176348cd9d444514504d200273bfdb58713917c",
+      "dinoSR0012.png": "524b45f53e8122457758949692c8f4de4ce229daa574301b49c01ed5aac3cbdb",
+      "dinoSR0013.png": "40e091db8b0a16297242ea2ff39938bd8149491f6f13292ce770a047cca3cd2c",
+      "dinoSR0014.png": "14ccad4feaa931c9b24e4aa5c357eb04315e193dc90d7b56a99e21e1cfefdcee",
+      "dinoSR0015.png": "32333ba547a67abe0c9b2315fd9c20cf64e0c06ea42f2eec1220e51a722adb5c",
+      "dinoSR0016.png": "15a0056db3a6491b2346ea74a24e9af37db385514110f49ffb661546e6a8defa"
+    },
+    "intrinsics_sha256": "92f38a8a3089dd171f6d5d48d4785a026bf40cdf38c09a174df0189d87b406c5",
+    "reference_sha256": "1f8f6edcbc785808aa3e1bf8124ef01e665616d2fbc80e4d119f0ea95ccceeec",
+    "max_side": 1200,
+    "seed": 0
+  },
+  "reference_kind": "gt",
+  "notes": "Official low-texture Dino sparse ring; no scene-specific parameter tuning",
+  "reference_camera_frame": "Native reference cameras, used only for pose evaluation",
+  "prepared_sha256": {
+    "dinoSR0001.jpg": "5903d734535472cb0b7d933b2aaadcc674859f7b62bb39995cf529ecbb9bbf76",
+    "dinoSR0002.jpg": "a43f33abdbadac2beb1b5939dd4122631b57108849b2fe16fc11b1e0ce8f0d0f",
+    "dinoSR0003.jpg": "ce301ca19a689d4821e10ba92662fbb05ed647f080a547bbb39f96ff9405bbe5",
+    "dinoSR0004.jpg": "d99e3aea02c1ee4d6a1faf3bbbb1895dfcba949dcfc4abb1cd291751d4b24575",
+    "dinoSR0005.jpg": "c2e88fecf4314031a7e4449beb6f4fbe083dfa57f1c195c3f17b834147d0e79c",
+    "dinoSR0006.jpg": "25898908b61275a2a2d7f3a7384cbd9f4f56af40c0d1a2ad7b4c6bf1eea25839",
+    "dinoSR0007.jpg": "be76c8c390585ad3045d921cf2a04f841679dce817008e5e01234c53ce385290",
+    "dinoSR0008.jpg": "dd89dcc11025d5a2cd3d533da8fcf4fac1049c161b67958b7c46ac17be446234",
+    "dinoSR0009.jpg": "cc03eb46751d71bd7bba41ae57b60804712148dceabf844044be84a9c2993319",
+    "dinoSR0010.jpg": "bd05512c5ef6226340b378b4d25daea9416f6bb08cda2023e843b65a673307f1",
+    "dinoSR0011.jpg": "2ba9816c09cf76c0ff7f3e4a9606f378d6d74596deb7e49aa13235626422fa99",
+    "dinoSR0012.jpg": "fe8a45cbfc70da9e4d5eee2000614c5c7cc9f6734728ac23602fa0b23c2a69e7",
+    "dinoSR0013.jpg": "4c0cb8f294a8346056980d3b8105bda18035ef2d7cde64fba2382386aa6d8e93",
+    "dinoSR0014.jpg": "7a525926662cb42e6d58280ee377cc653d93b71f5750ca7b599e1e3662847944",
+    "dinoSR0015.jpg": "54ee34aed18de27bf366ddb442ff05791112c5c0996a666bf70230fb217a6ac4",
+    "dinoSR0016.jpg": "840e7ef3edffedba6bb95049131795d1df31948e926480ab9371f7a76ee05ba6"
+  }
+}
