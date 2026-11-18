@@ -1,0 +1,62 @@
+{
+  "source_sha256": "f2ed0ebffc8b31a457442595348ea6eaf307553449edf0abb584ad15a13b1f88",
+  "timestamp_utc": "2026-11-18T15:00:18.313646+00:00",
+  "git_commit": "a25c33c5a50085526e19092bad754b7e428960af",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": null,
+  "branch": "codex/extended-reconstruction-interface",
+  "base_commit": "a25c33c",
+  "tests": {
+    "passed": 63,
+    "failed": 0,
+    "command": ".venv/bin/python -m pytest -q",
+    "log_sha256": "722d6d6933c01db931a92cef9a6008b94a7e53e121a65ee87ea3cca2596831c4",
+    "warning": "Existing external Dash test plugin deprecation warning"
+  },
+  "browser": {
+    "checked": [
+      "Four main tabs and three performance tabs",
+      "Scene/method filters, including empty selection",
+      "E3 view-count curves and unavailable camera alignment",
+      "Numeric table sorting",
+      "E7 failed attempts and reasons",
+      "E1 original plot and PDF links",
+      "M4/M5 mesh metrics and interactive links",
+      "Keyboard Home navigation",
+      "Light and dark themes",
+      "390px responsive layout: document width equals viewport width",
+      "Car point preview: 115000 of 2232430",
+      "Chair point preview: 115000 of 3186516",
+      "Selected chair mean reprojection: 0.424 px; not relabelled median"
+    ],
+    "console_errors": [],
+    "viewport_override": "Reset after responsive check",
+    "scope": "No new expensive reconstruction was launched through the browser; existing upload/queue/delete behavior covered by regression tests."
+  },
+  "evidence": {
+    "collection": "experiments_20261118",
+    "studies": 9,
+    "conditions": 67,
+    "served_artifacts_checked": 279
+  },
+  "screenshots": {
+    "performance-dark.jpg": "26747ce6e413c370316692c2fb5ba2f8beab7bdbcdb1cb09fd1ce9578294d2a7",
+    "performance-light.jpg": "021e0931d41e89ab1852c4167736213217b0e7b511bb79c47f39e50915956d76",
+    "performance-mobile.jpg": "505b1d6670fee1ebf6bc353691a42826fd0db8e1b2f84e94ade1a1590924e8c7"
+  },
+  "frontend_sha256": {
+    "index.html": "f65ce73369fe0f96462038c4d48e7ec55cf2d09d141d09651f122bbc68984ea6",
+    "app.js": "121d599c5b584b6271b9626a8cafcfd56bce80baa8c6ff61923c8e6b839f5c15",
+    "lab.js": "859b4445d5133100c3df3ce2e9860518e062cf22c1ce9a2824f221bc63511b54",
+    "lab.css": "7aac0eba200adeabbc04960a453cad1b3a22aa8b8ed0fd675e7a7b33b5d3e228"
+  }
+}

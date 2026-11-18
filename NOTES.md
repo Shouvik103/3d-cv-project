@@ -1,5 +1,21 @@
 # Implementation and validation notes
 
+## Extended interface — 18 November 2026
+
+Branch `codex/extended-reconstruction-interface` adds Workspace, Pipeline &
+methods, Performance and Experiments tabs. The research views read the saved
+67 conditions from all nine studies; new uploads retain their own pipeline and
+do not automatically launch COLMAP/VGGT. The selected-run inspector uses that
+run's actual summaries, with mean/median residual distinctions preserved.
+
+The complete suite passes 63 tests. Browser checks cover filtering, missing
+metrics, sorting, keyboard navigation, light/dark layouts, original evidence
+links and both existing 115,000-point car/chair previews. The 390px layout has no
+document-level horizontal overflow. Compact screenshots and validation are in
+`validation/web_lab/`; interface details are in `docs/EXTENDED_INTERFACE.md`.
+Preview server: port 8766 with `outputs/web_ui_extended`, separate from the
+existing port-8765 service and its run history.
+
 ## Current status — 18 November 2026
 
 The dated entries below preserve earlier milestones. Statements in the November

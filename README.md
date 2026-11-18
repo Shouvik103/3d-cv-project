@@ -40,6 +40,35 @@ to zoom, right-drag to pan, and hover for XYZ coordinates. Point size can be
 adjusted from 0.3× to 3× and is remembered across views and reloads. Mesh appearance
 can switch between photo colors, shading, wireframe and normals.
 
+The extended interface adds four keyboard-accessible tabs:
+
+- **Workspace** keeps uploads, job progress, saved reconstructions, deletion,
+  downloads and the 3D viewers. Selected-run details include measured residuals,
+  timing, mesh topology, reconstruction growth, configuration and versions.
+- **Pipeline & methods** explains Our SfM, CPU COLMAP and VGGT, including camera
+  calibration, depth/fusion, model provenance and limitations.
+- **Performance** provides scene/method filters, interactive bar/line plots,
+  sortable measurements, ablations, failures and mesh-quality comparisons.
+- **Experiments** exposes the original E1–E7/M4/M5 PNG/PDF plots, CSV/JSON tables,
+  reports and embedded interactive benchmark meshes.
+
+Research views load measured, versioned evidence from the latest
+`validation/experiments_*/` collection, without needing raw datasets or model
+weights. Undefined metrics remain unavailable and failed attempts remain visible.
+They are saved experiments, separate from new uploads: uploading does not launch
+COLMAP or VGGT. Local upload runs use Our SfM plus optional SGBM/TSDF as before.
+No new chart-library or Python dependencies are needed.
+
+If another interface is already using port 8765, launch a separate preview:
+
+```bash
+.venv/bin/python code/web/server.py --port 8766 --data-dir outputs/web_ui_extended
+```
+
+Open [the extended preview](http://127.0.0.1:8766). This separate data directory
+keeps preview uploads apart from your original run history. Omit `--data-dir`
+when you want to use the existing `outputs/web_ui` library.
+
 Use **Dark mode** in the header to switch themes. The interface follows the
 system appearance until you choose a theme, then remembers that choice locally
 across reloads. On narrow screens the toggle appears as a moon icon. Uploads,

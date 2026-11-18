@@ -87,6 +87,7 @@
     const links=[];
     for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Dense cloud PLY'],['sparse_cloud','Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
     renderDownloads(links);
+    window.dispatchEvent(new Event('reconstruction-selection'));
   }
   function renderMetrics(input,registered,points,triangles){
     [input,registered,points,triangles].forEach((value,index)=>{$('#metrics').children[index].querySelector('strong').textContent=value?format(value):'—';});
@@ -116,6 +117,7 @@
     message('Existing reconstruction from 60 selected views. Measured stereo surfaces can have holes; coordinates use arbitrary display units.');renderMetrics(60,60,null,null);
     renderDownloads([['Cloud PLY',`/api/examples/${example.id}/cloud-ply`],['Mesh GLB',`/api/examples/${example.id}/glb`],['Mesh PLY',`/api/examples/${example.id}/ply`],['Mesh OBJ',`/api/examples/${example.id}/obj`]]);
     loadGeometry(`/api/examples/${example.id}/mesh`,`${example.id}-mesh`,'mesh');renderLibrary();
+    window.dispatchEvent(new Event('reconstruction-selection'));
   }
   function changeKind(kind){
     state.kind=kind;if(!state.selected)return;
@@ -137,6 +139,7 @@
   function clearSelection(){
     resetSelection();state.selected=null;$('#result-title').textContent='Your next perspective';$('#result-status').textContent='Ready to begin';delete $('#result-status').dataset.status;
     $('#progress-area').hidden=true;$('#run-details').hidden=true;$('#cloud-tab').disabled=true;$('#mesh-tab').disabled=true;renderMetrics();message('');
+    window.dispatchEvent(new Event('reconstruction-selection'));
   }
   let pendingDelete=null;
   function askDelete(item){
