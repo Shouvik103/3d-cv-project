@@ -1,0 +1,353 @@
+{
+  "source_sha256": "da8508d02b6740d52fb3bb6e72dd4c50699621749a580b2faf9394a23e436284",
+  "timestamp_utc": "2026-11-18T15:24:13.814233+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "vggt",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 640,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        1,
+        99
+      ],
+      "roi_margin_frac": 0.2
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 192,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 0,
+      "seed": 0
+    }
+  },
+  "scene": "/Users/shouvikdas/Documents/ChatGPT/3d-cv-project/outputs/web_ui_extended/4312a5febaa94fb0bba3c46e2468facb/reconstruction/raw.npz",
+  "backend": "vggt",
+  "frames_fused": 30,
+  "registered_views": 30,
+  "fusion_images": [
+    "000_r_3.jpg",
+    "001_r_11.jpg",
+    "002_r_19.jpg",
+    "003_r_27.jpg",
+    "004_r_35.jpg",
+    "005_r_40.jpg",
+    "006_r_48.jpg",
+    "007_r_56.jpg",
+    "008_r_64.jpg",
+    "009_r_75.jpg",
+    "010_r_80.jpg",
+    "011_r_86.jpg",
+    "012_r_92.jpg",
+    "013_r_99.jpg",
+    "014_r_106.jpg",
+    "015_r_112.jpg",
+    "016_r_118.jpg",
+    "017_r_124.jpg",
+    "018_r_130.jpg",
+    "019_r_136.jpg",
+    "020_r_142.jpg",
+    "021_r_146.jpg",
+    "022_r_152.jpg",
+    "023_r_158.jpg",
+    "024_r_164.jpg",
+    "025_r_170.jpg",
+    "026_r_177.jpg",
+    "027_r_182.jpg",
+    "028_r_188.jpg",
+    "029_r_194.jpg"
+  ],
+  "heldout_images": [],
+  "heldout": {
+    "views": 0,
+    "rows": [],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": null,
+    "passed": true,
+    "automatic_no_track_check": true,
+    "scene_extent": 0.6666215645848886,
+    "images": [
+      {
+        "image": "000_r_3.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "001_r_11.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "002_r_19.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "003_r_27.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "004_r_35.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "005_r_40.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "006_r_48.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "007_r_56.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "008_r_64.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "009_r_75.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "010_r_80.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "011_r_86.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "012_r_92.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "013_r_99.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "014_r_106.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "015_r_112.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "016_r_118.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "017_r_124.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "018_r_130.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "019_r_136.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "020_r_142.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "021_r_146.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "022_r_152.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "023_r_158.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "024_r_164.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "025_r_170.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "026_r_177.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "027_r_182.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "028_r_188.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      },
+      {
+        "image": "029_r_194.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 51283
+      }
+    ]
+  },
+  "roi": [
+    [
+      -0.21744177150726318,
+      -0.1533345285654068,
+      0.6283866424560547
+    ],
+    [
+      0.25516460943222047,
+      0.2997168750166893,
+      1.3830164675712586
+    ]
+  ],
+  "voxel_length": 0.003471987315546295,
+  "full": {
+    "vertices": 50263,
+    "faces": 98815,
+    "components": 1,
+    "boundary_edges": 1779,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 0.3964895367993638,
+    "mean_edge_length": 0.0033204826876495628
+  },
+  "light": {
+    "vertices": 40786,
+    "faces": 79999,
+    "components": 3,
+    "boundary_edges": 1639,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 0.396479780177065,
+    "mean_edge_length": 0.0036628589324797715
+  },
+  "timing_seconds": {
+    "depth": 2.5857370810026623,
+    "alignment": 0.0,
+    "filtering": 0.7192459590005456,
+    "fusion": 0.12145983300069929,
+    "clean_export": 0.4220186670008843,
+    "total": 4.753207499999917
+  },
+  "peak_rss_mb": 868.75
+}

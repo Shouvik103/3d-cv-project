@@ -1,5 +1,34 @@
 # Implementation and validation notes
 
+## Fresh same-upload comparisons
+
+The extended branch now runs Our SfM, COLMAP, VGGT, or All three for uploaded
+images. All three creates three independent queued jobs with identical photo
+bytes and explicit method labels, plus a live comparison with CSV/JSON/PNG
+exports. Classical methods offer SGBM or monocular depth / sparse alignment;
+VGGT uses its own cameras/depth in its isolated runtime. COLMAP camera inference
+is isolated from learned depth to avoid a native OpenMP threading conflict.
+
+Nine fresh Temple/car/chair jobs were created through the normal HTTP API and
+remain in `outputs/web_ui_extended`. All have cloud and mesh outputs. Camera
+counts (Our SfM / COLMAP / VGGT) are Temple 16/13/16 of 16; car 4/10/30 of 30;
+chair 20/30/30 of 30. Partial models and surface artifacts are retained. Car and
+chair input intrinsics were earlier estimates, not GT; no earlier poses or
+geometry were used as fresh method outputs. New-upload ATE/AUC is explicitly
+COLMAP agreement, not GT accuracy.
+
+Retry controls now have independent per-run fields initialized from saved
+settings; unrelated upload-form defaults cannot silently replace them. Prior
+attempts, including failed retries, remain archived. Queue generation tokens
+prevent a cancelled queued task from launching a later retry twice.
+
+Validation: 68 tests pass, all prepared-photo hashes match across methods within
+each group, and browser checks confirm the nine library entries, method choices,
+live previews, model opening, comparison tables, and saved retry settings.
+Compact tables, metadata, plots, screenshots and nine interactive mesh HTMLs
+are retained in `validation/web_three_methods/`. Raw photos and large geometry /
+prediction arrays remain local. Untracked user dataset folders are not included.
+
 ## Extended interface — 18 November 2026
 
 Branch `codex/extended-reconstruction-interface` adds Workspace, Pipeline &

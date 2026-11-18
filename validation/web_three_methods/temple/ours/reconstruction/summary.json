@@ -1,0 +1,192 @@
+{
+  "source_sha256": "6849fbd055fce881d0b103d9e829386a6a009dd08ef4f14e2cbd915fabcbff62",
+  "timestamp_utc": "2026-11-18T18:31:21.129069+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.85,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": false
+    }
+  },
+  "registered": 16,
+  "points": 3933,
+  "median_reprojection_px": 0.13913401365999015,
+  "elapsed_seconds": 29.787432749999425,
+  "total_images": 16,
+  "runtime_seconds": 29.88408554200214,
+  "init_pair": [
+    "002_templeSR0003.jpg",
+    "013_templeSR0014.jpg"
+  ],
+  "image_names": [
+    "000_templeSR0001.jpg",
+    "001_templeSR0002.jpg",
+    "002_templeSR0003.jpg",
+    "003_templeSR0004.jpg",
+    "004_templeSR0005.jpg",
+    "005_templeSR0006.jpg",
+    "006_templeSR0007.jpg",
+    "007_templeSR0008.jpg",
+    "008_templeSR0009.jpg",
+    "009_templeSR0010.jpg",
+    "010_templeSR0011.jpg",
+    "011_templeSR0012.jpg",
+    "012_templeSR0013.jpg",
+    "013_templeSR0014.jpg",
+    "014_templeSR0015.jpg",
+    "015_templeSR0016.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 720,
+      "median_reprojection_px": 0.07556178309576021,
+      "elapsed_seconds": 21.62801833300182
+    },
+    {
+      "registered": 3,
+      "points": 861,
+      "median_reprojection_px": 0.0963867116859907,
+      "elapsed_seconds": 21.746610417001648
+    },
+    {
+      "registered": 4,
+      "points": 934,
+      "median_reprojection_px": 0.10340267287200257,
+      "elapsed_seconds": 21.867461125002592
+    },
+    {
+      "registered": 5,
+      "points": 969,
+      "median_reprojection_px": 0.10719379756327695,
+      "elapsed_seconds": 22.293980624999676
+    },
+    {
+      "registered": 6,
+      "points": 1477,
+      "median_reprojection_px": 0.1026235141005862,
+      "elapsed_seconds": 22.49099579200265
+    },
+    {
+      "registered": 7,
+      "points": 1559,
+      "median_reprojection_px": 0.10722589038166286,
+      "elapsed_seconds": 22.742080833002547
+    },
+    {
+      "registered": 8,
+      "points": 1851,
+      "median_reprojection_px": 0.11658514280974307,
+      "elapsed_seconds": 23.037845250000828
+    },
+    {
+      "registered": 9,
+      "points": 2031,
+      "median_reprojection_px": 0.12073003176740765,
+      "elapsed_seconds": 23.31896258300185
+    },
+    {
+      "registered": 10,
+      "points": 2267,
+      "median_reprojection_px": 0.12170306813352454,
+      "elapsed_seconds": 24.29469683299976
+    },
+    {
+      "registered": 11,
+      "points": 2498,
+      "median_reprojection_px": 0.12483892837320698,
+      "elapsed_seconds": 24.58486208300019
+    },
+    {
+      "registered": 12,
+      "points": 2679,
+      "median_reprojection_px": 0.12992284904595197,
+      "elapsed_seconds": 24.84928491699975
+    },
+    {
+      "registered": 13,
+      "points": 2948,
+      "median_reprojection_px": 0.13203825214351805,
+      "elapsed_seconds": 25.11141495800257
+    },
+    {
+      "registered": 14,
+      "points": 3260,
+      "median_reprojection_px": 0.13117942306594635,
+      "elapsed_seconds": 25.3980244580016
+    },
+    {
+      "registered": 15,
+      "points": 3601,
+      "median_reprojection_px": 0.1329946419513988,
+      "elapsed_seconds": 26.867446917000052
+    },
+    {
+      "registered": 16,
+      "points": 3937,
+      "median_reprojection_px": 0.13891675240832588,
+      "elapsed_seconds": 27.189273583000613
+    },
+    {
+      "registered": 16,
+      "points": 3933,
+      "median_reprojection_px": 0.13913401365999015,
+      "elapsed_seconds": 29.787432749999425
+    }
+  ],
+  "mean_track_length": 2.5822527332824814
+}

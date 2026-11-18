@@ -1,0 +1,50 @@
+{
+  "source_mesh": "mesh_light.ply",
+  "source_sha256": "bf09b703616f5df6607354678b625215c43d6644add17e84f3f03fed44d5ba57",
+  "vertices": 5650,
+  "triangles": 8575,
+  "all_triangles_displayed": true,
+  "fragment_bytes": 121123,
+  "standalone_bytes": 123187,
+  "display_transform": [
+    [
+      -0.7441735592178934,
+      0.37673485148708347,
+      -0.5516126951367032,
+      2.6005321399783714
+    ],
+    [
+      0.6675654203012634,
+      0.3901289904588654,
+      -0.6341575359652706,
+      -4.748108874420784e-05
+    ],
+    [
+      -0.023709141253315212,
+      -0.8401608313165707,
+      -0.5418188388589665,
+      0.9858767733257396
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "display_center": [
+    0.30277307258073005,
+    -0.5685194774833859,
+    -0.06824745493656753
+  ],
+  "display_scale": 4.616049423230262,
+  "position_quantization_bits": 16,
+  "source_geometry_changed": false,
+  "renderer": "Three.js 0.128.0 triangle surface",
+  "modes": [
+    "colored",
+    "shaded",
+    "wireframe",
+    "normals"
+  ]
+}

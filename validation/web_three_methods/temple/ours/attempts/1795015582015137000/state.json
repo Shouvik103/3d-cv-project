@@ -1,0 +1,36 @@
+{
+  "status": "partial",
+  "stage": "finished",
+  "progress": 100,
+  "message": "Reconstruction ready",
+  "artifacts": {
+    "sparse_cloud": "reconstruction/points.ply",
+    "poses": "reconstruction/poses.json",
+    "reconstruction_summary": "reconstruction/summary.json",
+    "cloud_view": "cloud.json"
+  },
+  "metrics": {
+    "method": "ours",
+    "images": 16,
+    "registered": 4,
+    "sparse_points": 776,
+    "reprojection_px": 0.10704765500893082,
+    "reprojection_statistic": "median",
+    "reconstruction_seconds": 8.394877959000041,
+    "mesh_quality": "Balanced",
+    "mesh_depth_side": 640,
+    "mesh_voxel_div": 192,
+    "peak_rss_mb": 408.5
+  },
+  "warnings": [
+    "Only 4 of 16 images registered. More overlapping views may help.",
+    "Mesh could not be completed: Consistency rejected too much depth; inspect data or explicitly ablate consistency. The point cloud is still available."
+  ],
+  "updated_at": 1795015044.597576,
+  "progress_units": {
+    "phase": "filtering",
+    "done": 0,
+    "total": 1
+  },
+  "elapsed_seconds": 9.71614408493042
+}

@@ -1,0 +1,353 @@
+{
+  "source_sha256": "1a3311ed55d9db6f9060642cb6ee58319b4ee62a274563f0107a11ff0ca05d91",
+  "timestamp_utc": "2026-11-18T15:20:14.486161+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "vggt",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 768,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        1,
+        99
+      ],
+      "roi_margin_frac": 0.2
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 192,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 0,
+      "seed": 0
+    }
+  },
+  "scene": "/Users/shouvikdas/Documents/ChatGPT/3d-cv-project/outputs/web_ui_extended/6a37814fbf2c44d6bbc9101bdce0432b/reconstruction/raw.npz",
+  "backend": "vggt",
+  "frames_fused": 30,
+  "registered_views": 30,
+  "fusion_images": [
+    "000_IMG_20261114_181910.jpg",
+    "001_IMG_20261114_181911.jpg",
+    "002_IMG_20261114_182042.jpg",
+    "003_IMG_20261114_182048.jpg",
+    "004_IMG_20261114_182050.jpg",
+    "005_IMG_20261114_182054.jpg",
+    "006_IMG_20261114_182056.jpg",
+    "007_IMG_20261114_181939.jpg",
+    "008_IMG_20261114_181941.jpg",
+    "009_IMG_20261114_181946.jpg",
+    "010_IMG_20261114_181948.jpg",
+    "011_IMG_20261114_181837.jpg",
+    "012_IMG_20261114_181839.jpg",
+    "013_IMG_20261114_181844.jpg",
+    "014_IMG_20261114_182009.jpg",
+    "015_IMG_20261114_182128.jpg",
+    "016_IMG_20261114_182131.jpg",
+    "017_IMG_20261114_182136.jpg",
+    "018_IMG_20261114_181859.jpg",
+    "019_IMG_20261114_182220.jpg",
+    "020_IMG_20261114_182222.jpg",
+    "021_IMG_20261114_182300.jpg",
+    "022_IMG_20261114_182224.jpg",
+    "023_IMG_20261114_182227.jpg",
+    "024_IMG_20261114_182229.jpg",
+    "025_IMG_20261114_182303.jpg",
+    "026_IMG_20261114_182230.jpg",
+    "027_IMG_20261114_182319.jpg",
+    "028_IMG_20261114_182235.jpg",
+    "029_IMG_20261114_182034.jpg"
+  ],
+  "heldout_images": [],
+  "heldout": {
+    "views": 0,
+    "rows": [],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": null,
+    "passed": true,
+    "automatic_no_track_check": true,
+    "scene_extent": 8.404756069131748,
+    "images": [
+      {
+        "image": "000_IMG_20261114_181910.jpg",
+        "positive_fraction": 0.956063164167246,
+        "inside_fraction": 0.8647333399543152,
+        "tracked_points": 43535
+      },
+      {
+        "image": "001_IMG_20261114_181911.jpg",
+        "positive_fraction": 0.9536200218492402,
+        "inside_fraction": 0.8661833349885788,
+        "tracked_points": 43608
+      },
+      {
+        "image": "002_IMG_20261114_182042.jpg",
+        "positive_fraction": 0.9457344324163274,
+        "inside_fraction": 0.8176382957592611,
+        "tracked_points": 41164
+      },
+      {
+        "image": "003_IMG_20261114_182048.jpg",
+        "positive_fraction": 0.9503029099215413,
+        "inside_fraction": 0.8194060979243222,
+        "tracked_points": 41253
+      },
+      {
+        "image": "004_IMG_20261114_182050.jpg",
+        "positive_fraction": 0.9507398947263879,
+        "inside_fraction": 0.8151752904955805,
+        "tracked_points": 41040
+      },
+      {
+        "image": "005_IMG_20261114_182054.jpg",
+        "positive_fraction": 0.9544344026219088,
+        "inside_fraction": 0.7712583176085014,
+        "tracked_points": 38829
+      },
+      {
+        "image": "006_IMG_20261114_182056.jpg",
+        "positive_fraction": 0.9556261793623995,
+        "inside_fraction": 0.7565994637004668,
+        "tracked_points": 38091
+      },
+      {
+        "image": "007_IMG_20261114_181939.jpg",
+        "positive_fraction": 0.9308570861058695,
+        "inside_fraction": 0.8127321481775748,
+        "tracked_points": 40917
+      },
+      {
+        "image": "008_IMG_20261114_181941.jpg",
+        "positive_fraction": 0.9318303704439368,
+        "inside_fraction": 0.8278279868904559,
+        "tracked_points": 41677
+      },
+      {
+        "image": "009_IMG_20261114_181946.jpg",
+        "positive_fraction": 0.933339954315225,
+        "inside_fraction": 0.8200814380772669,
+        "tracked_points": 41287
+      },
+      {
+        "image": "010_IMG_20261114_181948.jpg",
+        "positive_fraction": 0.9327837918363293,
+        "inside_fraction": 0.8155924123547522,
+        "tracked_points": 41061
+      },
+      {
+        "image": "011_IMG_20261114_181837.jpg",
+        "positive_fraction": 0.9765418611580098,
+        "inside_fraction": 0.8378190485649022,
+        "tracked_points": 42180
+      },
+      {
+        "image": "012_IMG_20261114_181839.jpg",
+        "positive_fraction": 0.9776144602244513,
+        "inside_fraction": 0.8411560234382759,
+        "tracked_points": 42348
+      },
+      {
+        "image": "013_IMG_20261114_181844.jpg",
+        "positive_fraction": 0.9792233588241136,
+        "inside_fraction": 0.8500546231006059,
+        "tracked_points": 42796
+      },
+      {
+        "image": "014_IMG_20261114_182009.jpg",
+        "positive_fraction": 0.9290495580494588,
+        "inside_fraction": 0.7882014102691429,
+        "tracked_points": 39682
+      },
+      {
+        "image": "015_IMG_20261114_182128.jpg",
+        "positive_fraction": 0.9698083225742378,
+        "inside_fraction": 0.7911212632833449,
+        "tracked_points": 39829
+      },
+      {
+        "image": "016_IMG_20261114_182131.jpg",
+        "positive_fraction": 0.9650610785579501,
+        "inside_fraction": 0.7413844473135366,
+        "tracked_points": 37325
+      },
+      {
+        "image": "017_IMG_20261114_182136.jpg",
+        "positive_fraction": 0.9627569768596683,
+        "inside_fraction": 0.7924322176978846,
+        "tracked_points": 39895
+      },
+      {
+        "image": "018_IMG_20261114_181859.jpg",
+        "positive_fraction": 0.968378190485649,
+        "inside_fraction": 0.8665607309564008,
+        "tracked_points": 43627
+      },
+      {
+        "image": "019_IMG_20261114_182220.jpg",
+        "positive_fraction": 0.9728473532624888,
+        "inside_fraction": 0.6080444929983116,
+        "tracked_points": 30612
+      },
+      {
+        "image": "020_IMG_20261114_182222.jpg",
+        "positive_fraction": 0.9534213923924918,
+        "inside_fraction": 0.6222862250471745,
+        "tracked_points": 31329
+      },
+      {
+        "image": "021_IMG_20261114_182300.jpg",
+        "positive_fraction": 0.9606316416724601,
+        "inside_fraction": 0.5456947065249776,
+        "tracked_points": 27473
+      },
+      {
+        "image": "022_IMG_20261114_182224.jpg",
+        "positive_fraction": 0.9420200615751316,
+        "inside_fraction": 0.6058992948654286,
+        "tracked_points": 30504
+      },
+      {
+        "image": "023_IMG_20261114_182227.jpg",
+        "positive_fraction": 0.9422385539775548,
+        "inside_fraction": 0.579302810606813,
+        "tracked_points": 29165
+      },
+      {
+        "image": "024_IMG_20261114_182229.jpg",
+        "positive_fraction": 0.9467275797000695,
+        "inside_fraction": 0.5625782103485947,
+        "tracked_points": 28323
+      },
+      {
+        "image": "025_IMG_20261114_182303.jpg",
+        "positive_fraction": 0.9598172608997915,
+        "inside_fraction": 0.3600357533022147,
+        "tracked_points": 18126
+      },
+      {
+        "image": "026_IMG_20261114_182230.jpg",
+        "positive_fraction": 0.9529844075876452,
+        "inside_fraction": 0.5176283642864237,
+        "tracked_points": 26060
+      },
+      {
+        "image": "027_IMG_20261114_182319.jpg",
+        "positive_fraction": 0.9520309861952527,
+        "inside_fraction": 0.5517131790644553,
+        "tracked_points": 27776
+      },
+      {
+        "image": "028_IMG_20261114_182235.jpg",
+        "positive_fraction": 0.973463104578409,
+        "inside_fraction": 0.46346211143112526,
+        "tracked_points": 23333
+      },
+      {
+        "image": "029_IMG_20261114_182034.jpg",
+        "positive_fraction": 0.9411659549111133,
+        "inside_fraction": 0.8066938126924222,
+        "tracked_points": 40613
+      }
+    ]
+  },
+  "roi": [
+    [
+      -3.55228392791748,
+      -3.1806419429779047,
+      -2.9564374237060544
+    ],
+    [
+      5.289460508346555,
+      2.546242776870725,
+      7.072442567825316
+    ]
+  ],
+  "voxel_length": 0.04377477119339452,
+  "full": {
+    "vertices": 5650,
+    "faces": 8575,
+    "components": 19,
+    "boundary_edges": 2845,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 5.472702780171956,
+    "mean_edge_length": 0.04131720419266657
+  },
+  "light": {
+    "vertices": 5650,
+    "faces": 8575,
+    "components": 19,
+    "boundary_edges": 2845,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 5.472702780171956,
+    "mean_edge_length": 0.04131720419266657
+  },
+  "timing_seconds": {
+    "depth": 1.850156247999621,
+    "alignment": 0.0,
+    "filtering": 0.5317977920003614,
+    "fusion": 0.036908000000039465,
+    "clean_export": 0.161711083001137,
+    "total": 3.3304534580001928
+  },
+  "peak_rss_mb": 860.9375
+}

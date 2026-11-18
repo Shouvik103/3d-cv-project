@@ -1,0 +1,134 @@
+{
+  "source_sha256": "6849fbd055fce881d0b103d9e829386a6a009dd08ef4f14e2cbd915fabcbff62",
+  "timestamp_utc": "2026-11-18T18:31:53.060714+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.7,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": false
+    }
+  },
+  "registered": 4,
+  "points": 521,
+  "median_reprojection_px": 0.178869739799637,
+  "elapsed_seconds": 16.17030758400142,
+  "total_images": 30,
+  "runtime_seconds": 16.211986834001436,
+  "init_pair": [
+    "005_IMG_20261114_182054.jpg",
+    "006_IMG_20261114_182056.jpg"
+  ],
+  "image_names": [
+    "000_IMG_20261114_181910.jpg",
+    "001_IMG_20261114_181911.jpg",
+    "002_IMG_20261114_182042.jpg",
+    "003_IMG_20261114_182048.jpg",
+    "004_IMG_20261114_182050.jpg",
+    "005_IMG_20261114_182054.jpg",
+    "006_IMG_20261114_182056.jpg",
+    "007_IMG_20261114_181939.jpg",
+    "008_IMG_20261114_181941.jpg",
+    "009_IMG_20261114_181946.jpg",
+    "010_IMG_20261114_181948.jpg",
+    "011_IMG_20261114_181837.jpg",
+    "012_IMG_20261114_181839.jpg",
+    "013_IMG_20261114_181844.jpg",
+    "014_IMG_20261114_182009.jpg",
+    "015_IMG_20261114_182128.jpg",
+    "016_IMG_20261114_182131.jpg",
+    "017_IMG_20261114_182136.jpg",
+    "018_IMG_20261114_181859.jpg",
+    "019_IMG_20261114_182220.jpg",
+    "020_IMG_20261114_182222.jpg",
+    "021_IMG_20261114_182300.jpg",
+    "022_IMG_20261114_182224.jpg",
+    "023_IMG_20261114_182227.jpg",
+    "024_IMG_20261114_182229.jpg",
+    "025_IMG_20261114_182303.jpg",
+    "026_IMG_20261114_182230.jpg",
+    "027_IMG_20261114_182319.jpg",
+    "028_IMG_20261114_182235.jpg",
+    "029_IMG_20261114_182034.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 346,
+      "median_reprojection_px": 0.10527223326074543,
+      "elapsed_seconds": 15.771437750001496
+    },
+    {
+      "registered": 3,
+      "points": 385,
+      "median_reprojection_px": 0.1482574424371212,
+      "elapsed_seconds": 15.845776792000834
+    },
+    {
+      "registered": 4,
+      "points": 521,
+      "median_reprojection_px": 0.18536460748336178,
+      "elapsed_seconds": 15.945908959001827
+    },
+    {
+      "registered": 4,
+      "points": 521,
+      "median_reprojection_px": 0.178869739799637,
+      "elapsed_seconds": 16.17030758400142
+    }
+  ],
+  "mean_track_length": 2.236084452975048
+}

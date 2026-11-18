@@ -1,0 +1,47 @@
+{
+  "status": "completed",
+  "stage": "finished",
+  "progress": 100,
+  "message": "Reconstruction ready",
+  "artifacts": {
+    "raw_predictions": "reconstruction/raw.npz",
+    "vggt_metadata": "reconstruction/raw.json",
+    "sparse_cloud": "reconstruction/points.ply",
+    "poses": "reconstruction/poses.json",
+    "reconstruction_summary": "reconstruction/summary.json",
+    "cloud_view": "cloud.json",
+    "mesh_ply": "mesh/mesh_light.ply",
+    "mesh_obj": "mesh/mesh_light.obj",
+    "mesh_glb": "mesh/mesh_light.glb",
+    "full_mesh": "mesh/mesh_full.ply",
+    "dense_cloud": "mesh/dense.ply",
+    "mesh_summary": "mesh/summary.json",
+    "mesh_view": "mesh.json"
+  },
+  "metrics": {
+    "method": "vggt",
+    "images": 16,
+    "registered": 16,
+    "sparse_points": 1000000,
+    "reprojection_px": null,
+    "reprojection_statistic": null,
+    "reconstruction_seconds": 41.23949091600025,
+    "dense_points": 1000000,
+    "mesh_quality": "Balanced",
+    "mesh_depth_side": 518,
+    "mesh_voxel_div": 192,
+    "triangles": 80000,
+    "vertices": 41954,
+    "watertight": false,
+    "mesh_seconds": 1.8727544579996902,
+    "components": 3,
+    "boundary_edges": 5100,
+    "peak_rss_mb": 3625.90625
+  },
+  "warnings": [
+    "VGGT cameras are predictions, not feature-verified registrations. The point export is confidence-filtered and capped at 1 million; raw dense arrays are available."
+  ],
+  "updated_at": 1795015094.431254,
+  "progress_units": null,
+  "elapsed_seconds": 45.943989992141724
+}

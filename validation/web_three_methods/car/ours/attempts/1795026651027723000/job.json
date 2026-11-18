@@ -1,0 +1,214 @@
+{
+  "id": "80177c4b7b0748a5b7391eaa76b5c30a",
+  "name": "Car \u00b7 fresh three-method comparison \u00b7 Our SfM",
+  "created_at": 1795015034.816287,
+  "max_side": 1200,
+  "focal_px": null,
+  "make_mesh": true,
+  "mesh_quality": "high",
+  "uploads": [
+    {
+      "index": 0,
+      "name": "IMG_20261114_181910.jpg",
+      "stored": "000_IMG_20261114_181910.jpg",
+      "bytes": 774657
+    },
+    {
+      "index": 1,
+      "name": "IMG_20261114_181911.jpg",
+      "stored": "001_IMG_20261114_181911.jpg",
+      "bytes": 760447
+    },
+    {
+      "index": 2,
+      "name": "IMG_20261114_182042.jpg",
+      "stored": "002_IMG_20261114_182042.jpg",
+      "bytes": 817946
+    },
+    {
+      "index": 3,
+      "name": "IMG_20261114_182048.jpg",
+      "stored": "003_IMG_20261114_182048.jpg",
+      "bytes": 828409
+    },
+    {
+      "index": 4,
+      "name": "IMG_20261114_182050.jpg",
+      "stored": "004_IMG_20261114_182050.jpg",
+      "bytes": 868142
+    },
+    {
+      "index": 5,
+      "name": "IMG_20261114_182054.jpg",
+      "stored": "005_IMG_20261114_182054.jpg",
+      "bytes": 878348
+    },
+    {
+      "index": 6,
+      "name": "IMG_20261114_182056.jpg",
+      "stored": "006_IMG_20261114_182056.jpg",
+      "bytes": 882351
+    },
+    {
+      "index": 7,
+      "name": "IMG_20261114_181939.jpg",
+      "stored": "007_IMG_20261114_181939.jpg",
+      "bytes": 843188
+    },
+    {
+      "index": 8,
+      "name": "IMG_20261114_181941.jpg",
+      "stored": "008_IMG_20261114_181941.jpg",
+      "bytes": 829667
+    },
+    {
+      "index": 9,
+      "name": "IMG_20261114_181946.jpg",
+      "stored": "009_IMG_20261114_181946.jpg",
+      "bytes": 839426
+    },
+    {
+      "index": 10,
+      "name": "IMG_20261114_181948.jpg",
+      "stored": "010_IMG_20261114_181948.jpg",
+      "bytes": 828964
+    },
+    {
+      "index": 11,
+      "name": "IMG_20261114_181837.jpg",
+      "stored": "011_IMG_20261114_181837.jpg",
+      "bytes": 859596
+    },
+    {
+      "index": 12,
+      "name": "IMG_20261114_181839.jpg",
+      "stored": "012_IMG_20261114_181839.jpg",
+      "bytes": 865714
+    },
+    {
+      "index": 13,
+      "name": "IMG_20261114_181844.jpg",
+      "stored": "013_IMG_20261114_181844.jpg",
+      "bytes": 932725
+    },
+    {
+      "index": 14,
+      "name": "IMG_20261114_182009.jpg",
+      "stored": "014_IMG_20261114_182009.jpg",
+      "bytes": 903979
+    },
+    {
+      "index": 15,
+      "name": "IMG_20261114_182128.jpg",
+      "stored": "015_IMG_20261114_182128.jpg",
+      "bytes": 767355
+    },
+    {
+      "index": 16,
+      "name": "IMG_20261114_182131.jpg",
+      "stored": "016_IMG_20261114_182131.jpg",
+      "bytes": 753561
+    },
+    {
+      "index": 17,
+      "name": "IMG_20261114_182136.jpg",
+      "stored": "017_IMG_20261114_182136.jpg",
+      "bytes": 744596
+    },
+    {
+      "index": 18,
+      "name": "IMG_20261114_181859.jpg",
+      "stored": "018_IMG_20261114_181859.jpg",
+      "bytes": 826622
+    },
+    {
+      "index": 19,
+      "name": "IMG_20261114_182220.jpg",
+      "stored": "019_IMG_20261114_182220.jpg",
+      "bytes": 780194
+    },
+    {
+      "index": 20,
+      "name": "IMG_20261114_182222.jpg",
+      "stored": "020_IMG_20261114_182222.jpg",
+      "bytes": 817937
+    },
+    {
+      "index": 21,
+      "name": "IMG_20261114_182300.jpg",
+      "stored": "021_IMG_20261114_182300.jpg",
+      "bytes": 853401
+    },
+    {
+      "index": 22,
+      "name": "IMG_20261114_182224.jpg",
+      "stored": "022_IMG_20261114_182224.jpg",
+      "bytes": 846066
+    },
+    {
+      "index": 23,
+      "name": "IMG_20261114_182227.jpg",
+      "stored": "023_IMG_20261114_182227.jpg",
+      "bytes": 843857
+    },
+    {
+      "index": 24,
+      "name": "IMG_20261114_182229.jpg",
+      "stored": "024_IMG_20261114_182229.jpg",
+      "bytes": 921052
+    },
+    {
+      "index": 25,
+      "name": "IMG_20261114_182303.jpg",
+      "stored": "025_IMG_20261114_182303.jpg",
+      "bytes": 789822
+    },
+    {
+      "index": 26,
+      "name": "IMG_20261114_182230.jpg",
+      "stored": "026_IMG_20261114_182230.jpg",
+      "bytes": 824624
+    },
+    {
+      "index": 27,
+      "name": "IMG_20261114_182319.jpg",
+      "stored": "027_IMG_20261114_182319.jpg",
+      "bytes": 828467
+    },
+    {
+      "index": 28,
+      "name": "IMG_20261114_182235.jpg",
+      "stored": "028_IMG_20261114_182235.jpg",
+      "bytes": 890696
+    },
+    {
+      "index": 29,
+      "name": "IMG_20261114_182034.jpg",
+      "stored": "029_IMG_20261114_182034.jpg",
+      "bytes": 826265
+    }
+  ],
+  "method": "ours",
+  "matching_ratio": 0.75,
+  "camera_matrix": [
+    [
+      1792.7160507828976,
+      0,
+      1200
+    ],
+    [
+      0,
+      1792.7160507828976,
+      900
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "comparison_id": "ea5edaca6a5c455ab20485ab55682317",
+  "depth_backend": "mono",
+  "prior_attempts": 5,
+  "generation": "62b872a697394a11b6aafe1437f310a8"
+}

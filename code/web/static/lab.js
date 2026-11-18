@@ -8,6 +8,7 @@
   const num=(v,d=3)=>finite(v)?v.toLocaleString(undefined,{maximumFractionDigits:d}):'—';
   const label=v=>names[v]||String(v??'').replaceAll('_',' ');
   let data=null,experiment='E1',analysisSignature='',analysisRequest=0;
+  let comparisonSignature='',comparisonRequest=0;
   const stage=id=>data?.experiments.find(e=>e.id===id);
   const asset=(id,path)=>stage(id)?.assets.find(a=>a.path===`${id}/${path}`);
   const link=(text,url,download=false)=>{const a=document.createElement('a');a.className='secondary';a.textContent=text;a.href=url;if(download)a.href+=(url.includes('?')?'&':'?')+'download=1';else{a.target='_blank';a.rel='noopener';}return a;};
@@ -70,7 +71,7 @@
     host.querySelectorAll('[data-tip]').forEach(mark=>{['pointerenter','focus'].forEach(event=>mark.addEventListener(event,()=>reading.textContent=mark.dataset.tip));});
     card.append(host,reading);return card;
   }
-  const headings={scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
+  const headings={scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',triangles:'Mesh triangles',reprojection_statistic:'Residual statistic',depth_backend:'Depth backend',prior_attempts:'Prior attempts',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
   function table(host,rows,columns=null){
     host.replaceChildren();if(!rows.length){host.textContent='No recorded rows for this selection.';return;}
     columns=columns||Object.keys(headings).filter(key=>rows.some(r=>key in r));
@@ -165,15 +166,41 @@
   }
   $('#comparison-scene').addEventListener('change',comparison);$('#method-filters').addEventListener('change',comparison);$('#ablation-study').addEventListener('change',()=>ablations(true));$('#ablation-scene').addEventListener('change',()=>ablations());
 
+  async function uploadComparison(force=false){
+    const groups=window.reconstructionWorkbench?.comparisons||[],select=$('#upload-comparison'),previous=select.value;
+    const ids=groups.map(g=>g.id).join(',');
+    if(select.dataset.ids!==ids){select.replaceChildren(...groups.map(g=>new Option(`${g.name} · ${g.children.length} method runs`,g.id)));select.dataset.ids=ids;if(groups.some(g=>g.id===previous))select.value=previous;}
+    if(!groups.length){$('#upload-comparison-note').textContent='Choose All three in Workspace to reconstruct the same images with all methods.';return;}
+    const group=groups.find(g=>g.id===select.value);if(!group)return;
+    const signature=JSON.stringify([group.id,group.children.map(j=>[j.id,j.status,j.progress,j.metrics])]);
+    if(signature===comparisonSignature&&!force)return;comparisonSignature=signature;const request=++comparisonRequest;
+    try{
+      const response=await fetch(`/api/comparisons/${group.id}`);if(!response.ok)throw Error('Comparison data is not available yet.');const report=await response.json();if(request!==comparisonRequest)return;
+      $('#upload-comparison-note').textContent=report.scope+' '+report.reference_scope+' '+report.timing_scope+(report.missing_children?' Some method runs have been deleted.':'');
+      $('#upload-method-runs').replaceChildren(...report.rows.map(row=>{const card=document.createElement('article');card.className='panel lab-card method-card';card.dataset.method=row.method;const title=document.createElement('h3'),status=document.createElement('p'),button=document.createElement('button');title.textContent=label(row.method);status.textContent=`${row.status} · ${num(row.progress,1)}% · ${num(row.registered,0)}/${row.total} cameras`;button.type='button';button.className='secondary';button.textContent=row.cloud_url||row.mesh_url?'Open interactive result ↗':'Open run / log ↗';button.addEventListener('click',()=>{window.openReconstruction(row.id);showPage('workspace');});if(row.mesh_url){const img=document.createElement('img');img.className='result-thumb';img.src=`/api/jobs/${row.id}/preview`;img.alt=label(row.method)+' mesh, fitted independently';img.loading='lazy';card.append(img);}card.append(title,status,button);if(row.error){const p=document.createElement('p');p.textContent=row.error;card.append(p);}return card;}));
+      $('#upload-comparison-charts').replaceChildren(
+        chart('Registered / predicted cameras (%) ↑',report.rows,'registered',{unit:'%',max:100,value:r=>finite(r.registered)?100*r.registered/r.total:null}),
+        chart('Total reconstruction job time (seconds)',report.rows,'seconds',{unit:'s',note:'Includes preparation, camera/depth inference, meshing and export.'}),
+        chart('Camera ATE (%) · COLMAP agreement, not GT',report.rows,'ate_percent_extent',{unit:'%',note:'COLMAP is the reference. Undefined alignment stays unavailable.'}),
+        chart('Generated mesh triangles',report.rows,'triangles',{note:'Different depth sources and incomplete surfaces affect this count.'})
+      );
+      table($('#upload-comparison-table'),report.rows,['method','status','registered','points','triangles','depth_backend','reprojection_px','reprojection_statistic','ate_percent_extent','auc5','seconds','peak_rss_mb','prior_attempts','error']);
+      fillLinks($('#upload-comparison-downloads'),['json','csv','png'].map(ext=>link(ext.toUpperCase()+' comparison ↓',`/api/comparisons/${group.id}/files/comparison.${ext}`,true)));
+    }catch(error){if(request===comparisonRequest){$('#upload-comparison-note').textContent=error.message;comparisonSignature='';}}
+  }
+  $('#upload-comparison').addEventListener('change',()=>uploadComparison(true));$('#refresh-comparison').addEventListener('click',()=>uploadComparison(true));
+  window.addEventListener('reconstruction-library',()=>{if(!$('#uploads-panel').hidden)uploadComparison();});
+  $('#subtab-uploads').addEventListener('click',()=>uploadComparison(true));
+
   async function inspect(force=false){
     const selected=window.reconstructionWorkbench?.selected,section=$('#run-analysis');
     if(!selected){section.hidden=true;analysisSignature='';analysisRequest++;return;}
-    const signature=JSON.stringify([selected.type,selected.id,selected.job?.status,selected.job?.metrics]);
+    const signature=JSON.stringify([selected.type,selected.id,selected.job?.status,selected.job?.metrics,selected.job?.prior_attempts]);
     if(signature===analysisSignature&&!force)return;analysisSignature=signature;const request=++analysisRequest;section.hidden=false;
     const host=$('#analysis-content');host.textContent='Loading recorded run measurements…';
     try{
       const response=await fetch(`/api/${selected.type==='job'?'jobs':'examples'}/${selected.id}/analysis`);if(!response.ok)throw Error('Details are not available yet.');const result=await response.json();if(request!==analysisRequest)return;
-      host.replaceChildren();const scope=document.createElement('p');scope.className='scope-note';scope.textContent=`${result.method}${result.mesh_backend?' + '+result.mesh_backend.toUpperCase()+' / TSDF':''} · ${result.reference}`;host.append(scope);
+      host.replaceChildren();const scope=document.createElement('p');scope.className='scope-note';scope.textContent=`${result.method}${result.mesh_backend?' + '+result.mesh_backend.toUpperCase()+' / TSDF':''} · ${result.reference}${result.prior_attempts?' '+result.prior_attempts+' previous attempt(s) retained locally.':''}`;host.append(scope);
       const sfm=result.reconstruction||{},mesh=result.mesh||{},stats=mesh.full||{},median=finite(sfm.median_reprojection_px),residual=median?sfm.median_reprojection_px:sfm.mean_reprojection_px;
       const facts=[['Reprojection · '+(median?'median':'mean'),finite(residual)?num(residual)+' px':null],['Mean track length',sfm.mean_track_length],['SfM time',finite(sfm.runtime_seconds)?num(sfm.runtime_seconds,1)+' s':null],['Mesh time',finite(mesh.timing_seconds?.total)?num(mesh.timing_seconds.total,1)+' s':null],['Mesh components',stats.components],['Boundary edges',stats.boundary_edges],['Watertight',stats.watertight===true?'Yes':stats.watertight===false?'No':null],['Total time',finite(result.elapsed_seconds)?num(result.elapsed_seconds,1)+' s':null]];
       const grid=document.createElement('div');grid.className='fact-grid';facts.forEach(([key,value])=>{const div=document.createElement('div'),span=document.createElement('span'),strong=document.createElement('strong');span.textContent=key;strong.textContent=value==null?'—':String(value);div.append(span,strong);grid.append(div);});host.append(grid);

@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "stage": "finished",
+  "progress": 42.0,
+  "message": "Initialization yielded too few usable 3D points",
+  "artifacts": {},
+  "metrics": {
+    "method": "ours"
+  },
+  "warnings": [],
+  "updated_at": 1795017331.9087129,
+  "progress_units": {
+    "phase": "initialization",
+    "done": 0,
+    "total": 1
+  },
+  "elapsed_seconds": 25.479140043258667
+}

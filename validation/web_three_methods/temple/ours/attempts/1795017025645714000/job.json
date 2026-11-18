@@ -1,0 +1,130 @@
+{
+  "id": "57d7f3852ddb411d9b64222aae54f9be",
+  "name": "Temple \u00b7 fresh three-method comparison \u00b7 Our SfM",
+  "created_at": 1795015034.7319648,
+  "max_side": 1200,
+  "focal_px": null,
+  "make_mesh": true,
+  "mesh_quality": "balanced",
+  "uploads": [
+    {
+      "index": 0,
+      "name": "templeSR0001.jpg",
+      "stored": "000_templeSR0001.jpg",
+      "bytes": 59997
+    },
+    {
+      "index": 1,
+      "name": "templeSR0002.jpg",
+      "stored": "001_templeSR0002.jpg",
+      "bytes": 60182
+    },
+    {
+      "index": 2,
+      "name": "templeSR0003.jpg",
+      "stored": "002_templeSR0003.jpg",
+      "bytes": 44335
+    },
+    {
+      "index": 3,
+      "name": "templeSR0004.jpg",
+      "stored": "003_templeSR0004.jpg",
+      "bytes": 39417
+    },
+    {
+      "index": 4,
+      "name": "templeSR0005.jpg",
+      "stored": "004_templeSR0005.jpg",
+      "bytes": 43007
+    },
+    {
+      "index": 5,
+      "name": "templeSR0006.jpg",
+      "stored": "005_templeSR0006.jpg",
+      "bytes": 57954
+    },
+    {
+      "index": 6,
+      "name": "templeSR0007.jpg",
+      "stored": "006_templeSR0007.jpg",
+      "bytes": 49755
+    },
+    {
+      "index": 7,
+      "name": "templeSR0008.jpg",
+      "stored": "007_templeSR0008.jpg",
+      "bytes": 49414
+    },
+    {
+      "index": 8,
+      "name": "templeSR0009.jpg",
+      "stored": "008_templeSR0009.jpg",
+      "bytes": 53491
+    },
+    {
+      "index": 9,
+      "name": "templeSR0010.jpg",
+      "stored": "009_templeSR0010.jpg",
+      "bytes": 60489
+    },
+    {
+      "index": 10,
+      "name": "templeSR0011.jpg",
+      "stored": "010_templeSR0011.jpg",
+      "bytes": 60063
+    },
+    {
+      "index": 11,
+      "name": "templeSR0012.jpg",
+      "stored": "011_templeSR0012.jpg",
+      "bytes": 55016
+    },
+    {
+      "index": 12,
+      "name": "templeSR0013.jpg",
+      "stored": "012_templeSR0013.jpg",
+      "bytes": 51394
+    },
+    {
+      "index": 13,
+      "name": "templeSR0014.jpg",
+      "stored": "013_templeSR0014.jpg",
+      "bytes": 54257
+    },
+    {
+      "index": 14,
+      "name": "templeSR0015.jpg",
+      "stored": "014_templeSR0015.jpg",
+      "bytes": 60581
+    },
+    {
+      "index": 15,
+      "name": "templeSR0016.jpg",
+      "stored": "015_templeSR0016.jpg",
+      "bytes": 58785
+    }
+  ],
+  "method": "ours",
+  "matching_ratio": 0.85,
+  "camera_matrix": [
+    [
+      1520.4,
+      0,
+      302.32
+    ],
+    [
+      0,
+      1525.9,
+      246.87
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "comparison_id": "9a0377f41e6f4670a6fc7bdd6a0aaa34",
+  "depth_backend": "mono",
+  "prior_attempts": 1,
+  "generation": "0e67e630d7014f71840cf8d9248ddf3e"
+}

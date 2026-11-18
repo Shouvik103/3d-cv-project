@@ -55,8 +55,33 @@ The extended interface adds four keyboard-accessible tabs:
 Research views load measured, versioned evidence from the latest
 `validation/experiments_*/` collection, without needing raw datasets or model
 weights. Undefined metrics remain unavailable and failed attempts remain visible.
-They are saved experiments, separate from new uploads: uploading does not launch
-COLMAP or VGGT. Local upload runs use Our SfM plus optional SGBM/TSDF as before.
+The benchmark tabs are saved experiments. For new uploads, choose **Our SfM**,
+**COLMAP**, **VGGT**, or **All three**. All three creates independent, serially
+queued method runs from identical images; each appears in Your reconstructions.
+Open **Performance → Your comparisons** for their measured tables, graphs,
+per-method previews, 3D links and CSV/JSON/PNG downloads.
+
+Our SfM and COLMAP offer SGBM stereo or pinned Depth Anything V2 Small with
+sparse-depth alignment, then TSDF. VGGT uses its own cameras/depth and native
+518px preprocessing. Monocular depth is useful when stereo pairs have wide
+viewpoint gaps; its learned prior does not guarantee correct geometry. Classical
+methods share an image-only mono-depth cache within a comparison. COLMAP camera
+inference and VGGT run in separate processes from mesh fusion.
+
+VGGT / All three accepts 3–30 views per local run, the tested limit on this Mac;
+classical methods retain the 200-photo limit. Install the isolated VGGT runtime
+with `code/experiments/setup_vggt.py` first. Known original-resolution fx/fy/cx/cy
+and Our SfM's matching ratio can be entered under Camera & matching settings.
+The camera matrix is used by the classical methods; VGGT predicts its own K.
+Finished runs can be retried with explicit depth/matching/quality settings;
+previous attempts and logs are retained locally instead of overwritten.
+
+Fresh Temple/car/chair runs were submitted through the normal upload API using
+all 16 Temple views and 30 covering views each for car/chair. Those are new
+computations, not relabelled pre-existing COLMAP examples. The raw photos and
+large outputs remain in `outputs/web_ui_extended`; compact measured evidence is
+in `validation/web_three_methods`. Input K for car/chair came from an earlier
+COLMAP calibration estimate; no earlier poses were used to reconstruct them.
 No new chart-library or Python dependencies are needed.
 
 If another interface is already using port 8765, launch a separate preview:

@@ -1,0 +1,41 @@
+{
+  "source_sha256": "6849fbd055fce881d0b103d9e829386a6a009dd08ef4f14e2cbd915fabcbff62",
+  "timestamp_utc": "2026-11-18T18:33:38.954864+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": null,
+  "branch": "codex/extended-reconstruction-interface",
+  "tests": {
+    "passed": 68,
+    "failed": 0,
+    "log_sha256": "90dd7c4363a3b2c2c5d3d1ec56448bfd14d1dee07610eb8fd364d2910467fa9d"
+  },
+  "fresh_jobs": 9,
+  "photo_sets": 3,
+  "identical_prepared_bytes_across_methods": true,
+  "all_nine_have_cloud_and_mesh": true,
+  "source_policy": "Input intrinsics and prior image curation only; fresh poses, points, depths and meshes. No earlier reconstruction imported as a method output.",
+  "scope": "Local new-upload comparisons, not GT benchmarks. Car/Chair K were prior COLMAP intrinsics estimates. Raw photos and large arrays stay local.",
+  "browser_checks": [
+    "Nine fresh library entries alongside the original saved car/chair",
+    "All-three method selection and per-method labels",
+    "Three independently fitted model previews load",
+    "Open result switches to actual method cloud/mesh",
+    "Live same-upload comparison metrics and CSV/JSON/PNG links",
+    "Retry fields show saved 0.85 while unrelated upload form is 0.75",
+    "No browser console errors observed"
+  ],
+  "screenshots_sha256": {
+    "library.jpg": "250579f929b609035f37aa2a4be14306bd272ef3e286f59632c8160c98acdab3",
+    "comparison.jpg": "4194c068706b6cad55b207d8bc43fb5205e53d9b4838023b857f1fa46882a184"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "scene": "Temple",
+  "id": "9a0377f41e6f4670a6fc7bdd6a0aaa34",
+  "settings": {
+    "name": "Temple \u00b7 fresh three-method comparison",
+    "method": "all",
+    "camera_matrix": [
+      [
+        1520.4,
+        0,
+        302.32
+      ],
+      [
+        0,
+        1525.9,
+        246.87
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "matching_ratio": 0.7,
+    "max_side": 1200,
+    "make_mesh": true,
+    "mesh_quality": "balanced"
+  },
+  "note": "All 16 public Middlebury Temple images. Supplied camera intrinsics only; no GT poses or geometry used for reconstruction.",
+  "images": [
+    {
+      "index": 0,
+      "path": "data/temple/images/templeSR0001.jpg",
+      "sha256": "ac8e0cccef84bb9562764e2b9c3c92cf65e75925f3f414f08b60205b5101f4ca"
+    },
+    {
+      "index": 1,
+      "path": "data/temple/images/templeSR0002.jpg",
+      "sha256": "91b498b0bd23f65ffd0b5ac29ca5ec2913451ac49223284f5da8ebef8df382a7"
+    },
+    {
+      "index": 2,
+      "path": "data/temple/images/templeSR0003.jpg",
+      "sha256": "78567605f1d1b6ace9796041e61bc507337c11139aac055d3b736ddc7ec7f02a"
+    },
+    {
+      "index": 3,
+      "path": "data/temple/images/templeSR0004.jpg",
+      "sha256": "9091e679e343d8a4c83b80e430ff73da394c23e0f07fa79474cd8b68c5d282d7"
+    },
+    {
+      "index": 4,
+      "path": "data/temple/images/templeSR0005.jpg",
+      "sha256": "8960cd94c6f565a0a8081bbe067bc1cf213a04616cb93d71e73bd8e4603047b5"
+    },
+    {
+      "index": 5,
+      "path": "data/temple/images/templeSR0006.jpg",
+      "sha256": "44eb2929018ebb978d9c975242d99e9f3d9c3ce61803d925f39ed63a5e9ef612"
+    },
+    {
+      "index": 6,
+      "path": "data/temple/images/templeSR0007.jpg",
+      "sha256": "3fdb2f664bcf7e0236d9607a8730d999d39fdae388807c7964076dffb84400bd"
+    },
+    {
+      "index": 7,
+      "path": "data/temple/images/templeSR0008.jpg",
+      "sha256": "25a2feaf8a9803849db6d416b9e8cb61bd7d7fbc54a612735e1d9136bd14c0e5"
+    },
+    {
+      "index": 8,
+      "path": "data/temple/images/templeSR0009.jpg",
+      "sha256": "badc2c4e778d475a164190c6e628bc7921f93c42d8902120c290423907622086"
+    },
+    {
+      "index": 9,
+      "path": "data/temple/images/templeSR0010.jpg",
+      "sha256": "83e24f39cf66d0506bba73f6065f5f1feb8438055c5cc248a29c588544418ec7"
+    },
+    {
+      "index": 10,
+      "path": "data/temple/images/templeSR0011.jpg",
+      "sha256": "046b6168c9903cf2e6edd3af6dcc145bdad652bc3a65c3484e4781222a81dcc8"
+    },
+    {
+      "index": 11,
+      "path": "data/temple/images/templeSR0012.jpg",
+      "sha256": "058262c3a4cd0f9d8e24af9c2d08d07848169d539bd7394409d4e214c7c45708"
+    },
+    {
+      "index": 12,
+      "path": "data/temple/images/templeSR0013.jpg",
+      "sha256": "e8968c02290d3e8169792c5b2f2295c38b12ab734bd8b98e6daf0b17a4ff597f"
+    },
+    {
+      "index": 13,
+      "path": "data/temple/images/templeSR0014.jpg",
+      "sha256": "e083dc897c55bdfbb308c1a5aa6c78fd10ef9ebf0b68558800e4958dfd62c24d"
+    },
+    {
+      "index": 14,
+      "path": "data/temple/images/templeSR0015.jpg",
+      "sha256": "cd4ad189256e81b075a8b2aee015123d320a56d91a03ab9265f34948e032fbda"
+    },
+    {
+      "index": 15,
+      "path": "data/temple/images/templeSR0016.jpg",
+      "sha256": "53e068f98cfca868ac0c9408105d6a7c70a49bb197d0ab2702df96382ed7b0cc"
+    }
+  ],
+  "children": [
+    "57d7f3852ddb411d9b64222aae54f9be",
+    "e394186385b4422487c3e9b89b22a01c",
+    "26e3f057d9e842109665f43bc8eb73a4"
+  ]
+}

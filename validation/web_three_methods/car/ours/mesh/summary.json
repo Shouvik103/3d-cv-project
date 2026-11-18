@@ -1,0 +1,171 @@
+{
+  "source_sha256": "6849fbd055fce881d0b103d9e829386a6a009dd08ef4f14e2cbd915fabcbff62",
+  "timestamp_utc": "2026-11-18T18:32:00.240160+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "mono",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 960,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        1,
+        99
+      ],
+      "roi_margin_frac": 0.2
+    },
+    "sgbm": {
+      "input_long_side": 960,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 256,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 0,
+      "seed": 0
+    }
+  },
+  "scene": "/Users/shouvikdas/Documents/ChatGPT/3d-cv-project/outputs/web_ui_extended/80177c4b7b0748a5b7391eaa76b5c30a/mesh_input",
+  "backend": "mono",
+  "frames_fused": 4,
+  "registered_views": 4,
+  "fusion_images": [
+    "003_IMG_20261114_182048.jpg",
+    "004_IMG_20261114_182050.jpg",
+    "005_IMG_20261114_182054.jpg",
+    "006_IMG_20261114_182056.jpg"
+  ],
+  "heldout_images": [],
+  "heldout": {
+    "views": 0,
+    "rows": [],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": 0.1430955766331063,
+    "passed": true,
+    "automatic_no_track_check": false,
+    "scene_extent": 18.19069839049698,
+    "images": [
+      {
+        "image": "003_IMG_20261114_182048.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9942418426103646,
+        "tracked_points": 197
+      },
+      {
+        "image": "004_IMG_20261114_182050.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9904030710172744,
+        "tracked_points": 230
+      },
+      {
+        "image": "005_IMG_20261114_182054.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 368
+      },
+      {
+        "image": "006_IMG_20261114_182056.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 370
+      }
+    ]
+  },
+  "roi": [
+    [
+      -11.8734247576,
+      -7.097091863199999,
+      8.344876114000003
+    ],
+    [
+      7.6988620156,
+      4.2176333292,
+      24.816448895999983
+    ]
+  ],
+  "voxel_length": 0.07105741558787883,
+  "full": {
+    "vertices": 84829,
+    "faces": 163533,
+    "components": 2,
+    "boundary_edges": 7061,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 279.64591806240963,
+    "mean_edge_length": 0.06860076236257329
+  },
+  "light": {
+    "vertices": 42260,
+    "faces": 80000,
+    "components": 10,
+    "boundary_edges": 5250,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 279.55790857450273,
+    "mean_edge_length": 0.09592841510490976
+  },
+  "timing_seconds": {
+    "depth": 3.7024623330034956,
+    "alignment": 0.085348000000522,
+    "filtering": 0.21539087500059395,
+    "fusion": 0.07531866700082901,
+    "clean_export": 0.6898554590006825,
+    "total": 5.148546000000351
+  },
+  "peak_rss_mb": 1185.796875
+}

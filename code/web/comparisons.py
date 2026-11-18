@@ -50,7 +50,7 @@ def build_comparison(folder):
         write_json(cached,output)
         columns=['method','status','registered','total','points','triangles','reprojection_px','reprojection_statistic','seconds','reconstruction_seconds','mesh_seconds','peak_rss_mb','watertight','ate_percent_extent','auc5','reference','error']
         with (folder/'comparison.csv').open('w',newline='') as stream:
-            writer=csv.DictWriter(stream,fieldnames=columns,extrasaction='ignore');writer.writeheader();writer.writerows(rows)
+            writer=csv.DictWriter(stream,fieldnames=columns,extrasaction='ignore',lineterminator='\n');writer.writeheader();writer.writerows(rows)
         render_plot(folder,rows)
         return output
 

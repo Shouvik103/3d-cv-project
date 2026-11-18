@@ -1,0 +1,58 @@
+{
+  "source_sha256": "a6ec29d8bb30c9581a86098997e7dcadb03b72a4a11b600c0d8a3b51233041d0",
+  "timestamp_utc": "2026-11-18T15:18:08.285165+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.17.1",
+    "opencv-python": "4.11.0.86",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": null,
+  "device": "mps",
+  "model_id": "facebook/VGGT-1B",
+  "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+  "repository_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "vggt_version": "0.0.1",
+  "runtime_seconds": 27.79843349999919,
+  "loading_preprocessing_seconds": 7.866723541999818,
+  "checkpoint_resolution_seconds": 0.0010570419999567093,
+  "timing_scope": "Synchronized aggregator plus all prediction heads; excludes model loading and NPZ export",
+  "precision": "FP16 aggregator and FP32 heads",
+  "preprocessing": "Unmodified official crop preprocessing, width 518 px",
+  "input_shape": [
+    16,
+    3,
+    392,
+    518
+  ],
+  "unused_track_head_disabled": true,
+  "dense_head_chunk_frames": 1,
+  "image_names": [
+    "000_templeSR0001.jpg",
+    "001_templeSR0002.jpg",
+    "002_templeSR0003.jpg",
+    "003_templeSR0004.jpg",
+    "004_templeSR0005.jpg",
+    "005_templeSR0006.jpg",
+    "006_templeSR0007.jpg",
+    "007_templeSR0008.jpg",
+    "008_templeSR0009.jpg",
+    "009_templeSR0010.jpg",
+    "010_templeSR0011.jpg",
+    "011_templeSR0012.jpg",
+    "012_templeSR0013.jpg",
+    "013_templeSR0014.jpg",
+    "014_templeSR0015.jpg",
+    "015_templeSR0016.jpg"
+  ],
+  "peak_gpu_bytes": null,
+  "sampled_mps_peak": {
+    "allocated_bytes": 3959325952,
+    "driver_bytes": 5188452352
+  }
+}

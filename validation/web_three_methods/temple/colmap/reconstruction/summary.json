@@ -1,0 +1,26 @@
+{
+  "source_sha256": "da8508d02b6740d52fb3bb6e72dd4c50699621749a580b2faf9394a23e436284",
+  "timestamp_utc": "2026-11-18T15:27:03.765311+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "camera_model": "PINHOLE",
+    "fixed_intrinsics": true,
+    "device": "cpu"
+  },
+  "registered": 13,
+  "total_images": 16,
+  "points": 1182,
+  "runtime_seconds": 1.4132171660003223,
+  "models": 1,
+  "mean_reprojection_px": 0.23134494217307935
+}

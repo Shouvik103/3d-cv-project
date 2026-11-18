@@ -3,7 +3,8 @@
   const $=selector=>document.querySelector(selector);
   const format=n=>Number(n||0).toLocaleString();
   const activeStatuses=new Set(['queued','running']);
-  const state={files:[],urls:[],jobs:[],examples:[],selected:null,kind:'cloud',loadedKey:null,loadingKey:null,request:0,viewer:null,busy:false};
+  const state={files:[],urls:[],jobs:[],examples:[],comparisons:[],selected:null,kind:'cloud',loadedKey:null,loadingKey:null,request:0,viewer:null,busy:false};
+  const methodNames={ours:'Our SfM',colmap:'COLMAP',vggt:'VGGT',all:'All three'};
   const statusNames={uploading:'Draft',queued:'Queued',running:'Reconstructing',completed:'Ready',partial:'Partial result',failed:'Failed',cancelled:'Cancelled',interrupted:'Interrupted'};
   const percent=job=>Math.max(0,Math.min(100,Math.round((Number(job.progress)||0)*10)/10));
   const statusLabel=job=>`${statusNames[job.status]||job.status}${activeStatuses.has(job.status)?' · '+percent(job)+'%':''}`;
@@ -17,7 +18,8 @@
   function setFiles(files){
     if(state.busy)return;
     const list=Array.from(files);error('');
-    if(list.length>200){error('Choose at most 200 photos for one reconstruction.');return;}
+    const limit=['all','vggt'].includes($('#reconstruction-method').value)?30:200;
+    if(list.length>limit){error(`Choose at most ${limit} photos for this method on the local runtime.`);$('#start-button').disabled=true;return;}
     const invalid=list.find(file=>! /\.(jpe?g|png|tiff?)$/i.test(file.name)||file.size>25*1024*1024);
     if(invalid){error(`${invalid.name}: use JPEG, PNG or TIFF files up to 25 MB each.`);return;}
     if(list.reduce((sum,file)=>sum+file.size,0)>1024**3){error('Keep the total upload under 1 GB.');return;}
@@ -41,13 +43,19 @@
     let job;
     try{
       const focal=$('#focal').value.trim();
-      job=await post('/api/jobs',{name:$('#run-name').value||'Untitled reconstruction',max_side:Number($('#resolution').value),make_mesh:$('#output-type').value==='mesh',mesh_quality:$('#mesh-quality').value,focal_px:focal?Number(focal):null});
+      const calibration=['fx','fy','cx','cy'].map(k=>$('#camera-'+k).value.trim());
+      if(calibration.some(Boolean)&&!calibration.every(Boolean))throw Error('Supply all four calibration values: fx, fy, cx and cy.');
+      if(focal&&calibration.some(Boolean))throw Error('Use either focal length or full calibration, not both.');
+      const [fx,fy,cx,cy]=calibration.map(Number);
+      job=await post('/api/jobs',{name:$('#run-name').value||'Untitled reconstruction',method:$('#reconstruction-method').value,depth_backend:$('#depth-backend').value,matching_ratio:Number($('#matching-ratio').value),camera_matrix:calibration.every(Boolean)?[[fx,0,cx],[0,fy,cy],[0,0,1]]:null,max_side:Number($('#resolution').value),make_mesh:$('#output-type').value==='mesh',mesh_quality:$('#mesh-quality').value,focal_px:focal?Number(focal):null});
       selectJob(job);
       for(let i=0;i<state.files.length;i++){
         const file=state.files[i];$('#upload-status').textContent=`Uploading ${i+1} of ${state.files.length} · ${file.name}`;
         await api(`/api/jobs/${job.id}/images/${i}?name=${encodeURIComponent(file.name)}`,{method:'PUT',body:file,headers:{'Content-Type':'application/octet-stream'}});
       }
-      job=await post(`/api/jobs/${job.id}/start`);selectJob(job);$('#upload-status').textContent='Images saved locally. Reconstruction is running in the background.';await refresh();
+      job=await post(`/api/jobs/${job.id}/start`);
+      if(job.children){const child=await api(`/api/jobs/${job.children[0]}`);selectJob(child);}else selectJob(job);
+      $('#upload-status').textContent=job.children?'Three independent method runs queued. Compare them in Performance → Your comparisons.':'Images saved locally. Reconstruction is running in the background.';await refresh();
     }catch(exc){error(exc.message);$('#upload-status').textContent='';if(job)await post(`/api/jobs/${job.id}/cancel`).catch(()=>{});}
     finally{state.busy=false;$('#start-button').disabled=state.files.length<3;$('#clear-images').disabled=false;$('#images').disabled=false;}
   });
@@ -57,20 +65,32 @@
     $('#mesh-quality-help').textContent=notes[$('#mesh-quality').value]+' Uses original uploads; smaller photos are not enlarged.';
   }
   $('#mesh-quality').addEventListener('change',meshQuality);$('#output-type').addEventListener('change',meshQuality);meshQuality();
+  $('#reconstruction-method').addEventListener('change',()=>{
+    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 30 views on this Mac.':method==='vggt'?'Joint predicted cameras and depth. Up to 30 views; native 518px crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
+    setFiles(state.files);
+    $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–${['all','vggt'].includes(method)?30:200} photos · 25 MB each`;
+  });
   function viewer(){
     if(!state.viewer){state.viewer=new WorkbenchViewer($('#canvas-host'));state.viewer.axes.visible=$('#axes').checked;state.viewer.pointSize($('#point-size').value);}
     return state.viewer;
   }
   function message(text,isError=false){$('#result-message').textContent=text;$('#result-message').hidden=!text;$('#result-message').dataset.error=String(isError);}
-  function resetSelection(){state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';}
+  function resetSelection(){state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
   function selectJob(job){
-    const changed=state.selected?.id!==job.id||state.selected?.type!=='job';
+    const changed=state.selected?.id!==job.id||state.selected?.type!=='job'||state.selected?.job?.prior_attempts!==job.prior_attempts;
     if(changed){resetSelection();state.kind=job.artifacts?.mesh_view?'mesh':'cloud';}
     state.selected={type:'job',id:job.id,job};renderJob(job);renderLibrary();
+    if(changed)requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
   }
   function renderJob(job){
-    $('#result-title').textContent=job.name;$('#result-status').textContent=statusLabel(job);$('#result-status').dataset.status=job.status;
+    $('#result-title').textContent=job.name;$('#result-status').textContent=methodNames[job.method||'ours']+' · '+statusLabel(job);$('#result-status').dataset.status=job.status;
     const running=activeStatuses.has(job.status);$('#progress-area').hidden=!(running||job.status==='uploading');$('#stage-message').textContent=job.message||'';$('#run-progress').value=job.progress||0;
+    $('#retry-controls').hidden=running||job.status==='uploading';
+    const retryKey=job.id+'-'+(job.prior_attempts||0);
+    if($('#retry-controls').dataset.key!==retryKey){
+      const method=job.method||'ours';$('#retry-controls').dataset.key=retryKey;$('#retry-ratio').value=job.matching_ratio??.85;$('#retry-ratio').disabled=method!=='ours';
+      $('#retry-depth').value=method==='vggt'?'vggt':job.depth_backend||'sgbm';$('#retry-depth').disabled=method==='vggt';$('#retry-depth').querySelector('option[value="vggt"]').disabled=method!=='vggt';$('#retry-quality').value=job.mesh_quality||'balanced';
+    }
     $('#run-percent').textContent=percent(job)+'%';
     const stages=['preparing','reconstructing','meshing','finished'];let stage=stages.indexOf(job.stage);if(job.stage==='point_cloud')stage=1;if(job.stage==='exporting')stage=2;
     document.querySelectorAll('[data-stage]').forEach((el,i)=>el.classList.toggle('done',i<=stage));
@@ -85,7 +105,7 @@
     const photoKey=job.id+'-'+job.uploads.length;
     if($('#run-photos').dataset.key!==photoKey){$('#run-photos').replaceChildren();job.uploads.forEach(item=>{const img=document.createElement('img');img.src=`/api/jobs/${job.id}/images/${item.index}`;img.alt=item.name;img.title=item.name;img.loading='lazy';$('#run-photos').append(img);});$('#run-photos').dataset.key=photoKey;}
     const links=[];
-    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Dense cloud PLY'],['sparse_cloud','Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
+    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
     renderDownloads(links);
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
@@ -117,6 +137,7 @@
     message('Existing reconstruction from 60 selected views. Measured stereo surfaces can have holes; coordinates use arbitrary display units.');renderMetrics(60,60,null,null);
     renderDownloads([['Cloud PLY',`/api/examples/${example.id}/cloud-ply`],['Mesh GLB',`/api/examples/${example.id}/glb`],['Mesh PLY',`/api/examples/${example.id}/ply`],['Mesh OBJ',`/api/examples/${example.id}/obj`]]);
     loadGeometry(`/api/examples/${example.id}/mesh`,`${example.id}-mesh`,'mesh');renderLibrary();
+    requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
   function changeKind(kind){
@@ -134,6 +155,7 @@
   pointSize(savedSize);$('#point-size').addEventListener('input',event=>pointSize(event.target.value));
   $('#axes').addEventListener('change',event=>{if(state.viewer)state.viewer.axes.visible=event.target.checked;});$('#fit-view').addEventListener('click',()=>state.viewer?.fit());
   $('#cancel-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;try{const job=await post(`/api/jobs/${state.selected.id}/cancel`);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}});
+  $('#retry-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;$('#retry-run').disabled=true;try{const method=state.selected.job.method||'ours',settings={mesh_quality:$('#retry-quality').value};if(method!=='vggt')settings.depth_backend=$('#retry-depth').value;if(method==='ours')settings.matching_ratio=Number($('#retry-ratio').value);const job=await post(`/api/jobs/${state.selected.id}/retry`,settings);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}finally{$('#retry-run').disabled=false;}});
   async function log(){if(state.selected?.type!=='job')return;try{const value=await api(`/api/jobs/${state.selected.id}/log`);$('#run-log').textContent=value.text||'The worker log will appear when reconstruction starts.';}catch(exc){$('#run-log').textContent=exc.message;}}
   $('#refresh-log').addEventListener('click',log);$('#run-details').addEventListener('toggle',()=>{if($('#run-details').open)log();});
   function clearSelection(){
@@ -167,17 +189,20 @@
       const actions=document.createElement('div');actions.className='card-actions';const remove=document.createElement('button');remove.type='button';remove.className='delete-button';remove.textContent='Delete';remove.setAttribute('aria-label',`Delete ${name}`);remove.addEventListener('click',()=>askDelete(item));actions.append(remove);article.append(actions);host.append(article);
     }
     state.examples.forEach(example=>card(example.name,'Saved reconstruction','Explore ↗',`/api/examples/${example.id}/preview`,()=>selectExample(example),{type:'example',id:example.id,name:example.name}));
-    state.jobs.forEach(job=>card(job.name,`${job.uploads.length} photos · ${new Date(job.created_at*1000).toLocaleDateString()}`,statusLabel(job),job.uploads.length?`/api/jobs/${job.id}/images/${job.uploads[0].index}`:null,()=>selectJob(job),{type:'job',id:job.id,name:job.name},activeStatuses.has(job.status)?percent(job):undefined));
+    state.jobs.forEach(job=>card(job.name,`${methodNames[job.method||'ours']} · ${job.uploads.length} photos`,statusLabel(job),job.artifacts?.mesh_view?`/api/jobs/${job.id}/preview`:job.uploads.length?`/api/jobs/${job.id}/images/${job.uploads[0].index}`:null,()=>selectJob(job),{type:'job',id:job.id,name:job.name},activeStatuses.has(job.status)?percent(job):undefined));
     if(!host.children.length){const p=document.createElement('p');p.className='muted';p.textContent='Your reconstructions will be saved here. Upload photos to begin.';host.append(p);}
   }
   async function refresh(){
-    const data=await api('/api/jobs');state.jobs=data.jobs;state.examples=data.examples;renderLibrary();
-    if(state.selected?.type==='job'){const job=state.jobs.find(x=>x.id===state.selected.id);if(job){state.selected.job=job;renderJob(job);}else clearSelection();}
+    const data=await api('/api/jobs');state.jobs=data.jobs;state.examples=data.examples;state.comparisons=data.comparisons||[];renderLibrary();
+    window.dispatchEvent(new Event('reconstruction-library'));
+    if(state.selected?.type==='job'){const job=state.jobs.find(x=>x.id===state.selected.id);if(job){if(state.selected.job.prior_attempts!==job.prior_attempts)resetSelection();state.selected.job=job;renderJob(job);}else clearSelection();}
     else if(state.selected?.type==='example'&&!state.examples.some(x=>x.id===state.selected.id))clearSelection();
   }
   $('#refresh-runs').addEventListener('click',()=>refresh().catch(exc=>message(exc.message,true)));
+  $('#browse-results').addEventListener('click',()=>$('#run-library').scrollIntoView({behavior:'smooth',block:'start'}));
   refresh().catch(exc=>message(exc.message,true));
   setInterval(()=>{if(!document.hidden)refresh().catch(()=>{});},2500);
   // A compact inspection surface for browser validation; contains no photo data.
   window.reconstructionWorkbench=state;
+  window.openReconstruction=id=>{const job=state.jobs.find(j=>j.id===id);if(job)selectJob(job);};
 })();

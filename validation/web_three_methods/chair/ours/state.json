@@ -1,0 +1,46 @@
+{
+  "status": "partial",
+  "stage": "finished",
+  "progress": 100,
+  "message": "Reconstruction ready",
+  "artifacts": {
+    "sparse_cloud": "reconstruction/points.ply",
+    "poses": "reconstruction/poses.json",
+    "reconstruction_summary": "reconstruction/summary.json",
+    "cloud_view": "cloud.json",
+    "mesh_ply": "mesh/mesh_light.ply",
+    "mesh_obj": "mesh/mesh_light.obj",
+    "mesh_glb": "mesh/mesh_light.glb",
+    "full_mesh": "mesh/mesh_full.ply",
+    "dense_cloud": "mesh/dense.ply",
+    "mesh_summary": "mesh/summary.json",
+    "mesh_view": "mesh.json"
+  },
+  "metrics": {
+    "method": "ours",
+    "images": 30,
+    "registered": 20,
+    "sparse_points": 3350,
+    "reprojection_px": 0.17005385220420477,
+    "reprojection_statistic": "median",
+    "reconstruction_seconds": 61.817347000000154,
+    "mesh_quality": "Balanced",
+    "mesh_depth_side": 640,
+    "mesh_voxel_div": 192,
+    "depth_backend": "sgbm",
+    "triangles": 66775,
+    "vertices": 35476,
+    "watertight": false,
+    "mesh_seconds": 3.771556874999078,
+    "components": 1,
+    "boundary_edges": 4455,
+    "dense_points": 38296,
+    "peak_rss_mb": 547.265625
+  },
+  "warnings": [
+    "Only 20 of 30 images registered. More overlapping views may help."
+  ],
+  "updated_at": 1795015282.734894,
+  "progress_units": null,
+  "elapsed_seconds": 67.79058790206909
+}

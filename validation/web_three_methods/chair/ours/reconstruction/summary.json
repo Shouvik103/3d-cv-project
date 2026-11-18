@@ -1,0 +1,230 @@
+{
+  "source_sha256": "b4230f8f28b9b51e2c029dc2afa3f9cb1425c34b35e5f4158e55ed8ffeb21505",
+  "timestamp_utc": "2026-11-18T15:21:17.236968+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.7,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": false
+    }
+  },
+  "registered": 20,
+  "points": 3350,
+  "median_reprojection_px": 0.17005385220420477,
+  "elapsed_seconds": 61.74337658300101,
+  "total_images": 30,
+  "runtime_seconds": 61.817347000000154,
+  "init_pair": [
+    "006_r_48.jpg",
+    "022_r_152.jpg"
+  ],
+  "image_names": [
+    "000_r_3.jpg",
+    "001_r_11.jpg",
+    "002_r_19.jpg",
+    "003_r_27.jpg",
+    "004_r_35.jpg",
+    "005_r_40.jpg",
+    "006_r_48.jpg",
+    "007_r_56.jpg",
+    "008_r_64.jpg",
+    "009_r_75.jpg",
+    "010_r_80.jpg",
+    "011_r_86.jpg",
+    "012_r_92.jpg",
+    "013_r_99.jpg",
+    "014_r_106.jpg",
+    "015_r_112.jpg",
+    "016_r_118.jpg",
+    "017_r_124.jpg",
+    "018_r_130.jpg",
+    "019_r_136.jpg",
+    "020_r_142.jpg",
+    "021_r_146.jpg",
+    "022_r_152.jpg",
+    "023_r_158.jpg",
+    "024_r_164.jpg",
+    "025_r_170.jpg",
+    "026_r_177.jpg",
+    "027_r_182.jpg",
+    "028_r_188.jpg",
+    "029_r_194.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 452,
+      "median_reprojection_px": 0.0818981331374662,
+      "elapsed_seconds": 53.6246185
+    },
+    {
+      "registered": 3,
+      "points": 975,
+      "median_reprojection_px": 0.10144852180917077,
+      "elapsed_seconds": 53.68898137500037
+    },
+    {
+      "registered": 4,
+      "points": 1202,
+      "median_reprojection_px": 0.1271085733417777,
+      "elapsed_seconds": 53.84536195800138
+    },
+    {
+      "registered": 5,
+      "points": 1469,
+      "median_reprojection_px": 0.13756674195536553,
+      "elapsed_seconds": 54.47655175
+    },
+    {
+      "registered": 6,
+      "points": 1840,
+      "median_reprojection_px": 0.14493914102546557,
+      "elapsed_seconds": 54.725128166001014
+    },
+    {
+      "registered": 7,
+      "points": 2087,
+      "median_reprojection_px": 0.15258434011795352,
+      "elapsed_seconds": 55.015061375001096
+    },
+    {
+      "registered": 8,
+      "points": 2188,
+      "median_reprojection_px": 0.1582875692399161,
+      "elapsed_seconds": 55.29281850000007
+    },
+    {
+      "registered": 9,
+      "points": 2382,
+      "median_reprojection_px": 0.16076974060262203,
+      "elapsed_seconds": 55.55672270800096
+    },
+    {
+      "registered": 10,
+      "points": 2479,
+      "median_reprojection_px": 0.16306795381308467,
+      "elapsed_seconds": 56.66894766600126
+    },
+    {
+      "registered": 11,
+      "points": 2660,
+      "median_reprojection_px": 0.1655217102334136,
+      "elapsed_seconds": 56.95059320800101
+    },
+    {
+      "registered": 12,
+      "points": 2780,
+      "median_reprojection_px": 0.16662098861480287,
+      "elapsed_seconds": 57.22004791600011
+    },
+    {
+      "registered": 13,
+      "points": 2849,
+      "median_reprojection_px": 0.16876858709410117,
+      "elapsed_seconds": 57.31061787500039
+    },
+    {
+      "registered": 14,
+      "points": 2916,
+      "median_reprojection_px": 0.16880659691551192,
+      "elapsed_seconds": 57.56812816599995
+    },
+    {
+      "registered": 15,
+      "points": 2952,
+      "median_reprojection_px": 0.1711128629323168,
+      "elapsed_seconds": 58.69934479100084
+    },
+    {
+      "registered": 16,
+      "points": 3104,
+      "median_reprojection_px": 0.16833808317021218,
+      "elapsed_seconds": 58.94735212500018
+    },
+    {
+      "registered": 17,
+      "points": 3170,
+      "median_reprojection_px": 0.16960738033686498,
+      "elapsed_seconds": 59.02553762500065
+    },
+    {
+      "registered": 18,
+      "points": 3234,
+      "median_reprojection_px": 0.1695623738879456,
+      "elapsed_seconds": 59.121475416000976
+    },
+    {
+      "registered": 19,
+      "points": 3306,
+      "median_reprojection_px": 0.16895190970770538,
+      "elapsed_seconds": 59.202646749999985
+    },
+    {
+      "registered": 20,
+      "points": 3350,
+      "median_reprojection_px": 0.1705926512141071,
+      "elapsed_seconds": 60.46971633300018
+    },
+    {
+      "registered": 20,
+      "points": 3350,
+      "median_reprojection_px": 0.17005385220420477,
+      "elapsed_seconds": 61.74337658300101
+    }
+  ],
+  "mean_track_length": 2.6373134328358208
+}

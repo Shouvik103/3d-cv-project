@@ -1,0 +1,211 @@
+{
+  "id": "4312a5febaa94fb0bba3c46e2468facb",
+  "name": "Chair \u00b7 fresh three-method comparison \u00b7 VGGT",
+  "created_at": 1795015034.9085271,
+  "max_side": 1200,
+  "focal_px": null,
+  "make_mesh": true,
+  "mesh_quality": "balanced",
+  "uploads": [
+    {
+      "index": 0,
+      "name": "r_3.png",
+      "stored": "000_r_3.png",
+      "bytes": 167108
+    },
+    {
+      "index": 1,
+      "name": "r_11.png",
+      "stored": "001_r_11.png",
+      "bytes": 251071
+    },
+    {
+      "index": 2,
+      "name": "r_19.png",
+      "stored": "002_r_19.png",
+      "bytes": 296147
+    },
+    {
+      "index": 3,
+      "name": "r_27.png",
+      "stored": "003_r_27.png",
+      "bytes": 367326
+    },
+    {
+      "index": 4,
+      "name": "r_35.png",
+      "stored": "004_r_35.png",
+      "bytes": 446091
+    },
+    {
+      "index": 5,
+      "name": "r_40.png",
+      "stored": "005_r_40.png",
+      "bytes": 465339
+    },
+    {
+      "index": 6,
+      "name": "r_48.png",
+      "stored": "006_r_48.png",
+      "bytes": 450044
+    },
+    {
+      "index": 7,
+      "name": "r_56.png",
+      "stored": "007_r_56.png",
+      "bytes": 410203
+    },
+    {
+      "index": 8,
+      "name": "r_64.png",
+      "stored": "008_r_64.png",
+      "bytes": 350559
+    },
+    {
+      "index": 9,
+      "name": "r_75.png",
+      "stored": "009_r_75.png",
+      "bytes": 233796
+    },
+    {
+      "index": 10,
+      "name": "r_80.png",
+      "stored": "010_r_80.png",
+      "bytes": 225722
+    },
+    {
+      "index": 11,
+      "name": "r_86.png",
+      "stored": "011_r_86.png",
+      "bytes": 234420
+    },
+    {
+      "index": 12,
+      "name": "r_92.png",
+      "stored": "012_r_92.png",
+      "bytes": 240802
+    },
+    {
+      "index": 13,
+      "name": "r_99.png",
+      "stored": "013_r_99.png",
+      "bytes": 210879
+    },
+    {
+      "index": 14,
+      "name": "r_106.png",
+      "stored": "014_r_106.png",
+      "bytes": 236916
+    },
+    {
+      "index": 15,
+      "name": "r_112.png",
+      "stored": "015_r_112.png",
+      "bytes": 247799
+    },
+    {
+      "index": 16,
+      "name": "r_118.png",
+      "stored": "016_r_118.png",
+      "bytes": 247181
+    },
+    {
+      "index": 17,
+      "name": "r_124.png",
+      "stored": "017_r_124.png",
+      "bytes": 246127
+    },
+    {
+      "index": 18,
+      "name": "r_130.png",
+      "stored": "018_r_130.png",
+      "bytes": 332190
+    },
+    {
+      "index": 19,
+      "name": "r_136.png",
+      "stored": "019_r_136.png",
+      "bytes": 397957
+    },
+    {
+      "index": 20,
+      "name": "r_142.png",
+      "stored": "020_r_142.png",
+      "bytes": 430587
+    },
+    {
+      "index": 21,
+      "name": "r_146.png",
+      "stored": "021_r_146.png",
+      "bytes": 433020
+    },
+    {
+      "index": 22,
+      "name": "r_152.png",
+      "stored": "022_r_152.png",
+      "bytes": 437661
+    },
+    {
+      "index": 23,
+      "name": "r_158.png",
+      "stored": "023_r_158.png",
+      "bytes": 428141
+    },
+    {
+      "index": 24,
+      "name": "r_164.png",
+      "stored": "024_r_164.png",
+      "bytes": 396596
+    },
+    {
+      "index": 25,
+      "name": "r_170.png",
+      "stored": "025_r_170.png",
+      "bytes": 340113
+    },
+    {
+      "index": 26,
+      "name": "r_177.png",
+      "stored": "026_r_177.png",
+      "bytes": 271185
+    },
+    {
+      "index": 27,
+      "name": "r_182.png",
+      "stored": "027_r_182.png",
+      "bytes": 264749
+    },
+    {
+      "index": 28,
+      "name": "r_188.png",
+      "stored": "028_r_188.png",
+      "bytes": 245371
+    },
+    {
+      "index": 29,
+      "name": "r_194.png",
+      "stored": "029_r_194.png",
+      "bytes": 195083
+    }
+  ],
+  "method": "vggt",
+  "matching_ratio": 0.7,
+  "camera_matrix": [
+    [
+      1104.2233554111049,
+      0,
+      400
+    ],
+    [
+      0,
+      1104.2233554111049,
+      400
+    ],
+    [
+      0,
+      0,
+      1
+    ]
+  ],
+  "comparison_id": "a92837d2c91745f88ad0d82444859ca5"
+}

@@ -1,0 +1,36 @@
+{
+  "status": "partial",
+  "stage": "finished",
+  "progress": 100,
+  "message": "Reconstruction ready",
+  "artifacts": {
+    "sparse_cloud": "reconstruction/points.ply",
+    "poses": "reconstruction/poses.json",
+    "reconstruction_summary": "reconstruction/summary.json",
+    "cloud_view": "cloud.json"
+  },
+  "metrics": {
+    "method": "colmap",
+    "images": 16,
+    "registered": 13,
+    "sparse_points": 1178,
+    "reprojection_px": 0.2276407813479514,
+    "reprojection_statistic": "mean",
+    "reconstruction_seconds": 1.4892519589993753,
+    "mesh_quality": "Balanced",
+    "mesh_depth_side": 640,
+    "mesh_voxel_div": 192,
+    "peak_rss_mb": 699.84375
+  },
+  "warnings": [
+    "Only 13 of 16 images registered. More overlapping views may help.",
+    "Mesh could not be completed: Fewer than two depth maps passed the gates; inspect alignment.json or use --backend sgbm. The point cloud is still available."
+  ],
+  "updated_at": 1795015048.239359,
+  "progress_units": {
+    "phase": "depth",
+    "done": 13,
+    "total": 13
+  },
+  "elapsed_seconds": 3.3972911834716797
+}

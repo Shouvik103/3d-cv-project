@@ -1,0 +1,283 @@
+{
+  "source_sha256": "b4230f8f28b9b51e2c029dc2afa3f9cb1425c34b35e5f4158e55ed8ffeb21505",
+  "timestamp_utc": "2026-11-18T15:21:22.450113+00:00",
+  "git_commit": "2a5573310405ab9e8b8f3692dc838ffdcf4f2a75",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1",
+    "open3d": "0.19.0",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "transformers": "5.23.0",
+    "trimesh": "5.2.1",
+    "scikit-image": "0.26.0"
+  },
+  "config": {
+    "seed": 0,
+    "depth_backend": "sgbm",
+    "cache_only": false,
+    "mono": {
+      "model_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "revision": "5426e4f0f36572d16453bbda7a8389317b1bef99",
+      "input_long_side": 640,
+      "device": "auto"
+    },
+    "align": {
+      "min_points": 30,
+      "iterations": 400,
+      "ransac_tol": 0.1,
+      "max_median_rel_residual": 0.1
+    },
+    "filter": {
+      "depth_trunc_pct": 98,
+      "edge_grad_thresh": 0.05,
+      "consistency": true,
+      "consistency_rel_tol": 0.02,
+      "consistency_min_views": 2,
+      "roi_percentiles": [
+        1,
+        99
+      ],
+      "roi_margin_frac": 0.2
+    },
+    "sgbm": {
+      "input_long_side": 640,
+      "num_disparities": 128,
+      "neighbors": 2
+    },
+    "vggt": {
+      "confidence_quantile": 0.5
+    },
+    "tsdf": {
+      "voxel_div": 192,
+      "sdf_trunc_voxels": 4
+    },
+    "poisson": {
+      "enabled": false,
+      "depth": 8,
+      "density_quantile": 0.05
+    },
+    "clean": {
+      "min_component_frac": 0.02,
+      "light_target_triangles": 80000
+    },
+    "export": [
+      "ply",
+      "obj",
+      "glb"
+    ],
+    "heldout": {
+      "num_views": 0,
+      "seed": 0
+    }
+  },
+  "scene": "/Users/shouvikdas/Documents/ChatGPT/3d-cv-project/outputs/web_ui_extended/706869aba81c47c58138a0041b6175ee/mesh_input",
+  "backend": "sgbm",
+  "frames_fused": 20,
+  "registered_views": 20,
+  "fusion_images": [
+    "003_r_27.jpg",
+    "004_r_35.jpg",
+    "005_r_40.jpg",
+    "006_r_48.jpg",
+    "007_r_56.jpg",
+    "008_r_64.jpg",
+    "015_r_112.jpg",
+    "016_r_118.jpg",
+    "017_r_124.jpg",
+    "018_r_130.jpg",
+    "019_r_136.jpg",
+    "020_r_142.jpg",
+    "021_r_146.jpg",
+    "022_r_152.jpg",
+    "023_r_158.jpg",
+    "024_r_164.jpg",
+    "025_r_170.jpg",
+    "026_r_177.jpg",
+    "027_r_182.jpg",
+    "028_r_188.jpg"
+  ],
+  "heldout_images": [],
+  "heldout": {
+    "views": 0,
+    "rows": [],
+    "scope": "Views excluded from depth generation/consistency/fusion; SfM poses and sparse landmarks were estimated using all input views"
+  },
+  "convention": {
+    "convention": "OpenCV world-to-camera; x_cam=R X+t",
+    "median_reprojection_px": 0.13604316936831826,
+    "passed": true,
+    "automatic_no_track_check": false,
+    "scene_extent": 2.808634018189576,
+    "images": [
+      {
+        "image": "003_r_27.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9988059701492538,
+        "tracked_points": 74
+      },
+      {
+        "image": "004_r_35.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9991044776119403,
+        "tracked_points": 377
+      },
+      {
+        "image": "005_r_40.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9994029850746269,
+        "tracked_points": 657
+      },
+      {
+        "image": "006_r_48.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9994029850746269,
+        "tracked_points": 1016
+      },
+      {
+        "image": "007_r_56.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 884
+      },
+      {
+        "image": "008_r_64.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9985074626865672,
+        "tracked_points": 340
+      },
+      {
+        "image": "015_r_112.jpg",
+        "positive_fraction": 0.9997014925373134,
+        "inside_fraction": 0.997910447761194,
+        "tracked_points": 81
+      },
+      {
+        "image": "016_r_118.jpg",
+        "positive_fraction": 0.9997014925373134,
+        "inside_fraction": 0.997910447761194,
+        "tracked_points": 144
+      },
+      {
+        "image": "017_r_124.jpg",
+        "positive_fraction": 0.9997014925373134,
+        "inside_fraction": 0.9988059701492538,
+        "tracked_points": 159
+      },
+      {
+        "image": "018_r_130.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9991044776119403,
+        "tracked_points": 199
+      },
+      {
+        "image": "019_r_136.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9994029850746269,
+        "tracked_points": 362
+      },
+      {
+        "image": "020_r_142.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9997014925373134,
+        "tracked_points": 731
+      },
+      {
+        "image": "021_r_146.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9994029850746269,
+        "tracked_points": 992
+      },
+      {
+        "image": "022_r_152.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 1.0,
+        "tracked_points": 804
+      },
+      {
+        "image": "023_r_158.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9994029850746269,
+        "tracked_points": 746
+      },
+      {
+        "image": "024_r_164.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9985074626865672,
+        "tracked_points": 447
+      },
+      {
+        "image": "025_r_170.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9982089552238806,
+        "tracked_points": 260
+      },
+      {
+        "image": "026_r_177.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9982089552238806,
+        "tracked_points": 240
+      },
+      {
+        "image": "027_r_182.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9988059701492538,
+        "tracked_points": 228
+      },
+      {
+        "image": "028_r_188.jpg",
+        "positive_fraction": 1.0,
+        "inside_fraction": 0.9985074626865672,
+        "tracked_points": 94
+      }
+    ]
+  },
+  "roi": [
+    [
+      -1.0247863231599998,
+      -1.80214037616,
+      3.7264860787200007
+    ],
+    [
+      1.0305238271599997,
+      1.66592694936,
+      5.568487380979996
+    ]
+  ],
+  "voxel_length": 0.014628302178070708,
+  "full": {
+    "vertices": 35476,
+    "faces": 66775,
+    "components": 1,
+    "boundary_edges": 4455,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 4.756319987286487,
+    "mean_edge_length": 0.013931137473259136
+  },
+  "light": {
+    "vertices": 35476,
+    "faces": 66775,
+    "components": 1,
+    "boundary_edges": 4455,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 4.756319987286487,
+    "mean_edge_length": 0.013931137473259136
+  },
+  "timing_seconds": {
+    "depth": 1.9577077080011804,
+    "alignment": 0.0,
+    "filtering": 0.7925944170001458,
+    "fusion": 0.0779125839999324,
+    "clean_export": 0.19589629100119055,
+    "total": 3.771556874999078
+  },
+  "peak_rss_mb": 547.265625
+}

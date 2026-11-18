@@ -1,0 +1,34 @@
+{
+  "status": "cancelled",
+  "stage": "finished",
+  "progress": 65.0,
+  "message": "Run cancelled",
+  "artifacts": {
+    "sparse_cloud": "reconstruction/points.ply",
+    "poses": "reconstruction/poses.json",
+    "reconstruction_summary": "reconstruction/summary.json",
+    "cloud_view": "cloud.json"
+  },
+  "metrics": {
+    "method": "colmap",
+    "images": 30,
+    "registered": 10,
+    "sparse_points": 391,
+    "reprojection_px": 0.6010306601979901,
+    "reprojection_statistic": "mean",
+    "reconstruction_seconds": 6.33397791599964,
+    "mesh_quality": "Balanced",
+    "mesh_depth_side": 640,
+    "mesh_voxel_div": 192,
+    "depth_backend": "mono"
+  },
+  "warnings": [
+    "Only 10 of 30 images registered. More overlapping views may help."
+  ],
+  "updated_at": 1795015976.272855,
+  "progress_units": {
+    "phase": "depth",
+    "done": 0,
+    "total": 10
+  }
+}

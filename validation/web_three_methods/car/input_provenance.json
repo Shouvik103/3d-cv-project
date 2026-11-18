@@ -1,0 +1,187 @@
+{
+  "scene": "Car",
+  "id": "ea5edaca6a5c455ab20485ab55682317",
+  "settings": {
+    "name": "Car \u00b7 fresh three-method comparison",
+    "method": "all",
+    "camera_matrix": [
+      [
+        1792.7160507828976,
+        0,
+        1200
+      ],
+      [
+        0,
+        1792.7160507828976,
+        900
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "matching_ratio": 0.7,
+    "max_side": 1200,
+    "make_mesh": true,
+    "mesh_quality": "balanced"
+  },
+  "note": "30 angularly spaced oblique views from the prior curated 60. Curation and input K previously used COLMAP estimates; fresh poses and geometry are computed independently.",
+  "images": [
+    {
+      "index": 0,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181910.jpg",
+      "sha256": "19dc0ecb736699ec25993515a705492b0e0ed345907aee3a67031c28dea42505"
+    },
+    {
+      "index": 1,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181911.jpg",
+      "sha256": "d21e76b44d403bee02ec481cbdda3edf17729dc574770eb0ec49f8842f33a239"
+    },
+    {
+      "index": 2,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182042.jpg",
+      "sha256": "09fac9f19aaba8399138cf209495177babb4b1a8622837b360e9eaf13e434ecb"
+    },
+    {
+      "index": 3,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182048.jpg",
+      "sha256": "78361f41131e2caf057c75f651efe1be478af2756db8367442c297c0c0c43833"
+    },
+    {
+      "index": 4,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182050.jpg",
+      "sha256": "85607eb00027fd4261bf8056c802001d727a898d2030f19481333cda99ebafbe"
+    },
+    {
+      "index": 5,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182054.jpg",
+      "sha256": "c2f2c3a69bf09200be17429405fad7b87a2787bb60625a80408fa20622ae3787"
+    },
+    {
+      "index": 6,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182056.jpg",
+      "sha256": "093889dc683f82224c9b7fa755f664a9f9384822cdfcb0ccefca41cdbccef837"
+    },
+    {
+      "index": 7,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181939.jpg",
+      "sha256": "63eef993ce82e35db168a8110821defe071f4e72bb3949c4b138d0cdb1ef8a80"
+    },
+    {
+      "index": 8,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181941.jpg",
+      "sha256": "0a3654a22ff69ea40f91a7b36cee4f24182967cb48672238041b565fe5a62e2f"
+    },
+    {
+      "index": 9,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181946.jpg",
+      "sha256": "8d9f1d46880f7d1ffd6395de20b844aec07f1fe5c2a8fa9aac27340778b2fa15"
+    },
+    {
+      "index": 10,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181948.jpg",
+      "sha256": "351efaafef2f1926ef8424a77e3808cc76bb1e3ea0364b56cc93e6e99217de01"
+    },
+    {
+      "index": 11,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181837.jpg",
+      "sha256": "349684cd802c1e950c93c3a9ec30d2f59397170ca1d1681cadb8aa2eab42becd"
+    },
+    {
+      "index": 12,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181839.jpg",
+      "sha256": "3cde2fcd6be335508d1afbd6b6b1ead0c05deb31f45b3b15b0e6eff26a8bc464"
+    },
+    {
+      "index": 13,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181844.jpg",
+      "sha256": "d25032e9ce946b2366ab9b32c2efc67310f5f71d582dc7999782e1163a123ad9"
+    },
+    {
+      "index": 14,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182009.jpg",
+      "sha256": "c2862fcc3b39844f5e6a0418bc91bede7394567d8e4c23bf3c7275c9695a1d0c"
+    },
+    {
+      "index": 15,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182128.jpg",
+      "sha256": "89d1279848bf811f8d1b395e7d97a1ec838184d65ec478ec20b16c79159064b6"
+    },
+    {
+      "index": 16,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182131.jpg",
+      "sha256": "002da5833cd654f7c05a47316747204f22ba35be82f8c163f0e1f33bf479634b"
+    },
+    {
+      "index": 17,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182136.jpg",
+      "sha256": "22a59a65a8ab8cd39f195f15d03b0b87e317441f5072ec7092da20b7a8e39908"
+    },
+    {
+      "index": 18,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_181859.jpg",
+      "sha256": "ae41ad5e4330fb6708fc3a411b5602162ef9533123e78876153e0202f30dec63"
+    },
+    {
+      "index": 19,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182220.jpg",
+      "sha256": "a613011d04d12d653142d2ea29979da7558cba292f0aeacf214c3d705df0e7da"
+    },
+    {
+      "index": 20,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182222.jpg",
+      "sha256": "b5047bb7f346b0ab764c9f9e40b413792aedc45327c1105f6b67118bbc11775a"
+    },
+    {
+      "index": 21,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182300.jpg",
+      "sha256": "fbfc792a1e6a55eeb6d76d89bb1ee862e3c3585301b805fb8df2ea9be31f332c"
+    },
+    {
+      "index": 22,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182224.jpg",
+      "sha256": "1db94d7ef008d331b36dab220d0ef2b45a322ce5ec27a860e29ad1e67f6ed37e"
+    },
+    {
+      "index": 23,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182227.jpg",
+      "sha256": "3ea2670598c132b2a04b6fcc94fb6540b0e8383a368f5e8cb738c3e0a45e23e6"
+    },
+    {
+      "index": 24,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182229.jpg",
+      "sha256": "470b9fc758cf433a5382950b68ea21717b64a517eea8028b72d370700bc22d1d"
+    },
+    {
+      "index": 25,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182303.jpg",
+      "sha256": "41419e31cecce3d1c3420b277d5fc85a99ca98439c278cf1c5c48eeeb419f6d6"
+    },
+    {
+      "index": 26,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182230.jpg",
+      "sha256": "31f6a0c8035be377fbde87ac8ba734403aa330e727042f8856a0bc9fa9da1e55"
+    },
+    {
+      "index": 27,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182319.jpg",
+      "sha256": "ccf3d5a4fb26e152103d9db008e39bfebfa4bdcdb3eb41047e9d7b9b381b411d"
+    },
+    {
+      "index": 28,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182235.jpg",
+      "sha256": "379cb695075742994ac7c523e819aa0aaec1ae381d34b4b4834cb44f4f45821b"
+    },
+    {
+      "index": 29,
+      "path": "outputs/cars_curated_60/calibrated_2400/images/IMG_20261114_182034.jpg",
+      "sha256": "675ac2d4471a92095e552ebfed5f6bb55baba37cc0758c63f626ce1e360bb5c9"
+    }
+  ],
+  "children": [
+    "80177c4b7b0748a5b7391eaa76b5c30a",
+    "981f3028fca14ad08d238142562cfa59",
+    "6a37814fbf2c44d6bbc9101bdce0432b"
+  ]
+}

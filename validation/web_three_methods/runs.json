@@ -1,0 +1,92 @@
+[
+  {
+    "scene": "Temple",
+    "method": "ours",
+    "id": "57d7f3852ddb411d9b64222aae54f9be",
+    "status": "completed",
+    "registered": 16,
+    "input_views": 16,
+    "triangles": 79999,
+    "prior_attempts": 3
+  },
+  {
+    "scene": "Temple",
+    "method": "colmap",
+    "id": "e394186385b4422487c3e9b89b22a01c",
+    "status": "partial",
+    "registered": 13,
+    "input_views": 16,
+    "triangles": 80000,
+    "prior_attempts": 1
+  },
+  {
+    "scene": "Temple",
+    "method": "vggt",
+    "id": "26e3f057d9e842109665f43bc8eb73a4",
+    "status": "completed",
+    "registered": 16,
+    "input_views": 16,
+    "triangles": 80000,
+    "prior_attempts": 0
+  },
+  {
+    "scene": "Car",
+    "method": "ours",
+    "id": "80177c4b7b0748a5b7391eaa76b5c30a",
+    "status": "partial",
+    "registered": 4,
+    "input_views": 30,
+    "triangles": 80000,
+    "prior_attempts": 6
+  },
+  {
+    "scene": "Car",
+    "method": "colmap",
+    "id": "981f3028fca14ad08d238142562cfa59",
+    "status": "partial",
+    "registered": 10,
+    "input_views": 30,
+    "triangles": 79999,
+    "prior_attempts": 2
+  },
+  {
+    "scene": "Car",
+    "method": "vggt",
+    "id": "6a37814fbf2c44d6bbc9101bdce0432b",
+    "status": "completed",
+    "registered": 30,
+    "input_views": 30,
+    "triangles": 8575,
+    "prior_attempts": 0
+  },
+  {
+    "scene": "Chair",
+    "method": "ours",
+    "id": "706869aba81c47c58138a0041b6175ee",
+    "status": "partial",
+    "registered": 20,
+    "input_views": 30,
+    "triangles": 66775,
+    "prior_attempts": 0
+  },
+  {
+    "scene": "Chair",
+    "method": "colmap",
+    "id": "b7d07774a88245a29726672bccc90e75",
+    "status": "completed",
+    "registered": 30,
+    "input_views": 30,
+    "triangles": 60095,
+    "prior_attempts": 0
+  },
+  {
+    "scene": "Chair",
+    "method": "vggt",
+    "id": "4312a5febaa94fb0bba3c46e2468facb",
+    "status": "completed",
+    "registered": 30,
+    "input_views": 30,
+    "triangles": 79999,
+    "prior_attempts": 0
+  }
+]

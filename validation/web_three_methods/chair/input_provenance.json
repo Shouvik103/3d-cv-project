@@ -1,0 +1,187 @@
+{
+  "scene": "Chair",
+  "id": "a92837d2c91745f88ad0d82444859ca5",
+  "settings": {
+    "name": "Chair \u00b7 fresh three-method comparison",
+    "method": "all",
+    "camera_matrix": [
+      [
+        1104.2233554111049,
+        0,
+        400
+      ],
+      [
+        0,
+        1104.2233554111049,
+        400
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "matching_ratio": 0.7,
+    "max_side": 1200,
+    "make_mesh": true,
+    "mesh_quality": "balanced"
+  },
+  "note": "30 spaced views from the prior selected 60, using original RGBA images. Input K is an earlier COLMAP estimate, not supplied GT. Original alpha is retained as a foreground mask.",
+  "images": [
+    {
+      "index": 0,
+      "path": "nerf_synthetic/chair/test/r_3.png",
+      "sha256": "c724a4fa2d21784161bfb656c19a89e1e4741bf26cb9a92968a9130ddbce741a"
+    },
+    {
+      "index": 1,
+      "path": "nerf_synthetic/chair/test/r_11.png",
+      "sha256": "1fd04476ddbcbabaccbd9748db12ca64c2de225d710efa02581d3c733493a503"
+    },
+    {
+      "index": 2,
+      "path": "nerf_synthetic/chair/test/r_19.png",
+      "sha256": "8fe8a120f84e21fdb0f6f029d8343c31218ec3b897932e061322d4efd542cad2"
+    },
+    {
+      "index": 3,
+      "path": "nerf_synthetic/chair/test/r_27.png",
+      "sha256": "d4589a50895278171501b59dde442294259255def81c91331a7f07e01ca22482"
+    },
+    {
+      "index": 4,
+      "path": "nerf_synthetic/chair/test/r_35.png",
+      "sha256": "78b6573b54c9bc4521bd26d6cdff5c8928cfe49f64f92b5b5f9384409ea1a43c"
+    },
+    {
+      "index": 5,
+      "path": "nerf_synthetic/chair/test/r_40.png",
+      "sha256": "528f8856449e575815aab0895cb202e268510615e29b66da4c9a5ea163d7a84d"
+    },
+    {
+      "index": 6,
+      "path": "nerf_synthetic/chair/test/r_48.png",
+      "sha256": "4b4343d167217e975daf635cc8068ff2283d75d5241f235a44906eaaf8be4192"
+    },
+    {
+      "index": 7,
+      "path": "nerf_synthetic/chair/test/r_56.png",
+      "sha256": "95f86578dfb0dfa824d7178cef0bae40e0fa937061de3cee71da580bd57bc93e"
+    },
+    {
+      "index": 8,
+      "path": "nerf_synthetic/chair/test/r_64.png",
+      "sha256": "9427b060bc4e7adbe13f3d2462e08137ba6ed3fd8c85d46a6fdaae7566bdcfd0"
+    },
+    {
+      "index": 9,
+      "path": "nerf_synthetic/chair/test/r_75.png",
+      "sha256": "829f6f78225f15def6b5928001b8b7bca02fbd94975260f049b283fc804e61ec"
+    },
+    {
+      "index": 10,
+      "path": "nerf_synthetic/chair/test/r_80.png",
+      "sha256": "7bbb0ebd56c867d0f3a746b9fe87d1495d9c8ba33a8451719c277c5795bdf9ef"
+    },
+    {
+      "index": 11,
+      "path": "nerf_synthetic/chair/test/r_86.png",
+      "sha256": "87622908181918e4c932465ebdbb3b1b413cc045add5ca0e8654d428367454db"
+    },
+    {
+      "index": 12,
+      "path": "nerf_synthetic/chair/test/r_92.png",
+      "sha256": "9f7a13c48817f36b368af1818f0496ae13a5c53de9bce5f38f40a7c557c0ab76"
+    },
+    {
+      "index": 13,
+      "path": "nerf_synthetic/chair/test/r_99.png",
+      "sha256": "c5d37a5f276b6d6035a409d1ebfc879627e5353c2ed44f67c8ebac09f8e97cc0"
+    },
+    {
+      "index": 14,
+      "path": "nerf_synthetic/chair/test/r_106.png",
+      "sha256": "0b1b25d4e38ff56090f7dca9d93819ff058f3d569dddbde214da53cd37b60f17"
+    },
+    {
+      "index": 15,
+      "path": "nerf_synthetic/chair/test/r_112.png",
+      "sha256": "a293dd74aa01e520e7cc085446805f3174dfe78f905c6ad2795f2d3e9786c574"
+    },
+    {
+      "index": 16,
+      "path": "nerf_synthetic/chair/test/r_118.png",
+      "sha256": "555dacf84fc3583ed60588ebd144af5c91e2cf28c413c015d7a87c41819d7b9c"
+    },
+    {
+      "index": 17,
+      "path": "nerf_synthetic/chair/test/r_124.png",
+      "sha256": "4800b6be1a1e573fbcb0a1b6458c4ab6140ed7dfc86614e0695d4ac1c8e6eb36"
+    },
+    {
+      "index": 18,
+      "path": "nerf_synthetic/chair/test/r_130.png",
+      "sha256": "79c21503892371105676a536384f1840a11097cfdd9b42751ae06989926f2514"
+    },
+    {
+      "index": 19,
+      "path": "nerf_synthetic/chair/test/r_136.png",
+      "sha256": "41597e793e8ecd504b3a676e94df1a6a240bce885c81d0d48d83e52eb0690a2b"
+    },
+    {
+      "index": 20,
+      "path": "nerf_synthetic/chair/test/r_142.png",
+      "sha256": "9745e320a1b43b66e1f53378ebf7d7d650fce0eff1118d473d08642787c5e088"
+    },
+    {
+      "index": 21,
+      "path": "nerf_synthetic/chair/test/r_146.png",
+      "sha256": "592bc1e360d9e0f3a2dddfd705ea521d3e43a71389dd8a328a5892db4aa82a23"
+    },
+    {
+      "index": 22,
+      "path": "nerf_synthetic/chair/test/r_152.png",
+      "sha256": "ccc2f02e25dc6aa63ef6eb04efa676516472ab84226ec026fd0ed66fe2443987"
+    },
+    {
+      "index": 23,
+      "path": "nerf_synthetic/chair/test/r_158.png",
+      "sha256": "1004cd6a8b738fd320d22c62cda6aa151e555b79c841a4d525bd4d99a67d29e5"
+    },
+    {
+      "index": 24,
+      "path": "nerf_synthetic/chair/test/r_164.png",
+      "sha256": "416eaa4874f903f96c14a116cfcb6fdecdc96b3571d984303bc3739a510b17d1"
+    },
+    {
+      "index": 25,
+      "path": "nerf_synthetic/chair/test/r_170.png",
+      "sha256": "d5a483ef7c6140fa211f28881894891bad8f14a6d58be7bd41cf415156d2a7f6"
+    },
+    {
+      "index": 26,
+      "path": "nerf_synthetic/chair/test/r_177.png",
+      "sha256": "913e4cdb57dc6b70f9fcd6e40c8600a56eb6efee72980fe7171d3bbec88faf63"
+    },
+    {
+      "index": 27,
+      "path": "nerf_synthetic/chair/test/r_182.png",
+      "sha256": "6dc1a8bcbf4feb44df8c70494d57b79e8fd49fe9d791cca73f64e24f163642ee"
+    },
+    {
+      "index": 28,
+      "path": "nerf_synthetic/chair/test/r_188.png",
+      "sha256": "4424c5ac388c0493751dd044d87e5d3a3118fc44218d304a34a3f68f0a12764a"
+    },
+    {
+      "index": 29,
+      "path": "nerf_synthetic/chair/test/r_194.png",
+      "sha256": "803335d7a350c762625ee9db6e8891173cb32c8696964fae5bbf8091c1afd7cb"
+    }
+  ],
+  "children": [
+    "706869aba81c47c58138a0041b6175ee",
+    "b7d07774a88245a29726672bccc90e75",
+    "4312a5febaa94fb0bba3c46e2468facb"
+  ]
+}
