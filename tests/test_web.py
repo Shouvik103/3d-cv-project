@@ -64,6 +64,60 @@ def test_upload_validation_and_request_boundaries(workbench_api):
     assert request('POST', f'/api/jobs/{job_id}/cancel', {})[1]['status'] == 'cancelled'
 
 
+def test_research_catalog_keeps_missing_metrics_and_locks_asset_paths(workbench_api,monkeypatch,tmp_path):
+    import web.server as server
+    app,request=workbench_api
+    monkeypatch.setattr(server,'ROOT',tmp_path)
+    base=tmp_path/'validation/experiments_20261118';(base/'E1').mkdir(parents=True)
+    rows=[dict(method='ours',scene='car_s1',status='completed',registered=2,total=20,ate_percent_extent=None,auc5=0.),
+          dict(method='colmap',scene='car_s1',status='failed',registered=0,total=20,ate_percent_extent=None,auc5=0.,error='No model')]
+    (base/'E1/results.json').write_text(json.dumps(rows))
+    (base/'E1/results.csv').write_text('method,auc5\nours,0\n')
+    (base/'experiment_status.json').write_text(json.dumps(dict(experiments={'E1':dict(status='completed')})))
+    (base/'evidence_manifest.json').write_text(json.dumps(dict(files=[dict(path='E1/results.json',bytes=100),dict(path='E1/results.csv',bytes=20)])))
+    (base/'not-public.txt').write_text('excluded')
+    code,payload=request('GET','/api/research');assert code==200 and payload['available']
+    actual=payload['experiments'][0]['rows'];assert actual[0]['ate_percent_extent'] is None and actual[0]['auc5']==0
+    assert actual[1]['status']=='failed' and actual[1]['error']=='No model'
+    assert request('GET','/api/research/files/E1/results.csv')[1].startswith(b'method,auc5')
+    assert request('GET','/api/research/files/../not-public.txt')[0]==400
+    assert request('GET','/api/research/files/%2e%2e/%2e%2e/README.md')[0]==400
+    assert request('GET','/api/research/files/not-public.txt')[0]==400
+
+
+def test_selected_run_analysis_reports_its_own_metrics_without_inventing_gt(workbench_api):
+    app,request=workbench_api;job=app.create(dict(name='My object',max_side=800));folder=app.folder(job['id'])
+    (folder/'reconstruction').mkdir()
+    (folder/'reconstruction/summary.json').write_text(json.dumps(dict(registered=3,total_images=5,median_reprojection_px=.4,
+        history=[dict(registered=2,points=100),dict(registered=3,points=140)],config=dict(seed=0))))
+    code,details=request('GET',f'/api/jobs/{job["id"]}/analysis')
+    assert code==200 and details['settings']['max_side']==800
+    assert details['reconstruction']['registered']==3 and len(details['history'])==2
+    assert 'No ground-truth' in details['reference'] and 'ate_percent_extent' not in details['reconstruction']
+    assert request('GET','/api/jobs/not-a-run/analysis')[0]==400
+
+
+def test_absent_research_evidence_leaves_methods_and_workspace_available(workbench_api,monkeypatch,tmp_path):
+    import web.server as server
+    monkeypatch.setattr(server,'ROOT',tmp_path)
+    _,request=workbench_api;code,payload=request('GET','/api/research')
+    assert code==200 and not payload['available'] and len(payload['methods'])==3
+    assert request('GET','/')[0]==200 and request('POST','/api/jobs',{})[0]==201
+
+
+def test_example_analysis_preserves_mean_residual_and_source_method(workbench_api,monkeypatch,tmp_path):
+    import web.server as server
+    monkeypatch.setattr(server,'ROOT',tmp_path)
+    source=tmp_path/Path(server.EXAMPLES['car']['poses']).parent
+    source.mkdir(parents=True)
+    (source/'summary.json').write_text(json.dumps(dict(registered=60,mean_reprojection_px=.71,versions={'pycolmap':'4.2.1'})))
+    _,request=workbench_api;code,details=request('GET','/api/examples/car/analysis')
+    assert code==200 and details['method']=='COLMAP'
+    assert details['reconstruction']['mean_reprojection_px']==.71
+    assert 'median_reprojection_px' not in details['reconstruction']
+    assert details['versions']['pycolmap']=='4.2.1'
+
+
 def test_restart_preserves_finished_runs_and_marks_interrupted(tmp_path):
     app = Workbench(tmp_path)
     active = app.create({})

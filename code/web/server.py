@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from web.worker import write_state
 from web.progress import legacy_progress
 from web.settings import mesh_quality
+from web.research import catalog, asset_path, run_analysis
 
 ROOT = Path(__file__).resolve().parents[2]
 STATIC = Path(__file__).parent / 'static'
@@ -315,10 +316,16 @@ def make_handler(workbench):
                             jobs = [workbench.describe(p) for p in workbench.root.iterdir() if (p / 'job.json').exists()]
                             examples = workbench.examples()
                         return self.reply(200, dict(jobs=sorted(jobs, key=lambda x: x['created_at'], reverse=True), examples=examples))
+                    if path == '/api/research':
+                        return self.reply(200, catalog(ROOT))
+                    if path.startswith('/api/research/files/'):
+                        return self.file(asset_path(ROOT,path.removeprefix('/api/research/files/')),download='download' in query)
                     if len(parts) >= 3 and parts[:2] == ['api', 'jobs']:
                         folder = workbench.folder(parts[2])
                         if len(parts) == 3:
                             return self.reply(200, workbench.describe(folder))
+                        if parts[3:] == ['analysis']:
+                            return self.reply(200, run_analysis(folder,read_json(folder/'job.json'),read_json(folder/'state.json',{})))
                         if parts[3:] == ['log']:
                             log = folder / 'run.log'
                             if log.exists():
@@ -356,6 +363,15 @@ def make_handler(workbench):
                         base = ROOT / 'results/mesh' / example['folder']
                         if parts[3] == 'preview':
                             return self.file(base / 'renders/colored_0.png')
+                        if parts[3] == 'analysis':
+                            data=run_analysis(base,dict(name=example['name']),dict(status='completed'))
+                            data.update(method='COLMAP',mesh_backend='sgbm',settings={},
+                                        reconstruction=read_json((ROOT/example['poses']).parent/'summary.json',{}),
+                                        mesh=read_json(base/'summary.json',{}),
+                                        reference='This saved 60-view reconstruction has its own measurements, separate from the benchmark scenes in Performance. No GT geometry scores are available for this object.')
+                            data['configuration']=data['reconstruction'].get('config',{})
+                            data['versions']=data['reconstruction'].get('versions',{})
+                            return self.reply(200,data)
                         if parts[3] in {'mesh', 'cloud'}:
                             from web.geometry import export_geometry
                             kind = parts[3]
