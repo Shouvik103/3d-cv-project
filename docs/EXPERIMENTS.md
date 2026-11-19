@@ -10,8 +10,7 @@ configuration, performance, input hashes and evaluations accompany each result.
 `configs/experiments.yaml` defines car S1 (20 uniformly spaced views from the
 existing curated 60), fountain S2 (all 11), and calibrated Middlebury Temple
 (all 16). Every method receives the same prepared image bytes and filenames.
-Our SfM and COLMAP use identical fixed per-scene PINHOLE calibration; VGGT
-estimates its own calibration after its official 518px-width preprocessing.
+Our SfM and COLMAP use identical fixed per-scene PINHOLE calibration.
 Classical images have maximum side 1200; smaller inputs are not enlarged.
 Image sets and calibration are hashed and cannot silently change on resume.
 
@@ -28,44 +27,9 @@ Point-cloud Chamfer/F-score are explicitly sparse-COLMAP agreement, not true
 geometry accuracy. Those cloud scores use identical sample counts and camera
 Sim(3) alignment. There is no supplied Temple GT triangle model.
 
-VGGT uses the original `facebook/VGGT-1B` checkpoint (CC-BY-NC-4.0), pinned at
-`860abec7937da0a4c03c41d3c269c366e82abdf9`, with upstream source pinned at
-`a288dd0f14786c93483e45524328726ab7b1b4ce`. No training or model architecture
-changes are used. On Apple MPS the aggregator runs FP16 and prediction heads
-FP32; dense heads process one frame per chunk. The unused tracking head is
-disabled. These memory adaptations are recorded and are not claimed to match
-CUDA/T4 timing or precision. Default MPS memory safeguards remain enabled.
-
-Sources: [official VGGT code](https://github.com/facebookresearch/vggt),
-[original checkpoint and license](https://huggingface.co/facebook/VGGT-1B),
-[Accelerate empty-model initialization](https://huggingface.co/docs/accelerate/package_reference/big_modeling).
-Weights remain outside the repository and submission archive.
-
-Install helper dependencies without replacing the main environment's
-torch/torchvision, then create the isolated VGGT runtime. Upstream VGGT declares
-NumPy below 2, while the main project uses NumPy 2; do not downgrade the UI's
-environment. The runtime helper shares the installed torch binaries but places
-compatible NumPy/OpenCV/VGGT packages in its own ignored environment:
-
-```bash
-.venv/bin/python -m pip install --no-deps einops==0.8.2 accelerate==1.16.0
-.venv/bin/python code/experiments/setup_vggt.py
-.venv/bin/python code/experiments/run_e1.py
-```
-
-The pinned checkpoint is downloaded before measured benchmarking. Individual
-workers record end-to-end method time including model loading and export. VGGT
-also records synchronized forward time separately, plus sampled MPS allocation;
-RSS and GPU memory are different measurements and are not added together.
-
-Initial E1 VGGT attempts were run successfully with NumPy 2 before its package
-constraint was noticed. All three were repeated under NumPy 1.26.4 in the
-isolated runtime; original runs remain in `E1_initial_numpy2/`. Prepared pixels
-and camera tensors were identical between those attempts (recorded in
-`E1/environment_check.json`). Final E1 tables use the compliant runtime. Both
-main and VGGT environment dependency checks pass. Timing is a development
-measurement with available image/model/kernel caches, not a controlled
-microbenchmark or evidence about CUDA performance.
+Run the two CPU methods with `.venv/bin/python code/experiments/run_e1.py`.
+Workers record end-to-end time including image processing and export; caches and
+hardware must be considered when interpreting timing.
 
 ## E2 — BA ablation
 
@@ -121,7 +85,7 @@ favorable setting. These are development sensitivity results on the same car.
 
 ## E7 — failure cases
 
-`run_failures.py` compares all three methods on the same glossy car, five-view
+`run_failures.py` compares both methods on the same glossy car, five-view
 car subset, deliberately blurred calibrated Temple images (Gaussian radius 4px),
 and the official 16-view low-texture Dino scene. Identical E1/E3 conditions reuse
 their original runs with provenance. Blur is explicitly an artificial
@@ -151,19 +115,33 @@ without simplifying it or allocating all triangle coordinates at once.
 ## M5 — mesh source comparison
 
 `run_mesh_study.py --experiment M5` reuses the exact M4 mesh and adds COLMAP poses
-with the same Depth Anything V2 Small backend and raw VGGT cameras/depth. Both
-classical methods share an image-only depth cache and all reconstruction
-parameters (384px mono inference, TSDF divisor 192, filtering/gates). Sparse
-landmarks, affine depth alignment and ROI follow each source, so differences
-cannot be attributed to camera poses alone. VGGT uses its own 518px preprocessed
-images, calibration, depth and confidence; model/resolution differences remain.
+with the same Depth Anything V2 Small backend, filtering and TSDF parameters.
+Camera, landmark alignment and ROI effects remain coupled; this is not a pose-only
+causal comparison.
 
 All eleven E1 fountain views are the fixed input set. Three deterministic view
 names are excluded from filtering/fusion, but participate in camera estimation;
-VGGT also jointly predicted their depth. These are fusion-held-out rendering
+These are fusion-held-out rendering
 diagnostics, not strictly unseen-image tests. PSNR/SSIM are masked to rendered
-geometry and accompanied by coverage. VGGT and classical image resolutions differ.
+geometry and accompanied by coverage.
 GT-aligned renders use the same native GT camera for a consistent visual view.
 
 Each stage enforces completion/addressing of its predecessor in the ledger.
 Raw failed attempts are retained; no favorable threshold replaces the frozen E1.
+
+## Current two-method evidence
+
+The active UI uses `validation/experiments_20261119_classical`, derived from the
+retained 18 November measurements. Reconstruction scores are unchanged; removed
+method rows are excluded and comparison plots are regenerated. Source file hashes
+and derivation scope are recorded. Historical mixed-method evidence remains an
+archive and is not served by the active UI. This is a scope projection, not a new
+benchmark run.
+
+```bash
+.venv/bin/python code/experiments/classical_evidence.py
+```
+
+Fresh experiment output roots must have a protocol matching the current config.
+Use a new `--out` when changing an old frozen protocol; do not overwrite its
+measured attempts.

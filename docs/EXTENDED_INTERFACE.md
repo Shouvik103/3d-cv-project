@@ -1,91 +1,70 @@
 # Extended reconstruction interface
 
-Implemented on `codex/extended-reconstruction-interface`, based on `a25c33c`.
-
-The existing upload/reconstruction/viewer workflow remains in Workspace. New
-research pages load the versioned experiment evidence already produced by the
-project; no reconstruction or benchmark is rerun merely by opening a tab.
+Branch: `codex/extended-reconstruction-interface`. Active reconstruction methods:
+**Our SfM** and **CPU COLMAP**. Workspace offers either method or **Compare both**,
+which creates exactly two independent, serially queued jobs from identical uploads.
 
 ## Views
 
 | View | Contents | Source |
 | --- | --- | --- |
-| Workspace | Uploads, progress, cancel/delete, cloud/mesh, point size, XYZ hover, downloads, saved car/chair | Local workbench jobs and existing geometry |
-| Run inspector | Residuals, observed track length, stage timings, topology, growth snapshots, settings, versions | That selected run's own summaries |
-| Pipeline & methods | Our SfM / COLMAP / VGGT steps, calibration, dense reconstruction, outputs, limitations, provenance | Implemented pipelines and pinned runtime records |
-| Performance / comparison | Filter by scene/method; registration, ATE, AUC and time plots; sortable measurements | E1 |
-| Performance / Your comparisons | New same-upload method jobs, previews, 3D links, charts, CSV/JSON/PNG downloads | Local All-three uploads |
-| Performance / ablations | BA, view-count curves, detectors, intrinsics, matching sensitivity and failure cases | E2–E7 |
-| Performance / mesh quality | Accuracy, completeness, F-score, coverage, image diagnostics, aligned renders and interactive meshes | M4/M5 |
-| Experiments | Full measured tables, original PNG/PDF plots, CSV/JSON, reports and raw metric records | All nine versioned studies |
+| Workspace | Uploads, progress %, cancel/delete, cloud/mesh, point size, XYZ hover, downloads, saved Car/Chair | Local jobs and existing geometry |
+| Run inspector | Residuals, tracks, calibration provenance, per-view registration diagnostics, topology and stage times | The selected run's own summaries |
+| Pipeline & methods | Two camera pipelines, SGBM / monocular depth, TSDF, limitations | Current implementation |
+| Performance / Your comparisons | Same-upload jobs, previews, 3D links, tables, graphs and CSV/JSON/PNG downloads | Compare both uploads |
+| Performance / Camera comparison | Registration, ATE/AUC, residuals and time | E1 classical measurements |
+| Performance / Ablations | BA, views, detector, calibration, matching and failures | E2–E7 |
+| Performance / Mesh quality | Accuracy, completeness, F-scores, coverage and common-view renders | M4/M5 |
+| Experiments | Tables, plots, reports and metric downloads | Nine retained classical studies |
 
-Graphs use inline SVG with focusable marks and value readouts. They have no
-external chart runtime. The existing Three.js viewer still loads its CDN assets.
-Dark mode, responsive layout and keyboard tab navigation apply to the new pages.
+Graphs use focusable SVG marks and value readouts. The Three.js geometry viewer
+supports photo colors, shading, wireframe and normals. Dark mode, keyboard tabs
+and responsive layout apply throughout.
 
-## Data interpretation
+## Reconstruction settings
 
-- 67 recorded method conditions include reused runs and failed attempts; this
-  count does not mean 67 independent acquisitions or successful reconstructions.
-- Camera ATE is not plotted as zero when alignment is undefined. Zero AUC from
-  actual failures stays zero. Partial camera registration is labelled explicitly.
-- Car/fountain E1 camera errors are COLMAP agreement. Temple/Dino cameras and the
-  M4/M5 original fountain mesh provide the explicitly identified GT references.
-- VGGT's camera count means predictions, not feature-verified registration.
-  Its exported 50k common points are not its full dense-array count.
-- E1 runtime includes method loading/export. Mesh timing excludes upstream
-  SfM/VGGT inference and GT evaluation. Process RSS differs from GPU memory.
-- Mean COLMAP reprojection residuals remain labelled as means; the inspector
-  does not silently convert them into medians.
-- New uploads have no supplied GT. Their inspector does not invent camera ATE,
-  ground-truth mesh scores or benchmarks against unrelated saved objects.
-  All-three comparisons can report camera ATE/AUC against that upload's COLMAP
-  model, explicitly as agreement rather than GT. Partial cameras stay visible.
-- See `docs/EXPERIMENT_RESULTS.md` for calibration, development-set, GT-visibility
-  and fusion-held-out limitations. Existing saved 60-view car/chair models are
-  distinct from the fixed E1 benchmark subsets.
+All choices accept 3–200 photos, 25 MB per photo and 1 GB total. About 60 sharp,
+overlapping views covering every side are recommended. Object profile bounds
+matching and BA; Maximum quality uses full camera frames, exhaustive matching,
+more features and more thorough refinement. Matching resolution is independent
+of depth / TSDF quality. Smaller originals are not enlarged.
 
-## API and files
+SGBM stereo is the upload default. Optional monocular depth uses the pinned
+Depth Anything V2 Small model, aligned to each method's own sparse landmarks.
+Both feed the same filtering / TSDF stage; they are depth choices, not additional
+camera-reconstruction methods. Mesh-only retry can reuse cameras; changes to
+calibration, matching or input preparation require a full solve. Prior attempts
+remain locally, and timing fields identify reused camera solves.
 
-`GET /api/research` returns methods, glossary, collection metadata, all recorded
-rows and artifact URLs. `GET /api/research/files/<relative-path>` serves only
-existing files listed in that collection's evidence manifest, with a resolved
-path containment check. It cannot expose arbitrary repository or local files.
+## Interpretation and evidence
 
-`GET /api/jobs/<id>/analysis` and `/api/examples/<name>/analysis` return only that
-selected reconstruction's details. Research access is read-only. Existing upload
-limits, localhost/Host checks and mutation-origin protections remain in force.
+The active collection is `validation/experiments_20261119_classical`, derived
+from retained 18 November results. Metrics for the retained methods are unchanged;
+comparison reports and plots are regenerated. Source hashes and scope are in
+`derivation.json`. This is a projection of existing evidence, not a new benchmark.
+Historical mixed-method records remain archival and are not exposed in the UI.
 
-Code: `code/web/research.py`, the routes in `code/web/server.py`, and
-`code/web/static/lab.js` / `lab.css`. The small selection event in `app.js` updates
-the inspector. Uploads now support Our SfM, COLMAP, VGGT or All three. The last
-option creates three independent jobs with identical uploaded files, using hard
-links where available to avoid tripling storage. Processing is serial. Each
-method is explicit in the library and inspector. Classical methods use the
-selected SGBM or mono backend; VGGT always uses its own raw depth and cameras.
-VGGT's common point export is capped at one million confidence-filtered points;
-raw arrays are retained. Original upload alpha masks are preserved in mesh
-filtering and transformed with official VGGT preprocessing for its exports.
+Camera ATE/AUC against COLMAP measure agreement, not GT accuracy. Temple has GT
+cameras; M4/M5 use the original fountain scan. Undefined alignment stays missing;
+failures and partial registration remain visible. Low reprojection error alone
+cannot establish correct global geometry. Mesh scoring is not the official EPFL
+visibility-aware scorer. Fusion-held-out photos participated in camera estimation.
 
-`GET /api/capabilities` reports the local VGGT runtime and 30-view bound.
-`GET /api/comparisons/<group>` and its `/files/comparison.csv|json|png` routes
-provide same-upload measurements. `POST /api/jobs/<id>/retry` archives a terminal
-attempt before rerunning the same photos/method with explicit settings. Queue
-generation tokens keep old cancelled tasks from starting a retried job twice.
-Retry has its own controls initialized from that run's saved depth, matching and
-quality options; upload-form defaults are not used for a retry.
-COLMAP runs in a separate process to avoid native-threading conflicts with
-learned depth. VGGT runs in its pinned isolated NumPy-compatible environment.
+Uploads have no supplied GT cameras or surfaces, so their inspector does not
+invent GT scores. Existing saved 60-view Car/Chair results are explicitly labelled
+COLMAP + SGBM, distinct from benchmark subsets and Our SfM results.
 
-Fresh local runs: Temple 16 images, car 30 oblique views from the existing curated
-set, chair 30 views from the existing selected 60 (original RGBA). All were
-created/uploaded/started through the HTTP API by `code/web/seed_comparisons.py`.
-Classical input K is supplied Temple calibration or prior car/chair COLMAP
-intrinsics only; camera poses, tracks, depth and meshes are recomputed. No GT
-poses or meshes enter those reconstructions. Initial failed/partial stereo
-attempts and the COLMAP/mono threading-stall attempt remain in job attempt
-archives. The final measured record is `validation/web_three_methods/`.
+## API
 
-Run with the README command. The preview on port 8766 uses a separate job folder;
-the previous service on port 8765 is not stopped by this task. Full validation
-and browser checks are recorded in `validation/web_lab/verification.json`.
+- `GET /api/capabilities`: two supported methods, comparison method list, 200-view cap.
+- `GET /api/jobs`: supported local jobs only; existing retired-method outputs stay
+  on disk but cannot be started, retried or opened through active job routes.
+- `GET /api/research`: active methods, glossary, projected measurements and assets.
+- `GET /api/research/files/<path>`: manifest-listed files in the active collection,
+  guarded by resolved containment checks.
+- `GET /api/jobs/<id>/analysis`: this reconstruction's measurements and diagnostics.
+- `GET /api/comparisons/<id>` and `/files/comparison.csv|json|png`: two-method reports.
+- `POST /api/jobs/<id>/retry`: explicit settings with preserved prior attempts.
+
+Localhost/Host checks, mutation-origin protections and queue generation tokens
+remain. User-deleted runs are not regenerated. Launch instructions are in README.md.

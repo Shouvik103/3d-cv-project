@@ -1,0 +1,53 @@
+{
+  "source_sha256": "7b9ddd82dd4f1c2a8470408267cb1b075d99e3fc4cc15e321dc3bebf28f6a223",
+  "timestamp_utc": "2026-11-18T13:59:11.162244+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "schema_version": 1,
+    "seed": 0,
+    "image_max_side": 1200,
+    "sfm_config": "configs/sfm_relaxed.yaml",
+    "scenes": {
+      "car_s1": {
+        "images": "outputs/cars_curated_60/calibrated_2400/images",
+        "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+        "views": 20,
+        "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+        "reference_kind": "colmap",
+        "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+      },
+      "fountain_s2": {
+        "images": "outputs/fountain_urd/input/images",
+        "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+        "views": 11,
+        "reference": "outputs/fountain_urd/colmap/poses.json",
+        "reference_kind": "colmap",
+        "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+      },
+      "temple_gt": {
+        "images": "data/temple/images",
+        "intrinsics": "data/temple/intrinsics.yaml",
+        "views": 16,
+        "reference": "data/temple/gt_poses.json",
+        "reference_kind": "gt",
+        "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+      }
+    }
+  },
+  "method": "colmap",
+  "status": "failed",
+  "error": "COLMAP did not reconstruct a model",
+  "wall_seconds": 1.2988089579998814,
+  "peak_process_rss_mb": 1300.078125,
+  "timing_scope": "End-to-end method process, including model loading/export; excludes environment installation and checkpoint download"
+}

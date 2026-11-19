@@ -4,7 +4,7 @@
   const format=n=>Number(n||0).toLocaleString();
   const activeStatuses=new Set(['queued','running']);
   const state={files:[],urls:[],jobs:[],examples:[],comparisons:[],selected:null,kind:'cloud',preferredKind:null,loadedKey:null,loadingKey:null,request:0,viewer:null,busy:false};
-  const methodNames={ours:'Our SfM',colmap:'COLMAP',vggt:'VGGT',all:'All three'};
+  const methodNames={ours:'Our SfM',colmap:'COLMAP',all:'Compare both'};
   const statusNames={uploading:'Draft',queued:'Queued',running:'Reconstructing',completed:'Ready',partial:'Partial result',failed:'Failed',cancelled:'Cancelled',interrupted:'Interrupted'};
   const percent=job=>Math.max(0,Math.min(100,Math.round((Number(job.progress)||0)*10)/10));
   const statusLabel=job=>`${statusNames[job.status]||job.status}${activeStatuses.has(job.status)?' · '+percent(job)+'%':''}`;
@@ -18,7 +18,7 @@
   function setFiles(files){
     if(state.busy)return;
     const list=Array.from(files).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));error('');
-    const limit=['all','vggt'].includes($('#reconstruction-method').value)?60:200;
+    const limit=200;
     if(list.length>limit){error(`Choose at most ${limit} photos for this method on the local runtime.`);$('#start-button').disabled=true;return;}
     const invalid=list.find(file=>! /\.(jpe?g|png|tiff?)$/i.test(file.name)||file.size>25*1024*1024);
     if(invalid){error(`${invalid.name}: use JPEG, PNG or TIFF files up to 25 MB each.`);return;}
@@ -55,7 +55,7 @@
       }
       job=await post(`/api/jobs/${job.id}/start`);
       if(job.children){const child=await api(`/api/jobs/${job.children[0]}`);selectJob(child);}else selectJob(job);
-      $('#upload-status').textContent=job.children?'Three independent method runs queued. Compare them in Performance → Your comparisons.':'Images saved locally. Reconstruction is running in the background.';await refresh();
+      $('#upload-status').textContent=job.children?'Two independent method runs queued. Compare them in Performance → Your comparisons.':'Images saved locally. Reconstruction is running in the background.';await refresh();
     }catch(exc){error(exc.message);$('#upload-status').textContent='';if(job)await post(`/api/jobs/${job.id}/cancel`).catch(()=>{});}
     finally{state.busy=false;$('#start-button').disabled=state.files.length<3;$('#clear-images').disabled=false;$('#images').disabled=false;}
   });
@@ -66,10 +66,11 @@
   }
   $('#mesh-quality').addEventListener('change',meshQuality);$('#output-type').addEventListener('change',meshQuality);meshQuality();
   $('#reconstruction-method').addEventListener('change',()=>{
-    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates three runs from identical images, processed one at a time. VGGT / All three: up to 60 views, using overlapping 16-view VGGT batches.':method==='vggt'?'Joint predicted cameras and depth. Up to 60 views in overlapping 16-view batches; Object quality uses 518px padding to retain the full object; Standard uses crop preprocessing. Mesh quality changes the fusion grid.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
+    const method=$('#reconstruction-method').value;$('#method-help').textContent=method==='all'?'Creates two independent method runs from identical images, processed one at a time. Up to 200 photos; about 60 sharp, overlapping views are recommended.':method==='colmap'?'COLMAP cameras and sparse points, with optional stereo / TSDF meshing.':'Our incremental SfM on CPU, with optional stereo / TSDF meshing.';
     setFiles(state.files);
-    $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–${['all','vggt'].includes(method)?60:200} photos · 25 MB each`;
+    $('#dropzone small').textContent=`JPG, PNG, TIFF · 3–200 photos · 25 MB each`;
   });
+  $('#quality-profile').addEventListener('change',()=>{$('#quality-profile-help').textContent=$('#quality-profile').value==='quality'?'Full camera frames for classical methods, 12,000 SIFT features and exhaustive matching. Best suited to calibrated object photos; takes more CPU time.':'Choose about 60 sharp, overlapping views covering every side. Object quality uses alpha or a confident simple-background mask. Balanced meshing limits memory.';});
   function viewer(){
     if(!state.viewer){state.viewer=new WorkbenchViewer($('#canvas-host'));state.viewer.axes.visible=$('#axes').checked;state.viewer.pointSize($('#point-size').value);}
     return state.viewer;
@@ -83,13 +84,13 @@
     if(changed)requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
   }
   function renderJob(job){
-    $('#result-title').textContent=job.name;$('#result-status').textContent=methodNames[job.method||'ours']+' · '+statusLabel(job);$('#result-status').dataset.status=job.status;
+    $('#result-title').textContent=job.name;$('#result-status').textContent=methodNames[job.method||'ours']+' · '+(job.depth_backend==='mono'?'monocular':'SGBM')+' · '+statusLabel(job);$('#result-status').dataset.status=job.status;
     const running=activeStatuses.has(job.status);$('#progress-area').hidden=!(running||job.status==='uploading');$('#stage-message').textContent=job.message||'';$('#run-progress').value=job.progress||0;
     $('#retry-controls').hidden=running||job.status==='uploading';
     const retryKey=job.id+'-'+(job.prior_attempts||0);
     if($('#retry-controls').dataset.key!==retryKey){
       const method=job.method||'ours';$('#retry-controls').dataset.key=retryKey;$('#retry-ratio').value=job.matching_ratio??.85;$('#retry-ratio').disabled=method!=='ours';
-      $('#retry-depth').value=method==='vggt'?'vggt':job.depth_backend||'sgbm';$('#retry-depth').disabled=method==='vggt';$('#retry-depth').querySelector('option[value="vggt"]').disabled=method!=='vggt';$('#retry-quality').value=job.mesh_quality||'balanced';$('#retry-reuse').checked=false;$('#retry-reuse').disabled=!job.make_mesh||!job.artifacts?.poses;
+      $('#retry-depth').value=job.depth_backend||'sgbm';$('#retry-quality').value=job.mesh_quality||'balanced';$('#retry-reuse').checked=false;$('#retry-reuse').disabled=!job.make_mesh||!job.artifacts?.poses;
     }
     $('#run-percent').textContent=percent(job)+'%';
     const stages=['preparing','reconstructing','meshing','finished'];let stage=stages.indexOf(job.stage);if(job.stage==='point_cloud')stage=1;if(job.stage==='exporting')stage=2;
@@ -105,7 +106,7 @@
     const photoKey=job.id+'-'+job.uploads.length;
     if($('#run-photos').dataset.key!==photoKey){$('#run-photos').replaceChildren();job.uploads.forEach(item=>{const img=document.createElement('img');img.src=`/api/jobs/${job.id}/images/${item.index}`;img.alt=item.name;img.title=item.name;img.loading='lazy';$('#run-photos').append(img);});$('#run-photos').dataset.key=photoKey;}
     const links=[];
-    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['depth_sample_cloud','Depth sample cloud PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud',job.method==='vggt'?'VGGT point cloud PLY':'Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['raw_predictions','VGGT raw NPZ'],['vggt_metadata','VGGT model record'],['foreground_report','Foreground crop record']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
+    for(const [key,label] of [['mesh_glb','Mesh GLB'],['mesh_ply','Mesh PLY'],['mesh_obj','Mesh OBJ'],['full_mesh','Full mesh PLY'],['depth_sample_cloud','Depth sample cloud PLY'],['dense_cloud','Fused cloud PLY'],['sparse_cloud','Sparse cloud PLY'],['poses','Camera poses'],['mesh_summary','Mesh metrics'],['foreground_report','Foreground record'],['registration_diagnostics','Registration diagnostics'],['camera_prior','Lens calibration source']])if(artifacts[key])links.push([label,`/api/jobs/${job.id}/files/${key}?download=1`]);
     renderDownloads(links);
     window.dispatchEvent(new Event('reconstruction-selection'));
   }
@@ -156,7 +157,7 @@
   $('#axes').addEventListener('change',event=>{if(state.viewer)state.viewer.axes.visible=event.target.checked;});$('#fit-view').addEventListener('click',()=>state.viewer?.fit());
   $('#retry-reuse').addEventListener('change',()=>{$('#retry-ratio').disabled=$('#retry-reuse').checked||state.selected?.job?.method!=='ours';if($('#retry-reuse').checked)$('#retry-ratio').value=state.selected?.job?.matching_ratio??.85;});
   $('#cancel-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;try{const job=await post(`/api/jobs/${state.selected.id}/cancel`);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}});
-  $('#retry-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;$('#retry-run').disabled=true;try{const method=state.selected.job.method||'ours',settings={mesh_quality:$('#retry-quality').value,reuse_geometry:$('#retry-reuse').checked};if(method!=='vggt')settings.depth_backend=$('#retry-depth').value;if(method==='ours')settings.matching_ratio=Number($('#retry-ratio').value);const job=await post(`/api/jobs/${state.selected.id}/retry`,settings);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}finally{$('#retry-run').disabled=false;}});
+  $('#retry-run').addEventListener('click',async()=>{if(state.selected?.type!=='job')return;$('#retry-run').disabled=true;try{const method=state.selected.job.method||'ours',settings={mesh_quality:$('#retry-quality').value,reuse_geometry:$('#retry-reuse').checked};settings.depth_backend=$('#retry-depth').value;if(method==='ours')settings.matching_ratio=Number($('#retry-ratio').value);const job=await post(`/api/jobs/${state.selected.id}/retry`,settings);selectJob(job);await refresh();}catch(exc){message(exc.message,true);}finally{$('#retry-run').disabled=false;}});
   async function log(){if(state.selected?.type!=='job')return;try{const value=await api(`/api/jobs/${state.selected.id}/log`);$('#run-log').textContent=value.text||'The worker log will appear when reconstruction starts.';}catch(exc){$('#run-log').textContent=exc.message;}}
   $('#refresh-log').addEventListener('click',log);$('#run-details').addEventListener('toggle',()=>{if($('#run-details').open)log();});
   function clearSelection(){

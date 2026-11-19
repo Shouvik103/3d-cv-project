@@ -1,0 +1,28 @@
+[
+  {
+    "url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/denseMVS.html",
+    "status": 200,
+    "final": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/denseMVS.html",
+    "bytes": 8586,
+    "head": "<HTML>\n<HEAD>\n   <title>Dense multi-view stereo test images</title>\n   <meta nam"
+  },
+  {
+    "url": "https://icwww.epfl.ch/~marquez/multiview/denseMVS.html",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://cvlab.epfl.ch/data/strechamvs/",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://icwww.epfl.ch/multiview/denseMVS.html",
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "url": "https://www.epfl.ch/labs/cvlab/data/data-strechamvs/",
+    "status": 200,
+    "final": "https://www.epfl.ch/labs/cvlab/data/data-strechamvs/",
+    "bytes": 69604,
+    "head": "<!doctype html>\n<html lang=\"en-GB\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\""
+  }
+]

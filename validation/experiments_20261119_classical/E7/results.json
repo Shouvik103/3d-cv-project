@@ -1,0 +1,90 @@
+[
+  {
+    "condition": "glossy_car",
+    "method": "ours",
+    "status": "completed",
+    "registered": 10,
+    "total": 20,
+    "reference": "colmap",
+    "ate_percent_extent": 11.307149331612504,
+    "auc5": 0.0,
+    "error": null
+  },
+  {
+    "condition": "glossy_car",
+    "method": "colmap",
+    "status": "completed",
+    "registered": 10,
+    "total": 20,
+    "reference": "colmap",
+    "ate_percent_extent": 0.3444359359013744,
+    "auc5": 0.14118866938623292,
+    "error": null
+  },
+  {
+    "condition": "sparse_car_5",
+    "method": "ours",
+    "status": "failed",
+    "registered": 0,
+    "total": 5,
+    "reference": "colmap",
+    "ate_percent_extent": null,
+    "auc5": 0.0,
+    "error": "Initialization yielded too few usable 3D points"
+  },
+  {
+    "condition": "sparse_car_5",
+    "method": "colmap",
+    "status": "failed",
+    "registered": 0,
+    "total": 5,
+    "reference": "colmap",
+    "ate_percent_extent": null,
+    "auc5": 0.0,
+    "error": "COLMAP did not reconstruct a model"
+  },
+  {
+    "condition": "blurred_temple",
+    "method": "ours",
+    "status": "failed",
+    "registered": 0,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": null,
+    "auc5": 0.0,
+    "error": "Initialization yielded too few usable 3D points"
+  },
+  {
+    "condition": "blurred_temple",
+    "method": "colmap",
+    "status": "failed",
+    "registered": 0,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": null,
+    "auc5": 0.0,
+    "error": "COLMAP did not reconstruct a model"
+  },
+  {
+    "condition": "low_texture_dino",
+    "method": "ours",
+    "status": "completed",
+    "registered": 4,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": 5.498353738965931,
+    "auc5": 0.0,
+    "error": null
+  },
+  {
+    "condition": "low_texture_dino",
+    "method": "colmap",
+    "status": "completed",
+    "registered": 6,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": 0.1042430112368901,
+    "auc5": 0.11418647400266639,
+    "error": null
+  }
+]

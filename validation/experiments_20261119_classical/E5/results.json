@@ -1,0 +1,47 @@
+[
+  {
+    "scene": "temple_gt",
+    "variant": "approximate",
+    "status": "completed",
+    "registered": 16,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": 6.970226732155286,
+    "auc5": 0.05092845278618698,
+    "reprojection_px": 0.4847765485597166,
+    "seconds": 29.552081374999943,
+    "error": null,
+    "initial_fx": 768.0,
+    "final_fx": 768.0
+  },
+  {
+    "scene": "temple_gt",
+    "variant": "calibrated",
+    "status": "completed",
+    "registered": 16,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": 0.2702830038539459,
+    "auc5": 0.8640056625328606,
+    "reprojection_px": 0.13913500862482708,
+    "seconds": 29.982434249999642,
+    "error": null,
+    "initial_fx": 1520.4,
+    "final_fx": 1520.4
+  },
+  {
+    "scene": "temple_gt",
+    "variant": "approximate_refined",
+    "status": "completed",
+    "registered": 16,
+    "total": 16,
+    "reference": "gt",
+    "ate_percent_extent": 8.29723520614752,
+    "auc5": 0.03706669922841603,
+    "reprojection_px": 0.48008529753051843,
+    "seconds": 29.409688249999817,
+    "error": null,
+    "initial_fx": 768.0,
+    "final_fx": 782.3361305269098
+  }
+]

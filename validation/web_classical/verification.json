@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-19",
+  "branch": "codex/extended-reconstruction-interface",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 85,
+    "seconds": 45.3
+  },
+  "active_methods": [
+    "ours",
+    "colmap"
+  ],
+  "comparison_jobs": 2,
+  "max_upload_photos": 200,
+  "retained_classical_conditions": {
+    "E5": 3,
+    "E2": 6,
+    "E3": 14,
+    "E4": 6,
+    "M5": 2,
+    "M4": 1,
+    "E1": 6,
+    "E6": 6,
+    "E7": 8
+  },
+  "metrics_equal_historical_source": true,
+  "browser": {
+    "method_cards": [
+      "Our SfM",
+      "COLMAP"
+    ],
+    "console_errors": [],
+    "car_cloud_shown": 115000,
+    "car_cloud_total": 2232430,
+    "car_mesh_triangles": 80000,
+    "point_size_control": true,
+    "mesh_cloud_switch": true
+  },
+  "scope": "Current code regression and UI verification; projected experimental measurements were not rerun. Historical method data stays archived; no deleted run was regenerated.",
+  "additional_radial_camera_check": true
+}

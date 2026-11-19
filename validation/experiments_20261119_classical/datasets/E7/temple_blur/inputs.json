@@ -1,0 +1,22 @@
+{
+  "source_inputs_sha256": "d535b9d6caa1c520e27f71036fcfc3c394adfbeebaa6c15460f9095d830f5596",
+  "intervention": "Deliberate Gaussian blur, radius 4 px at prepared image resolution; geometry/K unchanged",
+  "prepared_sha256": {
+    "templeSR0001.jpg": "e3376d81d74a83c9e6029a582a83b7c4a3df457b5192c03e7d7bf852d687f5c7",
+    "templeSR0002.jpg": "58e6c1851837e93bdfa5665075446f1ed15bac42dfcbb93b39928ff970026e02",
+    "templeSR0003.jpg": "a595c99c641b7868725a73caefbf73b92a83a3d5751c90aff2ad458773b70243",
+    "templeSR0004.jpg": "09ce48a5607c970b79078aa833a582bd912c8bb3bedc89dc62980df0d5e1b9bc",
+    "templeSR0005.jpg": "fd987fedf9e610ad13f0dfcc67cf441e1af63483dc1788a5b99e32db70280069",
+    "templeSR0006.jpg": "2d43929cd2d09ee57d38101260e38f271b2156ca0aee5c4d86c446df5e83cde0",
+    "templeSR0007.jpg": "486ed42c610b1e8f2790115f753f255f13c95559e765f252828dbc08c4975933",
+    "templeSR0008.jpg": "4410391f37a7550609350a38004df51ea89d41d6004d7cf28ca4a319be06f4ef",
+    "templeSR0009.jpg": "cc835db3e95df47e5975602fc38ec8258ef5f8ac001e2125947a4d0fcc019aba",
+    "templeSR0010.jpg": "ca02954c67ecd72dce7ee8401c7b18b1d205386ca9dc71ea730b7c39e81f691d",
+    "templeSR0011.jpg": "e59e711c9bdea213d4057e689134ae219626fee3c3ee36fd644dd45dc979d664",
+    "templeSR0012.jpg": "ade17a9006ceabc8dd877288dd0b153496e42a04b06bb54c5722991ab191d757",
+    "templeSR0013.jpg": "715bfaab2a364409da607eb1cb35e63bea61b367da89c943cdfd9689510ecf40",
+    "templeSR0014.jpg": "b0040ef88d570b47211201b48775c6500c7805e0b757213484c44f1aa991cf33",
+    "templeSR0015.jpg": "c30a9adfdac4c2b6a47399de040d5f9322ed332f88a8781ad30c939c56bb3b15",
+    "templeSR0016.jpg": "80dcd11d2ce17a3b4f2159bc90d171b8338caff9f6a477ce78d8cf99624b4009"
+  }
+}

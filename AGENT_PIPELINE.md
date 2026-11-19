@@ -1,7 +1,9 @@
-# AGENT PIPELINE: From-Scratch Incremental SfM vs. COLMAP vs. VGGT
+# AGENT PIPELINE: From-Scratch Incremental SfM vs. CPU COLMAP
 
 Course: 3D Computer Vision (IIIT Dharwad). Deliverable: `GroupX_3dcv_project.zip`.
 Hard deadline: submit on **21 Nov 2026** (the brief says "before 22nd"). Target finishing on 20 Nov.
+
+**Current scope — 19 November 2026:** Our SfM and CPU COLMAP are the two camera-reconstruction methods. Both support SGBM or optional Depth Anything V2 Small depth followed by TSDF. See [the current implementation and interface plan](docs/ACTIVE_PIPELINE.md). Earlier learned multi-view inference has been removed from implementation and deliverables. Historical records are archived, not active results.
 
 **Contents**
 - Section 0A: Source material (verbatim assignment brief, course context, why this project, data flow)
@@ -10,7 +12,7 @@ Hard deadline: submit on **21 Nov 2026** (the brief says "before 22nd"). Target 
 - Appendix B: Default configs (YAML)
 - Appendix C: Code skeletons (data structures, BA, helpers, calibration, dense step)
 - Appendix D: Synthetic test generator spec
-- Appendix E: Colab notebook outline
+- Appendix E: Local experiment execution
 - Appendix F: README.md template
 - Appendix G: Report skeleton (LaTeX), draft text, figure/table plan, reference list
 - Appendix H: requirements.txt, run_all.sh, .gitignore
@@ -25,7 +27,7 @@ Hard deadline: submit on **21 Nov 2026** (the brief says "before 22nd"). Target 
 
 You are an autonomous coding agent working with a 4-person student team. Read the whole file first, then execute the stages in order. Each stage has: **goal, files, spec, acceptance test**. Do not move to the next stage until the acceptance test passes. If a stage fails twice after honest debugging, use the fallback in Section 17, log it in `NOTES.md`, and continue.
 
-Primary machine: MacBook Air M4 (Apple Silicon, no CUDA). Colab (free T4) only for VGGT inference and the optional splat stretch goal.
+Primary machine: MacBook Air M4 (Apple Silicon, no CUDA). Camera estimation and SGBM run on CPU. Optional monocular depth can use MPS; the optional splat stretch goal remains separate.
 
 ---
 
@@ -101,7 +103,7 @@ The "9 required elements" are: Title and author block, I Introduction, II Proble
 
 | # | Option | Verdict |
 |---|---|---|
-| 1 | **Own incremental SfM vs. COLMAP vs. VGGT** (classical vs. learned) | **Chosen.** Mostly runs on Mac CPU; writing the geometry is substantive and defensible; fails gracefully; covers Units I, II, III |
+| 1 | **Own incremental SfM vs. COLMAP** (transparent implementation vs. mature classical baseline) | **Chosen.** Mostly runs on Mac CPU; writing the geometry is substantive and defensible; fails gracefully; covers Units I, II, III |
 | 2 | NeRF vs. 3DGS under sparse views (Nerfstudio) | Needs CUDA (Colab only); mostly running existing code, so ablations carry the grade. Kept as optional stretch (Appendix K) |
 | 3 | Robust point cloud learning (PointNet/DGCNN on ModelNet40) | Feasible but visually weak; Unit III only |
 | 4 | Video to mesh via monocular depth + TSDF fusion | Feasible; less geometry written by the team |
@@ -117,7 +119,7 @@ Fallback if option 1 collapses badly: switch to option 2 or 3 using the same cap
 | CO2 | epipolar geometry, F/E estimation, pose recovery, triangulation, PnP, BA. Note: the brief does not mandate PyTorch3D; optional PyTorch3D use is noted in Appendix C.8 |
 | CO3 | sparse point clouds, dense point clouds, Poisson mesh, reconstruction evaluation |
 | CO4 | complete project integrating OpenCV, SciPy, Open3D (and optionally PyTorch3D) |
-| CO5 | geometric pipeline compared against the deep architecture VGGT; optional neural rendering from our poses |
+| CO5 | complete geometric pipeline with optional learned monocular depth and neural rendering from our poses |
 
 ### 0A.6 What graders will most likely check (inferred from the brief; not an official rubric)
 
@@ -135,7 +137,7 @@ photos (JPG/HEIC) ──prepare_data──► resized, EXIF-oriented images + in
         │                        ▼                                          ▼
         │            OUR SfM (code/sfm)                           BASELINES
         │   SIFT → match → RANSAC F → init pair          COLMAP (pycolmap/CLI, Mac CPU)
-        │   → tracks → PnP register → triangulate        VGGT   (Colab GPU → vggt_out.npz)
+        │   → tracks → PnP register → triangulate             │
         │   → local/global BA → filter                            │
         │                        │                                │
         │                        ▼                                ▼
@@ -156,21 +158,21 @@ photos (JPG/HEIC) ──prepare_data──► resized, EXIF-oriented images + in
 
 ## 1. Project at a glance
 
-**Title (working):** *Classical vs. Learned Structure from Motion: A From-Scratch Incremental SfM Pipeline Benchmarked Against COLMAP and VGGT*
+**Title (working):** *Incremental Structure from Motion: A From-Scratch Pipeline Benchmarked Against CPU COLMAP*
 
 **Problem statement:**
-- **Input:** an unordered set of N RGB photos (N = 5 to 40) of a static scene, plus approximate or calibrated intrinsics.
+- **Input:** an unordered set of N RGB photos (N = 3 to 200; about 60 suitable views recommended) of a static scene, plus approximate or calibrated intrinsics.
 - **Output:** camera poses (R, t) for each image, a sparse colored 3D point cloud, and optionally a dense point cloud or mesh.
 
 **Core contributions:**
-1. Our own incremental SfM: feature matching, RANSAC two-view geometry, triangulation, PnP, and sparse bundle adjustment. The geometric core is written by us. OpenCV is used only for SIFT, brute-force matching and image I/O, and as a cross-check in unit tests.
-2. A controlled benchmark of **ours vs. COLMAP (classical SOTA) vs. VGGT (feed-forward learned)** on pose accuracy, reconstruction quality, runtime and robustness.
+1. Our own incremental SfM: feature matching, RANSAC two-view geometry, triangulation, PnP, and sparse bundle adjustment. The geometric core is written by us. OpenCV supplies SIFT/ORB, descriptor search, homography detection, PnP and image I/O; SciPy supplies nonlinear optimization. The mathematical core and this API boundary are described in docs/ACTIVE_PIPELINE.md.
+2. A controlled benchmark of **ours vs. CPU COLMAP** on pose accuracy, reconstruction quality, runtime and robustness.
 3. Ablations (detector, BA, number of views, intrinsics) and a failure-case study.
 
 **Syllabus mapping (state this in the report):**
 - Unit I: camera model, calibration, SIFT/ORB, stereo geometry
 - Unit II: epipolar geometry, SfM, triangulation, BA, dense reconstruction
-- Unit III: learned 3D prediction (VGGT) vs. classical
+- Unit III: optional learned monocular depth aligned to classical sparse structure
 - Unit IV (optional): splat/NeRF fly-through from our poses
 
 ---
@@ -214,7 +216,7 @@ GroupX_3dcv_project/
 python3.11 -m venv .venv && source .venv/bin/activate
 pip install --upgrade pip
 pip install numpy scipy opencv-python open3d matplotlib tqdm pyyaml pandas pillow imageio imageio-ffmpeg pytest exifread pycolmap
-pip install torch torchvision          # only needed for local VGGT/MPS experiments or loading .npz utilities
+pip install torch torchvision          # optional learned monocular depth / MPS
 brew install ffmpeg                    # for demo.mp4 (fallback: imageio-ffmpeg)
 ```
 
@@ -248,7 +250,7 @@ GroupX_3dcv_project/
 │   │   └── io_utils.py           # PLY, poses.json, intrinsics loading
 │   ├── baselines/
 │   │   ├── run_colmap.py         # pycolmap or CLI wrapper -> poses.json + ply
-│   │   ├── vggt_infer.py         # run on Colab; saves npz
+│   │   └── convert_to_common.py # common COLMAP pose / point export
 │   │   └── convert_to_common.py  # npz/colmap -> common poses.json
 │   ├── eval/
 │   │   ├── align.py              # Umeyama Sim(3)
@@ -263,7 +265,7 @@ GroupX_3dcv_project/
 │   ├── run_sfm.py                # CLI entry point
 │   └── run_all.sh
 ├── notebooks/
-│   └── vggt_colab.ipynb          # generated by agent, run by humans
+│   └── # no GPU reconstruction notebook required
 ├── tests/                        # pytest, synthetic-data tests
 ├── sample_data/                  # small demo inputs (see Section 14)
 ├── data/                         # NOT zipped: raw photos, public datasets
@@ -282,7 +284,7 @@ GroupX_3dcv_project/
   "image_size": {"IMG_0001.jpg": [W,H]}
 }
 ```
-Convention rule: everything internal is OpenCV (x right, y down, z forward), world-to-camera. Convert COLMAP (`cam_from_world`) and VGGT (extrinsics) into this on import and write a unit test for each conversion.
+Convention rule: everything internal is OpenCV (x right, y down, z forward), world-to-camera. Convert COLMAP (`cam_from_world`) into this on import and test the conversion.
 
 ---
 
@@ -398,37 +400,14 @@ It must work from the repo root on any machine, using relative paths only.
 - If multiple models are produced, keep the one with the most registered images.
 - Convert to the common `poses.json` plus `points.ply`. Measure runtime.
 
-### 8.2 VGGT (`baselines/vggt_infer.py`, run on Colab)
-- Learned feed-forward baseline: one forward pass predicts camera poses, depth and point maps for all input images. Repo: `facebookresearch/vggt`, weights `facebook/VGGT-1B` on Hugging Face (large download; **never put in the zip**). Check the model card for the current license; academic use is fine, but state the license in the README.
-- Colab sketch (verify against the current README, since APIs change):
-```python
-# !git clone https://github.com/facebookresearch/vggt && cd vggt && pip install -e .
-import torch, numpy as np
-from vggt.models.vggt import VGGT
-from vggt.utils.load_fn import load_and_preprocess_images
-from vggt.utils.pose_enc import pose_encoding_to_extri_intri
+### 8.2 Common dense reconstruction
 
-device = "cuda"
-dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16  # T4 -> float16
-model = VGGT.from_pretrained("facebook/VGGT-1B").to(device).eval()
-images = load_and_preprocess_images(image_paths).to(device)
-with torch.no_grad(), torch.autocast("cuda", dtype=dtype):
-    preds = model(images)
-extri, intri = pose_encoding_to_extri_intri(preds["pose_enc"], images.shape[-2:])
-np.savez_compressed("vggt_out.npz",
-    extrinsic=extri.squeeze(0).float().cpu().numpy(),   # world-to-camera 3x4, first-camera frame
-    intrinsic=intri.squeeze(0).float().cpu().numpy(),
-    world_points=preds["world_points"].squeeze(0).float().cpu().numpy(),
-    world_points_conf=preds["world_points_conf"].squeeze(0).float().cpu().numpy(),
-    image_names=np.array(image_names))
-```
-- Keep N ≤ 30 per run to stay within T4 memory; fall back to fewer or lower-resolution images on OOM.
-- VGGT resizes inputs (about 518 px), so its intrinsics differ from ours. Evaluate **poses and point clouds** (after Sim(3) alignment), not reprojection error using original-resolution intrinsics.
-- Convert the `.npz` to the common format locally (`convert_to_common.py`), build a colored point cloud from `world_points` filtered by confidence (e.g., keep the top 50% confidence or conf > threshold; document the choice).
-- Fallback if VGGT fails: DUSt3R or MASt3R (check license: CC BY-NC-SA, academic use only).
-- The notebook `notebooks/vggt_colab.ipynb` is generated by the agent: install, upload images (zip or Drive), run, download `vggt_out.npz`. Tell humans to run it (Section 16). Save a copy of the small `.npz` outputs for the sample scene in `sample_data/` so graders do not need a GPU.
+Both methods export independent cameras, points and observed tracks. The mesh
+add-on consumes those common exports. SGBM estimates calibrated stereo depth;
+optional monocular inverse depth is aligned to that method's sparse landmarks.
+Foreground, ROI and multi-view consistency gates precede TSDF fusion. See
+MESH_ADDON.md and docs/ACTIVE_PIPELINE.md for current presets and diagnostics.
 
----
 
 ## 9. Evaluation (`code/eval/`)
 
@@ -447,7 +426,7 @@ All metrics are computed on the common pose format and PLY files by `run_eval.py
 | Reprojection error (px) | mean/median on original-resolution images, our SfM and COLMAP only |
 | # 3D points, mean track length | for our SfM and COLMAP |
 | Chamfer distance, F-score@τ | point cloud vs. reference cloud after alignment; τ = 1% of scene extent. Use sampled/limited points for speed |
-| Runtime, peak memory | wall-clock per method and hardware (Mac CPU vs. Colab T4) |
+| Runtime, peak memory | wall-clock per method on the recorded CPU hardware |
 
 **References:**
 - Public GT scene: GT poses (and GT cloud if available).
@@ -461,9 +440,9 @@ Write `make_tables.py` to emit LaTeX tables (`report/tables/*.tex`) directly fro
 
 | # | Experiment | Methods | Scenes | Priority |
 |---|---|---|---|---|
-| E1 | Main comparison: all metrics | Ours, COLMAP, VGGT | S1, S2, public-GT | **Must** |
+| E1 | Main comparison: all metrics | Ours, COLMAP | S1, S2, public-GT | **Must** |
 | E2 | BA ablation: no BA vs. local only vs. local+global | Ours | S1 (loop shows drift) | **Must** |
-| E3 | Number of views N ∈ {5, 10, 20, 30/40} | Ours, COLMAP, VGGT | S1 (+ public GT) | **Must** |
+| E3 | Number of views N ∈ {5, 10, 20, 30/40} | Ours, COLMAP | S1 (+ public GT) | **Must** |
 | E4 | Detector ablation: SIFT vs. RootSIFT vs. ORB | Ours | S1, S2 | Should |
 | E5 | Intrinsics: EXIF guess vs. checkerboard-calibrated vs. refined in BA | Ours | S1 | Should |
 | E6 | Ratio threshold (0.7, 0.8, 0.9) and RANSAC threshold | Ours | S1 | Nice |
@@ -471,7 +450,7 @@ Write `make_tables.py` to emit LaTeX tables (`report/tables/*.tex`) directly fro
 | E8 | Dense reconstruction/mesh qualitative | Ours | S1 | Stretch |
 | E9 | Splat or NeRF fly-through from our poses (Colab) | Nerfstudio splatfacto | S1 | Stretch, hard time cap of half a day |
 
-Failure-case discussion points to look for: homography-dominated pairs (planar scenes), too-small baselines, repeated structures causing wrong matches, drift around a closed loop, VGGT degradation as N grows or under out-of-distribution scenes, COLMAP splitting into multiple models.
+Failure-case discussion points to look for: homography-dominated pairs (planar scenes), too-small baselines, repeated structures causing wrong matches, drift around a closed loop, COLMAP splitting into multiple models.
 
 Stretch E9 note: write `transforms.json` (Nerfstudio format) from our poses instead of running `ns-process-data` (which needs COLMAP). Keep resolution small. Only do this if E1-E3, E7 and the report draft are done.
 
@@ -479,7 +458,7 @@ Stretch E9 note: write `transforms.json` (Nerfstudio format) from our poses inst
 
 ## 11. Visualization and demo (`code/viz/`, `demo.mp4`)
 
-- Figures for the report: keypoints and verified matches, epipolar lines on an image pair, pose trajectory plots (ours vs. reference, aligned), reprojection error histograms, point cloud screenshots side by side (ours / COLMAP / VGGT), AUC curves, BA ablation drift plot, failure-case panels.
+- Figures for the report: keypoints and verified matches, epipolar lines on an image pair, pose trajectory plots (ours vs. reference, aligned), reprojection error histograms, point cloud screenshots side by side (ours / COLMAP), AUC curves, BA ablation drift plot, failure-case panels.
 - Rendering on macOS: Open3D headless offscreen rendering can be unreliable. Prefer `o3d.visualization.Visualizer` with a visible window and `capture_screen_image` in a loop (rotate the view each frame), or fall back to a matplotlib scatter-based renderer. Test early.
 - Orbit frames: render 150-240 frames at 1280x720, 30 fps. Draw camera frustums as a lineset.
 - **Incremental growth animation:** save the reconstruction state after each registration step and render a frame per step. It visualizes how SfM works and fills time in the video.
@@ -488,7 +467,7 @@ Stretch E9 note: write `transforms.json` (Nerfstudio format) from our poses inst
   2. 8-20 s: photo montage (inputs)
   3. 20-35 s: matches and epipolar geometry
   4. 35-55 s: incremental reconstruction growing, cameras appearing
-  5. 55-85 s: side-by-side orbits: Ours | COLMAP | VGGT with labels
+  5. 55-85 s: side-by-side orbits: Ours | COLMAP with labels
   6. 85-100 s: key metrics table overlay
   7. 100-110 s: team names, optional splat fly-through
 - Assemble: `ffmpeg -framerate 30 -i frames/%05d.png -c:v libx264 -pix_fmt yuv420p -crf 23 demo.mp4`. Add text via `cv2.putText` or `PIL` when making frames. Verify the file plays (`ffprobe demo.mp4`; duration 60-120 s).
@@ -506,7 +485,7 @@ Create a **synthetic scene generator** first (`tests/synthetic.py`): random 3D p
 | `decompose_essential` + cheirality | recovers true R within 0.1° (noise-free) and t direction within 0.1° |
 | `triangulate_dlt` (n views) | point error < 1e-6 (noise-free); < 0.5% of scene size at σ=0.5 px |
 | DLT-PnP vs. truth | rotation error < 0.5° at σ=0.5 px |
-| Pose conversions (COLMAP, VGGT, Middlebury) | round-trip tests with known transforms |
+| Pose conversions (COLMAP, Middlebury) | round-trip tests with known transforms |
 | Umeyama | recovers a random Sim(3) to 1e-8 |
 | BA on noisy synthetic data (perturbed init) | final RMS reprojection error within 20% of noise σ; camera center errors reduced vs. the initialization |
 | Full pipeline on the synthetic scene | all cameras registered, ATE after alignment < 1% of scene extent |
@@ -523,15 +502,15 @@ Do not start experiments (Section 10) until the synthetic tests pass.
   - Title and author block (names, roll numbers/IDs, emails: ask humans for these)
   - I. Introduction (0.4 page): why SfM and 3D reconstruction matter (AR, robotics, mapping, heritage)
   - II. Problem Statement (0.3 page): inputs, outputs, evaluation scope
-  - III. Literature Review (0.8 page): classical SfM, COLMAP, bundle adjustment, learned multi-view (DUSt3R/MASt3R/VGGT), neural rendering (NeRF/3DGS) context; **state limitations** of each
+  - III. Literature Review (0.8 page): classical SfM, COLMAP, bundle adjustment, optional monocular depth, neural rendering (NeRF/3DGS) context; **state limitations** of each
   - IV. Objectives (bulleted, 0.2 page)
   - V. Methodology (1.2 pages): pipeline diagram figure, math for each stage (8-point, E decomposition, DLT, PnP, BA cost with Huber), baselines and their configuration, datasets and capture protocol, metric definitions
   - VI. Results and Discussion (1.5-2 pages): tables (E1), figures (pose plots, point clouds side by side), ablations (E2-E6), failure cases (E7), runtime
   - VII. Conclusion (0.3 page): findings, limitations, future work (loop closure, learned matchers such as SuperPoint/LightGlue, dense MVS, 3DGS)
   - References: numbered IEEE style, every entry cited in text, and vice versa
   - Author Contributions: short table at the very end (who did data capture, SfM modules, baselines, evaluation, visualization/video, report). Ask the humans for the real split. Do not invent it.
-- Suggested references (the agent must **verify bibliographic details** via search rather than rely on memory): Lowe (SIFT, IJCV 2004); Rublee et al. (ORB, ICCV 2011); Fischler & Bolles (RANSAC, 1981); Hartley & Zisserman, *Multiple View Geometry* (CUP); Nistér (five-point, TPAMI 2004); Triggs et al., "Bundle Adjustment: A Modern Synthesis"; Schönberger & Frahm (COLMAP, CVPR 2016); Wang et al. (VGGT, CVPR 2025); Wang et al. (DUSt3R, CVPR 2024); Umeyama (1991); Zhou et al. (Open3D, 2018); Szeliski, *Computer Vision: Algorithms and Applications*; dataset papers (Middlebury MVS: Seitz et al. 2006; Strecha et al. 2008 if used); Mildenhall et al. (NeRF) and Kerbl et al. (3DGS) if discussed.
-- Every outside repo used (OpenCV, COLMAP/pycolmap, VGGT, Open3D, SciPy, Nerfstudio if used) must be cited in the report.
+- Suggested references (the agent must **verify bibliographic details** via search rather than rely on memory): Lowe (SIFT, IJCV 2004); Rublee et al. (ORB, ICCV 2011); Fischler & Bolles (RANSAC, 1981); Hartley & Zisserman, *Multiple View Geometry* (CUP); Nistér (five-point, TPAMI 2004); Triggs et al., "Bundle Adjustment: A Modern Synthesis"; Schönberger & Frahm (COLMAP, CVPR 2016); Wang et al. (DUSt3R, CVPR 2024); Umeyama (1991); Zhou et al. (Open3D, 2018); Szeliski, *Computer Vision: Algorithms and Applications*; dataset papers (Middlebury MVS: Seitz et al. 2006; Strecha et al. 2008 if used); Mildenhall et al. (NeRF) and Kerbl et al. (3DGS) if discussed.
+- Every outside repo used (OpenCV, COLMAP/pycolmap, Open3D, SciPy, Nerfstudio if used) must be cited in the report.
 - After compiling: check page count (4-6), two-column layout, and that all 9 required elements exist.
 
 ---
@@ -542,13 +521,13 @@ Do not start experiments (Section 10) until the synthetic tests pass.
 1. Project summary (3-4 lines) and the folder structure.
 2. Install steps (Python version, `pip install -r requirements.txt`, ffmpeg if needed).
 3. Quick demo: exact command(s) on `sample_data/`, expected outputs, approximate runtime.
-4. How to reproduce experiments (`code/run_all.sh`), and which steps need Colab (VGGT) with the notebook name.
-5. Links for large files (VGGT weights are downloaded automatically from Hugging Face; any large dataset or precomputed outputs on Google Drive/HF with "Anyone with the link can view").
+4. How to reproduce experiments (`code/run_all.sh`), and which optional stages need learned depth weights.
+5. Links for large files (optional monocular depth weights are downloaded automatically from Hugging Face; any large dataset or precomputed outputs on Google Drive/HF with "Anyone with the link can view").
 6. **Third-party code and what we modified** (table: library/repo, version, how used).
 7. Team and contribution summary.
 
 `sample_data/`:
-- `scene_small/images/` with 10-12 downsized images (≤ 800 px long side, about 2-4 MB total), `intrinsics.yaml`, and precomputed `vggt_out.npz` and COLMAP `poses.json` for that scene, so the demo runs with no GPU. Optionally a tiny second input (the public GT scene subset, if license permits redistribution; otherwise just describe how to download it).
+- `scene_small/images/` with 10-12 downsized images (≤ 800 px long side, about 2-4 MB total), `intrinsics.yaml`, and precomputed COLMAP `poses.json` for that scene, so the demo runs with no GPU. Optionally a tiny second input (the public GT scene subset, if license permits redistribution; otherwise just describe how to download it).
 
 Build the zip (macOS adds junk files; exclude them):
 ```bash
@@ -569,7 +548,7 @@ grep -rn "/Users/\|C:\\\\" code/ || echo "no hardcoded paths"
 Final checklist:
 - [ ] Folder names and file names match Section 2 exactly
 - [ ] `report.pdf`: IEEE double-column, 4-6 pages, all 9 elements, authors with IDs and emails, contributions at the end, all citations resolve
-- [ ] `demo.mp4`: plays, 60-120 s, shows our result, COLMAP, VGGT and ideally the incremental growth
+- [ ] `demo.mp4`: plays, 60-120 s, shows our result, COLMAP and ideally the incremental growth
 - [ ] Quick demo from README works on a fresh unzip
 - [ ] No weights or datasets in the zip; total size < 200 MB
 - [ ] No hardcoded paths; third-party credits in README and report
@@ -584,7 +563,7 @@ Final checklist:
 | 1 | Sat 14 | Environment, repo skeleton, synthetic generator and tests for geometry primitives. **Humans: capture S1 (+ S2/S3 and checkerboard if possible).** | primitives tests green |
 | 2 | Sun 15 | Features, matching, own RANSAC F, initialization with cheirality, triangulation. Run COLMAP baseline on S1. Download public GT scene. | two-view recon on S1 looks sane |
 | 3 | Mon 16 | Tracks, PnP registration loop, BA (local + global). | full SfM on S1 registers ≥ 90% images |
-| 4 | Tue 17 | Common pose format, evaluation code. **Humans: run VGGT on Colab for S1/S2/GT scene.** | E1 table for S1 produced |
+| 4 | Tue 17 | Common pose format, evaluation code. Run the two independent classical methods locally. | E1 table for S1 produced |
 | 5 | Wed 18 | Experiments E1-E3, E7; E4/E5 if time. Optional dense step. | all "Must" experiments have result JSONs |
 | 6 | Thu 19 | Figures, orbit renders, demo.mp4; start report writing in parallel. | demo video draft exists |
 | 7 | Fri 20 | Finish report, compile in Overleaf, packaging, fresh-machine test. | checklist all ticked |
@@ -592,14 +571,14 @@ Final checklist:
 
 **Cut line:** if Day 3 ends without a working incremental pipeline, drop global BA (keep local), and drop E4-E6, E8, E9. If Day 5 ends late, drop E5-E6 and the dense step. Never cut the synthetic tests, E1, E2, E3, E7 or the fresh-machine test.
 
-Suggested ownership (4 members): (A) data capture, calibration, COLMAP baseline and public dataset loader; (B) features, matching, two-view geometry, initialization; (C) tracks, PnP, bundle adjustment, incremental loop; (D) VGGT on Colab, evaluation, visualization and demo. Report sections and README shared by all.
+Suggested ownership (4 members): (A) data capture, calibration, COLMAP baseline and public dataset loader; (B) features, matching, two-view geometry, initialization; (C) tracks, PnP, bundle adjustment, incremental loop; (D) evaluation, visualization, mesh analysis and demo. Report sections and README shared by all.
 
 ---
 
 ## 16. Tasks only humans can do (the agent must stop and ask)
 
 1. Capture the photos, and optionally the checkerboard set. Put them in `data/<scene>/images_raw/`.
-2. Run `notebooks/vggt_colab.ipynb` on Colab (Google login, GPU runtime) and drop `vggt_out.npz` into `data/<scene>/`.
+2. Review local camera calibration, frame selection and the independent two-method comparison.
 3. Provide names, roll numbers/IDs and emails for the author block, and the real contribution split.
 4. Compile the LaTeX in Overleaf and return `report.pdf` if no local TeX exists.
 5. Upload large optional files to Drive/HF if any, and paste the links.
@@ -615,7 +594,7 @@ Suggested ownership (4 members): (A) data capture, calibration, COLMAP baseline 
 | Registration loop breaks on hard scenes | Lower PnP inlier requirement to 15, raise reprojection threshold to 6 px, relax Lowe ratio to 0.85; report remaining failures as limitations |
 | pycolmap not installable on Mac | `brew install colmap` and use the CLI from `run_colmap.py` |
 | Open3D rendering fails on macOS | matplotlib or software point rasterizer; or screen-capture the interactive viewer |
-| Colab VGGT out-of-memory or unavailable | fewer or smaller images; DUSt3R/MASt3R; as a last resort, report COLMAP vs. ours only and describe VGGT as attempted in limitations (do not fabricate numbers) |
+| Reconstruction exceeds available memory | bound view count/resolution, use serial CPU jobs and retain partial/failure records |
 | Public GT dataset unreachable | use another GT scene from the list in Section 6.2; if none, use COLMAP-as-reference only and state this clearly |
 | Scale or convention mismatches in evaluation | check conventions via unit tests; evaluate after Sim(3) alignment; if error is huge, try transposed R and verify with a known-good COLMAP result |
 | Time overrun | follow the cut line in Section 15 |
@@ -685,7 +664,7 @@ For image pair `(i, j)` with world-to-camera `(R_i,t_i)`, `(R_j,t_j)`:
 - ATE: RMSE of `||C'_est - C_ref||` after Sim(3) alignment.
 
 ### A.8 Point cloud metrics
-After applying the camera-based Sim(3) to the estimated cloud: subsample each cloud to ≤ 50k points; KD-tree nearest distances (`scipy.spatial.cKDTree`); `accuracy = mean(d_est→ref)`, `completeness = mean(d_ref→est)`, Chamfer = their average; `precision@τ`, `recall@τ`, `F = 2PR/(P+R)`, with `τ = 0.01 × bounding-box diagonal` of the reference (after removing outliers). Caveat to report: sparse SfM clouds and dense VGGT point maps differ in density, so compare density-matched subsets and interpret as agreement, not absolute quality.
+After applying the camera-based Sim(3) to the estimated cloud: subsample each cloud to ≤ 50k points; KD-tree nearest distances (`scipy.spatial.cKDTree`); `accuracy = mean(d_est→ref)`, `completeness = mean(d_ref→est)`, Chamfer = their average; `precision@τ`, `recall@τ`, `F = 2PR/(P+R)`, with `τ = 0.01 × bounding-box diagonal` of the reference (after removing outliers). Caveat to report: different depth sources and sparse clouds differ in density, so compare density-matched subsets and interpret as agreement, not absolute quality.
 
 ### A.9 Intrinsics from EXIF
 `f_px = f35 / 36 * max(W, H)` where `f35` is `FocalLengthIn35mmFilm` in mm (36 mm is the long side of a 35 mm frame). `cx = W/2`, `cy = H/2`. Apply EXIF orientation first, then compute `W, H`. If images are resized by factor `s`, scale `fx, fy, cx, cy` by `s`.
@@ -907,26 +886,19 @@ The generator must support (a) noise-free exact data, (b) noisy data, (c) putati
 
 ---
 
-## Appendix E. Colab notebook outline (`notebooks/vggt_colab.ipynb`)
+## Appendix E. Local experiment execution
 
-1. Markdown: purpose, expected inputs (`images/` folder), outputs (`vggt_out.npz`, timing).
-2. Cell: runtime check (`!nvidia-smi`), install (`!git clone https://github.com/facebookresearch/vggt`, `%cd vggt`, `!pip install -e .`, other requirements per its README).
-3. Cell: get images: either `from google.colab import files; files.upload()` a zip, or mount Drive. Unzip into `images/`; sort filenames; cap at N.
-4. Cell: load model (`VGGT.from_pretrained("facebook/VGGT-1B")`), choose dtype (float16 on T4), run inference with timing (`torch.cuda.synchronize()` before and after) and `torch.cuda.max_memory_allocated()`.
-5. Cell: decode poses with `pose_encoding_to_extri_intri`; save `vggt_out.npz` including `image_names`, `extrinsic`, `intrinsic`, `world_points`, `world_points_conf`, `depth`, `depth_conf` (check the actual key names in the current README), and a small JSON with runtime/memory/GPU name and the number of images.
-6. Cell: for E3, loop over view-subsets (sizes in `views_ablation`, seeds in eval config) and save one `.npz` per subset.
-7. Cell: download results (`files.download`) or copy them to Drive (sessions can disconnect; save to Drive after each subset).
-Make the notebook idempotent and runnable top to bottom.
-
----
+Run Our SfM and COLMAP in the serial experiment workers described in
+`docs/EXPERIMENTS.md`. No GPU notebook or multi-view model setup is required.
+Keep input hashes, configuration, failed attempts and calibration provenance.
 
 ## Appendix F. README.md template
 
 ```markdown
-# GroupX 3D Computer Vision Project: Classical vs. Learned SfM
+# GroupX 3D Computer Vision Project: Our SfM vs. CPU COLMAP
 
 Own incremental Structure-from-Motion (SIFT, RANSAC, triangulation, PnP, sparse bundle adjustment)
-benchmarked against COLMAP and VGGT on self-captured and public scenes.
+benchmarked against CPU COLMAP on self-captured and public scenes.
 
 ## Folder structure
 (report.pdf, demo.mp4, requirements.txt, code/, sample_data/ ...)
@@ -938,15 +910,15 @@ pip install -r requirements.txt
 
 ## Quick demo (about N minutes on a laptop, no GPU)
 python code/run_sfm.py --images sample_data/scene_small/images --out outputs/demo --config configs/sfm_default.yaml
-python code/eval/run_eval.py --scene sample_data/scene_small --ours outputs/demo --colmap sample_data/scene_small/colmap --vggt sample_data/scene_small/vggt_out.npz
+python code/eval/run_eval.py --scene sample_data/scene_small --ours outputs/demo --colmap sample_data/scene_small/colmap
 Outputs: outputs/demo/points.ply (open with MeshLab/Open3D), poses.json, metrics printed to console.
 
 ## Reproduce the experiments
 bash code/run_all.sh        # needs data/<scene>/ (see below)
-VGGT runs on a Colab GPU: notebooks/vggt_colab.ipynb -> vggt_out.npz
+Both camera methods run locally on CPU.
 
 ## Large files
-VGGT weights download automatically from Hugging Face (facebook/VGGT-1B).
+Optional Depth Anything V2 Small weights stay outside the archive.
 Extra data / precomputed outputs: <Google Drive or HF link, "Anyone with the link can view">
 
 ## Third-party code and what we modified
@@ -954,7 +926,6 @@ Extra data / precomputed outputs: <Google Drive or HF link, "Anyone with the lin
 |---|---|---|---|
 | OpenCV | x | SIFT/ORB, BFMatcher, image I/O, solvePnPRansac, SGBM | none (library calls only) |
 | pycolmap / COLMAP | x | baseline reconstruction | wrapper scripts only |
-| VGGT (facebookresearch) | commit | learned baseline | inference script + conversion only |
 | Open3D | x | PLY I/O, visualization, Poisson | none |
 | SciPy | x | least_squares for BA | our residual/Jacobian structure |
 | Our own code | - | 8-point, RANSAC, E decomposition, DLT triangulation, DLT-PnP, BA, tracks, evaluation | full |
@@ -972,7 +943,7 @@ Names, IDs and a one-line contribution each (full table in report).
 \documentclass[conference]{IEEEtran}
 \usepackage{cite,amsmath,amssymb,graphicx,booktabs,url,hyperref}
 \begin{document}
-\title{Classical vs.\ Learned Structure from Motion: A From-Scratch Incremental SfM Pipeline Benchmarked Against COLMAP and VGGT}
+\title{Incremental Structure from Motion: A From-Scratch Pipeline Benchmarked Against CPU COLMAP}
 \author{
 \IEEEauthorblockN{Member 1}\IEEEauthorblockA{Roll/ID, email} \and
 \IEEEauthorblockN{Member 2}\IEEEauthorblockA{Roll/ID, email} \and
@@ -995,16 +966,16 @@ Names, IDs and a one-line contribution each (full table in report).
 An abstract is optional and not in the required list; include one only if the team wants it and keep it very short. All 9 required elements must be present and in order. Use `\cite{}` for every reference so that numbering is automatic and matches in-text citations.
 
 ### G.2 Draft content (facts only; no results until runs exist)
-- **Introduction:** 3D reconstruction from photos underpins AR/VR, robotics, mapping, cultural heritage and film. Structure from Motion recovers camera poses and sparse structure from unordered images. Recently, feed-forward transformers (DUSt3R, VGGT) predict poses and geometry directly. Question: how do a transparent classical pipeline and a learned model compare on accuracy, speed and robustness for small image sets on commodity hardware?
+- **Introduction:** 3D reconstruction from photos underpins AR/VR, robotics, mapping, cultural heritage and film. Structure from Motion recovers camera poses and sparse structure from unordered images. Question: how does our transparent incremental pipeline compare with a mature classical system on accuracy, speed and robustness using commodity hardware?
 - **Problem statement:** Input: N unordered photos (5-40) of a static scene, approximate or calibrated intrinsics. Output: 6-DoF poses for registered images, sparse colored 3D point cloud (optionally dense cloud/mesh). Evaluation: pose accuracy and agreement with reference, reprojection error, point cloud agreement, runtime, robustness.
 - **Objectives (bullets):**
   - Implement a complete incremental SfM pipeline from first principles: SIFT matching, RANSAC F-estimation, essential-matrix pose recovery with cheirality, n-view DLT triangulation, PnP registration, sparse BA with robust loss.
   - Validate every module on synthetic data with known ground truth.
-  - Benchmark against COLMAP and VGGT on self-captured scenes and one public ground-truth scene using ATE, relative-pose AUC, reprojection error, point cloud agreement and runtime.
+  - Benchmark against CPU COLMAP on self-captured scenes and one public ground-truth scene using ATE, relative-pose AUC, reprojection error, point cloud agreement and runtime.
   - Quantify the effect of bundle adjustment, feature detector, number of input views and intrinsics quality.
   - Characterize failure modes (low texture, planar/small baseline, repetition, drift, learned-model limits).
   - Produce 3D visualizations (orbit renders, incremental growth) and a demo video.
-- **Literature review (cover with limitations):** SIFT/ORB (scale invariance, speed vs. robustness); RANSAC and minimal solvers (assumes enough inliers, sensitive to degeneracy); epipolar geometry and SfM (Hartley & Zisserman); incremental SfM systems and COLMAP (robust, but slow, scene-dependent failures, drift without loop closure); bundle adjustment (non-convex, needs good init); DUSt3R/MASt3R/VGGT (fast and joint prediction, but memory grows with views, trained distribution limits, accuracy not guaranteed in metric terms); NeRF and 3DGS (high-quality rendering but need accurate poses and many views). Cite each with a verified reference.
+- **Literature review (cover with limitations):** SIFT/ORB (scale invariance, speed vs. robustness); RANSAC and minimal solvers (assumes enough inliers, sensitive to degeneracy); epipolar geometry and SfM (Hartley & Zisserman); incremental SfM systems and COLMAP (robust, but slow, scene-dependent failures, drift without loop closure); bundle adjustment (non-convex, needs good init); monocular depth (relative scale, smoothing and alignment limitations); NeRF and 3DGS (high-quality rendering but need accurate poses and many views). Cite each with a verified reference.
 - **Methodology:** pipeline figure, equations from Appendix A, baseline configurations (exact parameters), datasets and capture protocol, metrics (Appendix A.7-A.8), implementation environment (versions, hardware).
 - **Results and discussion:** tables and figures listed in G.3; interpret both wins and losses; keep claims scoped to the scenes tested.
 - **Conclusion:** summary of the quantitative picture, limitations (no loop closure, small scenes, pseudo-ground-truth on self-captured data, one phone), future work (loop closure and pose graph, learned matchers such as SuperPoint/LightGlue, MVS densification, 3DGS/NeRF from recovered poses).
@@ -1012,11 +983,11 @@ An abstract is optional and not in the required list; include one only if the te
 ### G.3 Planned figures and tables (generate by script from `results/`)
 - Fig. 1 pipeline diagram (own SfM plus baselines and evaluation)
 - Fig. 2 matches and epipolar lines on an image pair
-- Fig. 3 camera trajectories (top view) for ours / COLMAP / VGGT after alignment
+- Fig. 3 camera trajectories (top view) for ours / COLMAP after alignment
 - Fig. 4 point cloud renders side by side (S1 and S2)
-- Fig. 5 pose AUC (or ATE) vs. number of views for all three methods
+- Fig. 5 pose AUC (or ATE) vs. number of views for both methods
 - Fig. 6 BA ablation: drift/reprojection error without BA vs. local vs. global (loop scene)
-- Fig. 7 failure-case panel (S3, dino, VGGT with many views, etc.)
+- Fig. 7 failure-case panel (glossy objects, low texture, sparse or blurred images, etc.)
 - Table I dataset summary (scene, #images, resolution, texture, reference type)
 - Table II main results (registration rate, ATE, AUC@5/10/30, reproj error, #points, F-score, runtime)
 - Table III ablations (detector, RootSIFT, intrinsics, thresholds)
@@ -1024,7 +995,7 @@ An abstract is optional and not in the required list; include one only if the te
 Keep the total to 4-6 pages: use compact figures, drop low-value ones first.
 
 ### G.4 Reference checklist (verify metadata by search before citing)
-SIFT (Lowe, 2004); ORB (Rublee et al., 2011); RANSAC (Fischler & Bolles, 1981); Hartley & Zisserman, *Multiple View Geometry*; five-point algorithm (Nistér, 2004); Triggs et al., "Bundle Adjustment: A Modern Synthesis"; COLMAP (Schönberger & Frahm, 2016); VGGT (Wang et al., CVPR 2025); DUSt3R (Wang et al., CVPR 2024); Umeyama (1991); Open3D (Zhou et al., 2018); Szeliski book; Middlebury MVS (Seitz et al., 2006) or Strecha et al. (2008) for the chosen public scene; NeRF (Mildenhall et al.) and 3DGS (Kerbl et al.) if discussed; Nerfstudio if used.
+SIFT (Lowe, 2004); ORB (Rublee et al., 2011); RANSAC (Fischler & Bolles, 1981); Hartley & Zisserman, *Multiple View Geometry*; five-point algorithm (Nistér, 2004); Triggs et al., "Bundle Adjustment: A Modern Synthesis"; COLMAP (Schönberger & Frahm, 2016); DUSt3R (Wang et al., CVPR 2024); Umeyama (1991); Open3D (Zhou et al., 2018); Szeliski book; Middlebury MVS (Seitz et al., 2006) or Strecha et al. (2008) for the chosen public scene; NeRF (Mildenhall et al.) and 3DGS (Kerbl et al.) if discussed; Nerfstudio if used.
 
 ---
 
@@ -1045,7 +1016,7 @@ imageio
 imageio-ffmpeg
 exifread
 pycolmap
-# torch            # only if code/ imports torch (e.g., local VGGT output utilities); VGGT itself runs on Colab
+# torch            # optional monocular depth
 ```
 
 `code/run_all.sh`
@@ -1058,7 +1029,6 @@ for s in "${SCENES[@]}"; do
   python code/prepare_data.py --scene "$s"
   python code/run_sfm.py --images "data/$s/images_1600" --out "results/$s/ours" --config configs/sfm_default.yaml
   python code/baselines/run_colmap.py --images "data/$s/images_1600" --out "results/$s/colmap"
-  python code/baselines/convert_to_common.py --vggt "data/$s/vggt_out.npz" --out "results/$s/vggt"
   python code/eval/run_eval.py --scene "$s" --config configs/eval.yaml
 done
 python code/eval/make_tables.py
@@ -1114,10 +1084,10 @@ outputs/
 | Reconstruction scale differs between methods | Expected; always Sim(3)-align before metrics |
 | COLMAP produces several models | Pick the largest; report the number of models; this is a robustness data point |
 | pycolmap API errors | Check the installed version's docs; fall back to the COLMAP CLI via `subprocess` |
-| VGGT out of memory on T4 | Fewer or smaller images; float16; process subsets; free memory between runs |
+| Dense reconstruction uses too much memory | Lower depth resolution / grid, bound views and process one job at a time |
 | Colab disconnects | Save outputs to Drive after each run; make cells idempotent |
 | Open3D window or offscreen rendering fails on macOS | Run from the main thread, use `Visualizer` with a window and `capture_screen_image`; or use the matplotlib fallback |
-| Pose conversion mismatch | Add round-trip tests; check COLMAP `cam_from_world` vs. world-from-camera; check VGGT extrinsics are world-to-camera; check Middlebury/Strecha rotation convention |
+| Pose conversion mismatch | Add round-trip tests; check COLMAP `cam_from_world` vs. world-from-camera; check Middlebury/Strecha rotation convention |
 | zip contains `__MACOSX` or `.DS_Store` | Use the exclusion flags from Section 14 |
 | Results not reproducible | Seed everything, save configs with results, and avoid nondeterministic thread-dependent steps in tests |
 

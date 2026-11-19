@@ -1,0 +1,79 @@
+{
+  "source_sha256": "7b9ddd82dd4f1c2a8470408267cb1b075d99e3fc4cc15e321dc3bebf28f6a223",
+  "timestamp_utc": "2026-11-18T13:59:07.151018+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "schema_version": 1,
+    "seed": 0,
+    "image_max_side": 1200,
+    "sfm_config": "configs/sfm_relaxed.yaml",
+    "scenes": {
+      "car_s1": {
+        "images": "outputs/cars_curated_60/calibrated_2400/images",
+        "intrinsics": "outputs/cars_curated_60/calibrated_2400/intrinsics.yaml",
+        "views": 20,
+        "reference": "outputs/cars_curated_60/colmap_car_2400/poses.json",
+        "reference_kind": "colmap",
+        "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth."
+      },
+      "fountain_s2": {
+        "images": "outputs/fountain_urd/input/images",
+        "intrinsics": "outputs/fountain_urd/input/intrinsics.yaml",
+        "views": 11,
+        "reference": "outputs/fountain_urd/colmap/poses.json",
+        "reference_kind": "colmap",
+        "notes": "User-supplied 11-view fountain. Approximate input intrinsics; reference is an earlier COLMAP model with refined intrinsics. No GT camera or triangle-model files were supplied."
+      },
+      "temple_gt": {
+        "images": "data/temple/images",
+        "intrinsics": "data/temple/intrinsics.yaml",
+        "views": 16,
+        "reference": "data/temple/gt_poses.json",
+        "reference_kind": "gt",
+        "notes": "Middlebury calibrated Temple. Existing relaxed SfM settings were previously tuned using this scene, so this is development evaluation."
+      }
+    }
+  },
+  "inputs": {
+    "scene": "car_s1_5",
+    "selected_images": [
+      "IMG_20261114_181828.jpg",
+      "IMG_20261114_181948.jpg",
+      "IMG_20261114_182131.jpg",
+      "IMG_20261114_182241.jpg",
+      "IMG_20261114_182325.jpg"
+    ],
+    "source_images": "outputs/cars_curated_60/calibrated_2400/images",
+    "source_sha256": {
+      "IMG_20261114_181828.jpg": "4055533751f1662d2093415b5b3c2f7e36d813a035bf39bc3e50bcc408766d19",
+      "IMG_20261114_181948.jpg": "351efaafef2f1926ef8424a77e3808cc76bb1e3ea0364b56cc93e6e99217de01",
+      "IMG_20261114_182131.jpg": "002da5833cd654f7c05a47316747204f22ba35be82f8c163f0e1f33bf479634b",
+      "IMG_20261114_182241.jpg": "c4a4f7f1086987e1e5522a1da9cea63df8d4ee8b46b7528c4123320a1b6bcc22",
+      "IMG_20261114_182325.jpg": "92685beb16b21d80b13c0056ff712096c4c32e0fd183b56800089ba45cbb58e6"
+    },
+    "intrinsics_sha256": "c841a8bb2b8de76f0814a84af458175f32d010e319d21d69deea9d3a21364d51",
+    "reference_sha256": "012b2ad3733d1ebfe4a9d1e33178120a6f8d95101581c799f6fbe6e461edf341",
+    "max_side": 1200,
+    "seed": 0
+  },
+  "reference_kind": "colmap",
+  "notes": "Self-captured glossy toy car; pre-existing 60-view curation used COLMAP poses. EXIF intrinsics, no checkerboard calibration. Reference is the earlier full-data COLMAP model with refined intrinsics, not ground truth.",
+  "reference_camera_frame": "Native reference cameras, used only for pose evaluation",
+  "prepared_sha256": {
+    "IMG_20261114_181828.jpg": "456545d45c2c128256139e03794ffa6c03682496061c0ea1dd6642dfde8a0e94",
+    "IMG_20261114_181948.jpg": "fd7d0b75fb6d34ba84d072b360f055f2af65c9dc605bfa5dbd3fd3612cd203c2",
+    "IMG_20261114_182131.jpg": "7db4dd6ba5cf9507b94574be5bbfb6cecc9f1d326c42cf8c5fcb3b2c8821f0e5",
+    "IMG_20261114_182241.jpg": "4084aebca1df5c0716b5688e33190b074500a6e43fd86d6110739e16312cd234",
+    "IMG_20261114_182325.jpg": "8ae89b42f30f303dfeba923ec6cab860087f1612b0e75e47de9c00871b90c2d6"
+  }
+}

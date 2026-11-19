@@ -1,0 +1,157 @@
+{
+  "source_sha256": "cb0e5a4a4ae11e21523fa151b10d87acaa5e7751f9945b9cc2221a08a9883be8",
+  "timestamp_utc": "2026-11-18T14:07:06.159844+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": false,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.85,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 11,
+  "points": 5156,
+  "median_reprojection_px": 0.6898043741704498,
+  "elapsed_seconds": 29.072383833999993,
+  "total_images": 11,
+  "runtime_seconds": 29.178243084000314,
+  "init_pair": [
+    "0004.jpg",
+    "0005.jpg"
+  ],
+  "image_names": [
+    "0000.jpg",
+    "0001.jpg",
+    "0002.jpg",
+    "0003.jpg",
+    "0004.jpg",
+    "0005.jpg",
+    "0006.jpg",
+    "0007.jpg",
+    "0008.jpg",
+    "0009.jpg",
+    "0010.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 1653,
+      "median_reprojection_px": 0.1825611604603818,
+      "elapsed_seconds": 19.58488424999996
+    },
+    {
+      "registered": 3,
+      "points": 2106,
+      "median_reprojection_px": 0.2854048355365438,
+      "elapsed_seconds": 19.7566363750002
+    },
+    {
+      "registered": 4,
+      "points": 2393,
+      "median_reprojection_px": 0.6862805702934024,
+      "elapsed_seconds": 20.007635041999947
+    },
+    {
+      "registered": 5,
+      "points": 3007,
+      "median_reprojection_px": 0.7347895201183436,
+      "elapsed_seconds": 21.185849667000184
+    },
+    {
+      "registered": 6,
+      "points": 3114,
+      "median_reprojection_px": 0.7762844436397143,
+      "elapsed_seconds": 21.61060829200005
+    },
+    {
+      "registered": 7,
+      "points": 3835,
+      "median_reprojection_px": 0.8314410126041327,
+      "elapsed_seconds": 22.119209083999976
+    },
+    {
+      "registered": 8,
+      "points": 4246,
+      "median_reprojection_px": 0.8274268073005951,
+      "elapsed_seconds": 22.637756167000134
+    },
+    {
+      "registered": 9,
+      "points": 4458,
+      "median_reprojection_px": 0.8213997707768268,
+      "elapsed_seconds": 23.17450662500005
+    },
+    {
+      "registered": 10,
+      "points": 4840,
+      "median_reprojection_px": 0.7038925019739115,
+      "elapsed_seconds": 25.369523458999993
+    },
+    {
+      "registered": 11,
+      "points": 5370,
+      "median_reprojection_px": 0.7302602481177898,
+      "elapsed_seconds": 25.954369584000233
+    },
+    {
+      "registered": 11,
+      "points": 5156,
+      "median_reprojection_px": 0.6898043741704498,
+      "elapsed_seconds": 29.072383833999993
+    }
+  ],
+  "mean_track_length": 2.8983708301008533
+}

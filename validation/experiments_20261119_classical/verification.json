@@ -1,0 +1,8 @@
+{
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 85,
+    "seconds": 45.3
+  },
+  "scope": "Current two-method implementation regression checks on 19 November 2026. Reconstruction measurement rows are retained historical results, not rerun scores."
+}

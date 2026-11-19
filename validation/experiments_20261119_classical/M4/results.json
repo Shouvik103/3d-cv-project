@@ -1,0 +1,18 @@
+[
+  {
+    "method": "ours",
+    "status": "complete",
+    "fused_views": 8,
+    "faces": 8632,
+    "accuracy_percent_diagonal": 3.2051165901215843,
+    "completeness_percent_diagonal": 10.08688267357887,
+    "f005": 0.02751368439088469,
+    "f01": 0.05860116941241076,
+    "f02": 0.14026727397805858,
+    "coverage": 0.7720642361111111,
+    "psnr_db": 21.681231800992816,
+    "ssim": 0.474244410466569,
+    "seconds": 7.680711832999805,
+    "error": null
+  }
+]

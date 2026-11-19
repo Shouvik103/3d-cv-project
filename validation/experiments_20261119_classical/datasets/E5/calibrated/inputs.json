@@ -1,0 +1,392 @@
+{
+  "source_inputs_sha256": "d535b9d6caa1c520e27f71036fcfc3c394adfbeebaa6c15460f9095d830f5596",
+  "approximate": false,
+  "intrinsics": {
+    "images": {
+      "templeSR0001.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0002.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0003.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0004.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0005.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0006.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0007.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0008.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0009.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0010.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0011.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0012.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0013.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0014.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0015.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      },
+      "templeSR0016.jpg": {
+        "K": [
+          [
+            1520.4,
+            0.0,
+            302.32
+          ],
+          [
+            0.0,
+            1525.9,
+            246.87
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "image_size": [
+          640,
+          480
+        ],
+        "source": "middlebury_calibrated"
+      }
+    }
+  }
+}

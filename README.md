@@ -1,7 +1,7 @@
-# Classical vs. Learned Structure from Motion
+# Incremental Structure from Motion: Our SfM vs. COLMAP
 
 Incremental sparse Structure from Motion from overlapping images, compared with
-CPU COLMAP and a VGGT inference adapter. The geometric implementation includes
+CPU COLMAP. The geometric implementation includes
 normalized eight-point estimation, adaptive RANSAC, essential-matrix pose recovery,
 multiview triangulation, feature tracks, PnP registration, and sparse robust bundle
 adjustment. OpenCV supplies SIFT/ORB, matching, homography detection, and PnP;
@@ -20,9 +20,9 @@ pip install -r requirements.txt
 pip install -r requirements-colmap.txt
 ```
 
-Dependencies are pinned to the versions used for local validation. VGGT's torch,
-GPU libraries, and weights are installed separately on Colab. The core demo needs
-no GPU, model weights, Homebrew tools, or dataset download.
+Dependencies are pinned to the versions used for local validation. Camera estimation
+and SGBM run on CPU. Torch/Transformers remain for optional Depth Anything V2 Small
+monocular depth. The sparse demo needs no GPU, model weights or dataset download.
 
 ## Local upload interface
 
@@ -45,7 +45,7 @@ The extended interface adds four keyboard-accessible tabs:
 - **Workspace** keeps uploads, job progress, saved reconstructions, deletion,
   downloads and the 3D viewers. Selected-run details include measured residuals,
   timing, mesh topology, reconstruction growth, configuration and versions.
-- **Pipeline & methods** explains Our SfM, CPU COLMAP and VGGT, including camera
+- **Pipeline & methods** explains Our SfM and CPU COLMAP, including camera
   calibration, depth/fusion, model provenance and limitations.
 - **Performance** provides scene/method filters, interactive bar/line plots,
   sortable measurements, ablations, failures and mesh-quality comparisons.
@@ -56,26 +56,18 @@ Research views load measured, versioned evidence from the latest
 `validation/experiments_*/` collection, without needing raw datasets or model
 weights. Undefined metrics remain unavailable and failed attempts remain visible.
 The benchmark tabs are saved experiments. For new uploads, choose **Our SfM**,
-**COLMAP**, **VGGT**, or **All three**. All three creates independent, serially
+**COLMAP**, or **Compare both**. Compare both creates two independent, serially
 queued method runs from identical images; each appears in Your reconstructions.
 Open **Performance → Your comparisons** for their measured tables, graphs,
 per-method previews, 3D links and CSV/JSON/PNG downloads.
 
 Our SfM and COLMAP offer SGBM stereo or pinned Depth Anything V2 Small with
-sparse-depth alignment, then TSDF. VGGT uses its own cameras/depth and native
-518px preprocessing. Object-quality uploads use the official padding mode so
-tall objects are kept in full; Standard and the historical benchmarks use crop mode.
-Monocular depth is useful when stereo pairs have wide
-viewpoint gaps; its learned prior does not guarantee correct geometry. Classical
-methods share an image-only mono-depth cache within a comparison. COLMAP camera
-inference and VGGT run in separate processes from mesh fusion.
-
-VGGT / All three accepts 3–60 views per local run; inputs above 16 are processed
-in a 16-view overview spread across the full capture, followed by overlapping
-local windows of at most 16 views. Each window runs in a separate process
-and aligns directly to shared predicted cameras in that overview. Alignment gates reject
-inconsistent windows. This bounds accelerator memory, but can introduce seams
-and is not a single joint 60-view VGGT inference.
+sparse-depth alignment, then TSDF. SGBM is the upload default and uses calibrated
+view pairs. Monocular depth is useful when stereo coverage is difficult, but its
+learned prior does not guarantee correct geometry. Classical methods share an
+image-only mono-depth cache within a comparison. COLMAP camera estimation runs
+in a separate process from mesh fusion. Both methods accept 3–200 photos; about
+60 sharp, overlapping views covering every side are recommended.
 
 Object quality is the new upload default: supplied alpha or a confident
 simple-background mask excludes background features and depth. Matching and
@@ -100,30 +92,28 @@ their supplied intrinsics. GT poses are never passed to reconstruction.
 Raw datasets and outputs are ignored by Git. The importer uses the normal
 upload API, so every method appears in Workspace and Your comparisons.
 
-Classical methods retain the 200-photo limit.
-Install the isolated VGGT runtime
-with `code/experiments/setup_vggt.py` first. Known original-resolution fx/fy/cx/cy
-and Our SfM's matching ratio can be entered under Camera & matching settings.
-The camera matrix is used by the classical methods; VGGT predicts its own K.
+Known original-resolution fx/fy/cx/cy and Our SfM's matching ratio can be entered
+under Camera & matching settings. Maximum quality retains full camera frames,
+uses up to 12,000 features and exhaustive matching, and spends more CPU time on
+camera refinement. Photo matching size includes a 2400px option; source images
+are never enlarged. Calibration sources and per-view diagnostics are downloadable.
 Finished runs can be retried with explicit depth/matching/quality settings.
 Choose **Reuse saved cameras · rebuild mesh only** to change mesh quality or
-depth without rerunning SfM / VGGT. Camera and matching changes require a full
+depth without rerunning camera estimation. Camera and matching changes require a full
 retry. Previous attempts and logs are retained locally instead of overwritten.
 
 New Object-quality classical point clouds display up to 115,000 points sampled
 from accepted foreground / consistency-filtered depth estimates, capped at one
 million exported samples. The smaller TSDF surface cloud remains a separate
 download. Neither cap creates points or completes unseen surfaces. Point count
-is not a reconstruction-quality score. VGGT previews use confidence-filtered
-point-head estimates. Camera + mesh timing combines the original camera solve
+is not a reconstruction-quality score. Camera + mesh timing combines the original camera solve
 with the current mesh stage; last-attempt timings and reuse flags are separate.
 
-Historical 30-view Temple/car/chair runs were submitted through the normal upload API using
-all 16 Temple views and 30 covering views each for car/chair. Those are new
-computations, not relabelled pre-existing COLMAP examples. The raw photos and
-large outputs remain in `outputs/web_ui_extended`; compact measured evidence is
-in `validation/web_three_methods`. Input K for car/chair came from an earlier
-COLMAP calibration estimate; no earlier poses were used to reconstruct them.
+The active research evidence is `validation/experiments_20261119_classical`.
+It projects the retained classical measurements into two-method tables and plots;
+this does not claim new benchmark runs. Browser checks and regression evidence
+are in `validation/web_classical`. Uploaded photos and full geometry remain local
+under the chosen output data directory. Earlier mixed-method records are archives.
 No new chart-library or Python dependencies are needed.
 
 If another interface is already using port 8765, launch a separate preview:
@@ -355,23 +345,11 @@ per-image K is rejected explicitly. It runs on CPU using pycolmap 4.2.1 and expo
 the largest reconstructed model, recording the number of models and registration
 rate. No dense COLMAP reconstruction is attempted.
 
-Real VGGT inference has now run locally on Apple MPS for the sequential E1–E7
-study, including car, fountain, Temple and Dino. Use the isolated runtime setup in
-[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md): upstream VGGT requires NumPy below 2,
-while the UI environment uses NumPy 2. The pinned checkpoint and source revision,
-precision, memory adaptations and runtime are recorded. CUDA timing is not claimed.
-The optional `notebooks/vggt_colab.ipynb` supports Colab instead. Convert and evaluate:
-
-```bash
-python code/baselines/convert_to_common.py --vggt data/my_scene/vggt_out.npz --out outputs/my_scene_vggt
-python code/eval/run_eval.py --estimate outputs/my_scene_vggt --reference data/my_scene/gt_poses.json --reference-kind gt --out results/my_scene/vggt.json
-```
-
+The active comparison uses Our SfM and CPU COLMAP only. See
+[docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) for E1–E7 and M4/M5 commands.
 For self-captured scenes use COLMAP's `poses.json` with `--reference-kind colmap`;
-these metrics measure agreement with a pseudo-reference. Experiment workers record
-end-to-end runtime; VGGT separately records synchronized forward-pass time. Those
-two timing scopes must not be mixed. Do not compare its resized-image intrinsics
-to original-resolution pixels.
+these metrics measure agreement with a pseudo-reference. Workers record end-to-end
+method time, and mesh-only retries label the reused camera solve separately.
 
 ```bash
 python code/run_experiments.py --scene sample_data/scene_small --out results/ba --ablation ba
@@ -412,7 +390,7 @@ produce incomplete models even with low residual errors.
 
 - `code/sfm/`: geometric core and optimization.
 - `code/data/`: calibrated Middlebury download and original sample generation.
-- `code/baselines/`: CPU COLMAP and GPU VGGT adapters/conversion.
+- `code/baselines/`: CPU COLMAP baseline and common-format conversion.
 - `code/eval/`: alignment, metrics, evaluation, CSV/LaTeX generation.
 - `code/viz/`: headless PNG/orbit rendering.
 - `tests/`: synthetic mathematical tests and image-based reconstruction tests.
@@ -425,16 +403,14 @@ E1–E7 and mesh M4/M5 runs, measured outcomes and limitations are documented in
 [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md). E5 uses calibrated Temple
 as approved by the user; real car checkerboard calibration remains unavailable.
 The final IEEE report, narrated demo, contributor evidence and fresh submission
-packaging remain separate work. `AGENT_PIPELINE.md` is the original plan, not a
-completed-work log.
+packaging remain separate work. `AGENT_PIPELINE.md` is the active two-method plan, not a completed-work log.
 
 ## Third-party software and team
 
 We use library APIs; external implementations are not copied into the geometric
 core. Credit [OpenCV](https://opencv.org/), [SciPy](https://scipy.org/),
-[COLMAP](https://github.com/colmap/colmap), and
-[VGGT](https://github.com/facebookresearch/vggt). The VGGT code/checkpoint terms
-are documented in its [license](https://github.com/facebookresearch/vggt/blob/main/LICENSE.txt).
+[COLMAP](https://github.com/colmap/colmap), [Open3D](https://www.open3d.org/),
+and [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2).
 No weights are included. Actual Python package versions accompany run summaries.
 
 Repository contributors: Shouvik Das (23bcs125; Shouvik103) and
@@ -473,11 +449,8 @@ New scenes need `poses.json`, `points.ply`, input images, and ideally
 alpha is used automatically when no separate masks are specified. Paths in this
 manifest are relative to its folder. Alternatively pass `--scene outputs/my_scene
 --images data/my_scene/images`. Supported existing exports include our own SfM,
-common COLMAP exports (with radial undistortion on load), and raw VGGT NPZ files
-containing their own RGB, depth, confidence and poses. Old VGGT NPZ files without
-depth must be regenerated with the updated inference adapter. Actual VGGT MPS
-outputs are used by the M5 mesh study. An unregistered image never enters depth
-generation or fusion.
+common COLMAP exports (with radial undistortion on load). An unregistered image
+never enters depth generation or fusion.
 
 For new learned-depth predictions, the first run downloads the verified
 [Depth Anything V2 Small checkpoint](https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf),
@@ -494,8 +467,6 @@ weights stay in the external Hugging Face cache and are never packaged.
 python code/mesh/run_mesh.py --scene my_scene --out outputs/mesh_sgbm --config configs/mesh_sgbm.yaml
 # Thin-object ROI alternative; a wider box may also retain more background.
 python code/mesh/run_mesh.py --scene my_scene --out outputs/mesh_object --config configs/mesh_object.yaml
-# Optional VGGT depth: uses the NPZ's own cameras, never unrelated SfM poses.
-python code/mesh/run_mesh.py --scene data/vggt_out.npz --out outputs/mesh_vggt --backend vggt
 ```
 
 TSDF uses Open3D **0.19.0**: 0.20.0's scalable TSDF returned empty geometry even
@@ -561,7 +532,7 @@ environments and feature caches; it enforces <200 MB and <40 MB sample data.
 | [trimesh](https://trimesh.org/) | Color-preserving OBJ/GLB export and import; library API only. |
 | [scikit-image](https://scikit-image.org/docs/stable/api/skimage.metrics.html) | Held-out SSIM; library API only. |
 | Our additions | Adapters/convention gate, inverse-depth alignment, filtering/consistency, SGBM depth conversion, fusion orchestration, cleanup/export, evaluation, viewers/rendering, fixtures, experiments and packaging under `code/mesh/` and `code/viz/`. |
-| Existing files modified | `code/baselines/vggt_infer.py` adds raw depth/confidence export only. SfM reconstruction code is unchanged. Requirements, configs, README/NOTES and sample cache ignore exceptions are updated. |
+| Existing files modified | The mesh stage consumes common SfM/COLMAP exports. Requirements, configs, README/NOTES and sample cache ignore exceptions are updated. |
 
 To regenerate the integration media after rendering the logged scenes, run
 `python docs/build_mesh_demo.py`. To rebuild the PDF from mirrored results,

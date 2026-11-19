@@ -1,0 +1,160 @@
+{
+  "source_sha256": "1d957e7eae24446ae1fab3912cd32d34e61bdb6fc7b4e5a20d6339ad26e9107d",
+  "timestamp_utc": "2026-11-18T14:14:36.444330+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": true,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.7,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 10,
+  "points": 503,
+  "median_reprojection_px": 0.4895521941691696,
+  "elapsed_seconds": 8.562233874999947,
+  "total_images": 20,
+  "runtime_seconds": 8.600166457999876,
+  "init_pair": [
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182304.jpg"
+  ],
+  "image_names": [
+    "IMG_20261114_181828.jpg",
+    "IMG_20261114_181839.jpg",
+    "IMG_20261114_181857.jpg",
+    "IMG_20261114_181910.jpg",
+    "IMG_20261114_181941.jpg",
+    "IMG_20261114_182009.jpg",
+    "IMG_20261114_182042.jpg",
+    "IMG_20261114_182048.jpg",
+    "IMG_20261114_182054.jpg",
+    "IMG_20261114_182121.jpg",
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182220.jpg",
+    "IMG_20261114_182226.jpg",
+    "IMG_20261114_182230.jpg",
+    "IMG_20261114_182239.jpg",
+    "IMG_20261114_182247.jpg",
+    "IMG_20261114_182255.jpg",
+    "IMG_20261114_182300.jpg",
+    "IMG_20261114_182304.jpg",
+    "IMG_20261114_182325.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 167,
+      "median_reprojection_px": 0.21887917590747097,
+      "elapsed_seconds": 7.111995291999847
+    },
+    {
+      "registered": 3,
+      "points": 246,
+      "median_reprojection_px": 0.3391505713680628,
+      "elapsed_seconds": 7.165348792000259
+    },
+    {
+      "registered": 4,
+      "points": 296,
+      "median_reprojection_px": 0.4182913198597717,
+      "elapsed_seconds": 7.240259582999897
+    },
+    {
+      "registered": 5,
+      "points": 377,
+      "median_reprojection_px": 0.4300269768368667,
+      "elapsed_seconds": 7.519050625000091
+    },
+    {
+      "registered": 6,
+      "points": 408,
+      "median_reprojection_px": 0.4599294503879301,
+      "elapsed_seconds": 7.550152333000369
+    },
+    {
+      "registered": 7,
+      "points": 438,
+      "median_reprojection_px": 0.45724702000258854,
+      "elapsed_seconds": 7.63221670799976
+    },
+    {
+      "registered": 8,
+      "points": 472,
+      "median_reprojection_px": 0.4757123319034292,
+      "elapsed_seconds": 7.667965792000359
+    },
+    {
+      "registered": 9,
+      "points": 489,
+      "median_reprojection_px": 0.5013071566404163,
+      "elapsed_seconds": 7.704488125000353
+    },
+    {
+      "registered": 10,
+      "points": 506,
+      "median_reprojection_px": 0.5061776544200842,
+      "elapsed_seconds": 8.008804083000541
+    },
+    {
+      "registered": 10,
+      "points": 503,
+      "median_reprojection_px": 0.4895521941691696,
+      "elapsed_seconds": 8.562233874999947
+    }
+  ],
+  "mean_track_length": 2.7733598409542743
+}

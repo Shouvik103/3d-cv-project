@@ -493,3 +493,49 @@ preprocessing validation. Native COLMAP mixed-size camera extraction is tested
 in an isolated process. Mesh-only execution is verified without invoking SfM.
 New uploaded results open as point clouds initially and retain the user's chosen
 cloud / mesh mode while switching results; both remain available.
+
+## 19 November — active scope changed to Our SfM and COLMAP
+
+At the user's request, the learned multi-view baseline is retired from the active
+plan, executable reconstruction/depth adapters, experiment workers, requirements,
+setup helper and notebook. Workspace and research tabs now expose Our SfM,
+COLMAP and Compare both (two independent queued jobs). Both accept 3–200 photos;
+about 60 suitable views remain the recommendation. SGBM and optional Depth
+Anything V2 Small remain depth choices for the two classical camera methods.
+Torch is still required for that optional monocular stage.
+
+AGENT_PIPELINE.md retains the detailed mathematical / assignment plan with the
+scope revised; docs/ACTIVE_PIPELINE.md summarizes the implemented workflow.
+MESH_ADDON.md, README and experiment/interface documentation have been updated.
+Old method outputs and measured development evidence remain archived; they are
+not listed, opened or retried through active UI/API routes. User-deleted Chair,
+Mic, Temple and new Car runs were explicitly left excluded as requested.
+
+The active research collection is validation/experiments_20261119_classical.
+Its 52 classical conditions across E1–E7 and M4/M5 exactly equal the retained
+source rows, including failures and missing metrics. Reports and comparison
+plots were regenerated for two methods; this is not a new benchmark run.
+Source hashes and derivation scope are retained, and historical records were
+not overwritten. The submission packager includes only the active research
+collection alongside its existing mesh evidence, not the retired runtime.
+
+Quality work preceding the scope change is retained: full camera-frame quality
+inputs, explicit intrinsic-only lens priors, exhaustive matching, ranked/uniform
+batched eight-point verification, more thorough BA, affine/domain-size pooled
+COLMAP SIFT, distortion-aware common exports and per-view registration reports.
+The new calibrated Car COLMAP attempt registered 60/60 and fused 59 stereo maps.
+It still has background fringe; camera count is not a surface-accuracy score.
+The custom Car solve was interrupted during matching when the earlier turn
+stopped; it is not claimed as a completed improved reconstruction. A Chair
+camera solve completed 60/60 but its first JSON summary export failed on a native
+option set; serialization was corrected and the completed native export was
+recovered with explicitly recorded timing scope. The user then deleted that run.
+No deleted output was recreated afterward.
+
+Browser checks verified two method cards, Compare both / 200-photo guidance,
+classical-only performance and mesh tables, no console errors, preserved cloud /
+mesh switching and point-size adjustment. The saved Car cloud still shows
+115,000 / 2,232,430 real points and the mesh 80,000 triangles. Screenshot and
+verification are in validation/web_classical. Full regression results and the
+additional radial-camera adapter check are recorded there. Ports 8765 and 8766
+were restarted on the updated code with their existing separate data folders.

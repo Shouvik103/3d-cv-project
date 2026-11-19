@@ -116,7 +116,6 @@ with a **robust** fit (RANSAC on 2 points, then least squares on the inliers; or
 
 ### 3.6 Alternative back-ends (for ablation and as fallback)
 - **`sgbm` (classical, Unit I stereo):** for each image pick 2 neighbors with baseline about 5-15% of the scene depth; `cv2.stereoRectify` with our R, t, K; `cv2.StereoSGBM_create(numDisparities=128, blockSize=5, P1=8*3*25, P2=32*3*25, uniquenessRatio=10, speckleWindowSize=100, speckleRange=2, disp12MaxDiff=1, mode=STEREO_SGBM_MODE_SGBM_3WAY)`; reproject with `Q`; undo the rectification rotation; convert to the reference image's depth map and feed the same TSDF fusion. Needs no scale alignment because the baseline `T` already has SfM scale.
-- **`vggt` (only if VGGT outputs already exist):** use VGGT's own per-image depth and its own poses, filtered by confidence, through the same fusion code.
 - **COLMAP poses (only if a COLMAP result exists):** run the same `mono` back-end using COLMAP's poses and sparse points (convert them into `SceneData` through an adapter).
 
 ---
@@ -153,10 +152,10 @@ Always align geometry from different sources with a Sim(3) estimated from camera
 | Accuracy / completeness / F-score | sample about 200k points on each mesh (`sample_points_uniformly`), KD-tree distances, `F = 2PR/(P+R)` at τ = 1% of the GT bounding-box diagonal (also 0.5% and 2%). Crop the estimate to the GT bounding volume first | only where a GT mesh exists: Strecha fountain-P11 or Herz-Jesu-P8 provide a ground-truth triangle model and bounding volume on their download page |
 | Mesh statistics | vertices, faces, connected components, boundary edges, watertight yes/no, area, mean edge length | all scenes |
 | Held-out-view check | fuse without 2-3 held-out registered images, render the mesh from their poses with `RaycastingScene`, compare to the real photo on pixels the mesh hits: PSNR, SSIM (`skimage`), MAE, plus coverage | all scenes |
-| Cross-method agreement | Chamfer and F-score between meshes of different methods after alignment (agreement, not truth) | only if COLMAP or VGGT results exist |
+| Cross-method agreement | Chamfer and F-score between meshes of different methods after alignment (agreement, not truth) | only if COLMAP results exist |
 | Runtime and memory | depth inference, alignment, fusion, extraction, total | all |
 
-Honesty notes to put in the report: monocular-depth meshes inherit the network's smoothing and thickening; when comparing methods, ours vs. COLMAP share the same depth network and isolate pose/structure quality, while VGGT uses its own depth, so differences involving VGGT mix pose and depth-source effects; Middlebury does not distribute ground-truth geometry, so it supports qualitative meshes only; on self-captured scenes there is no ground truth.
+Honesty notes to put in the report: monocular-depth meshes inherit the network's smoothing and thickening; when comparing methods, ours vs. COLMAP share the same depth network and isolate pose/structure quality; Middlebury does not distribute ground-truth geometry, so it supports qualitative meshes only; on self-captured scenes there is no ground truth.
 
 ---
 
@@ -168,7 +167,7 @@ Honesty notes to put in the report: monocular-depth meshes inherit the network's
 | M2 | Held-out-view check (PSNR/SSIM/coverage) on S1 and the second scene | Should |
 | M3 | Back-end ablation: `mono` vs. `sgbm`; TSDF vs. Poisson; voxel size (extent/128, /256, /384); consistency filter on/off | Should |
 | M4 | Mesh on a ground-truth scene (fountain-P11): accuracy, completeness, F-score, error colormap | Should (needs the GT mesh files) |
-| M5 | Mesh from COLMAP poses and from VGGT depth with the same back-end, side-by-side comparison | Nice (only if those results already exist) |
+| M5 | Mesh from Our SfM and COLMAP poses with the same back-end, side-by-side comparison | Nice (only if those results already exist) |
 | M6 | Failure study: glossy or textureless region, too few views, thickened surfaces, background fusion, a wrong-scale image | **Must** (qualitative, a few numbers) |
 
 ---
@@ -295,7 +294,7 @@ def render(mesh, K, R, t, W, H, mode="colored"):
 Config `configs/mesh_default.yaml`:
 ```yaml
 seed: 0
-depth_backend: mono          # mono | sgbm | vggt
+depth_backend: mono          # mono | sgbm
 mono:
   model_id: depth-anything/Depth-Anything-V2-Small-hf   # verify id and license on the model card
   input_long_side: 768
@@ -352,7 +351,7 @@ heldout: {num_views: 3, seed: 0}
 | 4 | Wed 18 | Orbit video segments, report figures and text (Section 13), `sample_data` meshes and cached depth, README and requirements updates | mesh segment ready for the demo |
 | 5-7 | Thu 19 - Sat 21 | Integration into `demo.mp4`, final report, fresh-machine test, upload | submitted (do not rely on the 21st) |
 
-Humans must provide: the path to the existing SfM outputs and images and which scenes to mesh; confirmation of the convention if unclear; the GT mesh and bounding-volume files if fountain-P11 is used (download from the EPFL page: https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/denseMVS.html); any COLMAP or VGGT outputs that already exist; and the upload and portal tagging at the end.
+Humans must provide: the path to the existing SfM outputs and images and which scenes to mesh; confirmation of the convention if unclear; the GT mesh and bounding-volume files if fountain-P11 is used (download from the EPFL page: https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/denseMVS.html); any COLMAP outputs that already exist; and the upload and portal tagging at the end.
 
 ---
 
@@ -368,7 +367,7 @@ Humans must provide: the path to the existing SfM outputs and images and which s
 
 **References and credit:** cite Open3D, Depth Anything V2, trimesh, scikit-image and any dataset used.
 
-**Demo (about 30 s mesh segment):** colored mesh orbit, then shaded, then wireframe close-up, then side-by-side meshes if COLMAP/VGGT results exist, with the viewer screen recording if available. Render frames with `render_mesh.py` and assemble with `ffmpeg -framerate 30 -i frames/%05d.png -c:v libx264 -pix_fmt yuv420p -crf 23 mesh_segment.mp4`. Keep the final `demo.mp4` between 1 and 2 minutes and under about 25 MB.
+**Demo (about 30 s mesh segment):** colored mesh orbit, then shaded, then wireframe close-up, then side-by-side meshes if COLMAP results exist, with the viewer screen recording if available. Render frames with `render_mesh.py` and assemble with `ffmpeg -framerate 30 -i frames/%05d.png -c:v libx264 -pix_fmt yuv420p -crf 23 mesh_segment.mp4`. Keep the final `demo.mp4` between 1 and 2 minutes and under about 25 MB.
 
 ---
 

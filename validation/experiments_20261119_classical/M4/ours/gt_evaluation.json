@@ -1,0 +1,83 @@
+{
+  "accuracy_mean": 0.5309368859452379,
+  "completeness_mean": 1.6709214548110347,
+  "chamfer_mean": 1.1009291703781363,
+  "thresholds": {
+    "0.005": {
+      "threshold": 0.08282645436075964,
+      "precision": 0.07045,
+      "recall": 0.017095,
+      "f_score": 0.02751368439088469
+    },
+    "0.01": {
+      "threshold": 0.16565290872151928,
+      "precision": 0.145405,
+      "recall": 0.036695,
+      "f_score": 0.05860116941241076
+    },
+    "0.02": {
+      "threshold": 0.33130581744303855,
+      "precision": 0.32484,
+      "recall": 0.089445,
+      "f_score": 0.14026727397805858
+    }
+  },
+  "samples": 200000,
+  "seed": 0,
+  "kind": "gt",
+  "scene": "fountain-P11",
+  "method": "ours",
+  "gt_diagonal": 16.565290872151927,
+  "accuracy_percent_diagonal": 3.2051165901215843,
+  "completeness_percent_diagonal": 10.08688267357887,
+  "alignment": "Umeyama Sim(3) on shared predicted and supplied GT camera centers; no geometry ICP",
+  "transform": [
+    [
+      1.9928533627665588,
+      -0.09121371106930354,
+      -1.1196180967265774,
+      -12.3072337446934
+    ],
+    [
+      -1.1227832779535325,
+      -0.2327049525219701,
+      -1.9795290512933439,
+      -3.2878817810224117
+    ],
+    [
+      -0.03496189858401687,
+      2.27395198126068,
+      -0.24748576052510138,
+      -0.017207388809209884
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "crop": "GT mesh axis-aligned bounding box",
+  "full_before_crop": {
+    "vertices": 4610,
+    "faces": 8632,
+    "components": 1,
+    "boundary_edges": 604,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 8.126958791032939,
+    "mean_edge_length": 0.05004060138412115
+  },
+  "after_crop": {
+    "vertices": 4610,
+    "faces": 8632,
+    "components": 1,
+    "boundary_edges": 604,
+    "nonmanifold_edges": 0,
+    "watertight": false,
+    "surface_area": 42.53105033460378,
+    "mean_edge_length": 0.11447523548976327
+  },
+  "reference_sha256": "d791e656fb8538547f08a7df62b3d9e780fb9a91f9350044f99ad10c4d7c4853",
+  "evaluation": "200,000 independent area-uniform surface samples in each direction; not the official EPFL visibility-aware scorer"
+}

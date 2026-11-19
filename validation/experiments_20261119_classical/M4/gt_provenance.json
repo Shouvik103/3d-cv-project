@@ -1,0 +1,31 @@
+{
+  "source": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/modelFountain.html",
+  "use": "Research and evaluation; acknowledge Strecha et al., CVPR 2008. Raw GT not redistributed in Git.",
+  "assets": [
+    {
+      "url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/fountain.ply.bz2",
+      "file": "fountain.ply.bz2",
+      "sha256": "ce0bd024e23fcc6cf67a181411f87f1de419f666f89af49ad0f65bdc4f188703",
+      "bytes": 257715050
+    },
+    {
+      "url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/data/fountain_dense/urd/fountain_dense_cameras.tar.gz",
+      "file": "fountain_dense_cameras.tar.gz",
+      "sha256": "6d4724b6868832289844149f1a519c23e8504e0cce9beb3356c73273e5217fc5",
+      "bytes": 1097
+    },
+    {
+      "url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/data/fountain_dense/urd/fountain_dense_p.tar.gz",
+      "file": "fountain_dense_p.tar.gz",
+      "sha256": "629ea77156cd29126ca064f8ee92fec49020404c955d6fe57f9dfae6468ec5bb",
+      "bytes": 1044
+    },
+    {
+      "url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/data/fountain_dense/urd/fountain_dense_bounding.tar.gz",
+      "file": "fountain_dense_bounding.tar.gz",
+      "sha256": "8668e4c652cf45147119cfff35bf5ecd023b4847ebbbfb6c895e2a4b2fd11d92",
+      "bytes": 572
+    }
+  ],
+  "mesh_sha256": "d791e656fb8538547f08a7df62b3d9e780fb9a91f9350044f99ad10c4d7c4853"
+}

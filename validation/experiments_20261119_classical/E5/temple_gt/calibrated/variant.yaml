@@ -1,0 +1,40 @@
+seed: 0
+image:
+  max_side: 1600
+features:
+  detector: sift
+  n_features: 4000
+  rootsift: true
+  contrast_threshold: 0.01
+matching:
+  ratio: 0.85
+  mutual: true
+  min_inliers: 20
+  ransac_thresh_px: 1.5
+  ransac_iters: 2000
+  ransac_conf: 0.999
+init:
+  top_k_pairs: 20
+  max_hf_ratio: 0.7
+  min_median_angle_deg: 2.0
+triangulation:
+  max_reproj_px: 3.0
+  min_angle_deg: 1.0
+registration:
+  pnp_reproj_px: 6.0
+  pnp_iters: 2000
+  min_inliers: 15
+ba:
+  mode: local_global
+  local_neighbors: 5
+  max_nfev_local: 30
+  global_every: 5
+  max_points_global: 5000
+  max_nfev: 80
+  loss: huber
+  f_scale: 1.0
+  refine_focal: false
+filter:
+  final_reproj_px: 3.0
+export:
+  save_growth_snapshots: true

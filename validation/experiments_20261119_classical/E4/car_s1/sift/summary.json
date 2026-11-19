@@ -1,0 +1,160 @@
+{
+  "source_sha256": "0f28f294cca8192e638c663fe2d4758dacf4ff4d20a4776870973678129a46b8",
+  "timestamp_utc": "2026-11-18T14:05:24.777163+00:00",
+  "git_commit": "e9920d90c4f8314ae2574fd117bb2f1d2895b42a",
+  "python": "3.11.15",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "opencv-python": "4.14.0.94",
+    "PyYAML": "6.0.3",
+    "Pillow": "12.3.0",
+    "pycolmap": "4.2.1"
+  },
+  "config": {
+    "seed": 0,
+    "image": {
+      "max_side": 1600
+    },
+    "features": {
+      "detector": "sift",
+      "n_features": 4000,
+      "rootsift": false,
+      "contrast_threshold": 0.01
+    },
+    "matching": {
+      "ratio": 0.85,
+      "mutual": true,
+      "min_inliers": 20,
+      "ransac_thresh_px": 1.5,
+      "ransac_iters": 2000,
+      "ransac_conf": 0.999
+    },
+    "init": {
+      "top_k_pairs": 20,
+      "max_hf_ratio": 0.7,
+      "min_median_angle_deg": 2.0
+    },
+    "triangulation": {
+      "max_reproj_px": 3.0,
+      "min_angle_deg": 1.0
+    },
+    "registration": {
+      "pnp_reproj_px": 6.0,
+      "pnp_iters": 2000,
+      "min_inliers": 15
+    },
+    "ba": {
+      "mode": "local_global",
+      "local_neighbors": 5,
+      "max_nfev_local": 30,
+      "global_every": 5,
+      "max_points_global": 5000,
+      "max_nfev": 80,
+      "loss": "huber",
+      "f_scale": 1.0
+    },
+    "filter": {
+      "final_reproj_px": 3.0
+    },
+    "export": {
+      "save_growth_snapshots": true
+    }
+  },
+  "registered": 10,
+  "points": 350,
+  "median_reprojection_px": 0.6324820979851196,
+  "elapsed_seconds": 35.79540083300026,
+  "total_images": 20,
+  "runtime_seconds": 35.82974104200002,
+  "init_pair": [
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182239.jpg"
+  ],
+  "image_names": [
+    "IMG_20261114_181828.jpg",
+    "IMG_20261114_181839.jpg",
+    "IMG_20261114_181857.jpg",
+    "IMG_20261114_181910.jpg",
+    "IMG_20261114_181941.jpg",
+    "IMG_20261114_182009.jpg",
+    "IMG_20261114_182042.jpg",
+    "IMG_20261114_182048.jpg",
+    "IMG_20261114_182054.jpg",
+    "IMG_20261114_182121.jpg",
+    "IMG_20261114_182205.jpg",
+    "IMG_20261114_182220.jpg",
+    "IMG_20261114_182226.jpg",
+    "IMG_20261114_182230.jpg",
+    "IMG_20261114_182239.jpg",
+    "IMG_20261114_182247.jpg",
+    "IMG_20261114_182255.jpg",
+    "IMG_20261114_182300.jpg",
+    "IMG_20261114_182304.jpg",
+    "IMG_20261114_182325.jpg"
+  ],
+  "history": [
+    {
+      "registered": 2,
+      "points": 42,
+      "median_reprojection_px": 1.2409267561587591,
+      "elapsed_seconds": 34.66914833300007
+    },
+    {
+      "registered": 3,
+      "points": 110,
+      "median_reprojection_px": 1.115056064485144,
+      "elapsed_seconds": 34.69299333300023
+    },
+    {
+      "registered": 4,
+      "points": 197,
+      "median_reprojection_px": 0.7570745900626134,
+      "elapsed_seconds": 34.72198900000012
+    },
+    {
+      "registered": 5,
+      "points": 218,
+      "median_reprojection_px": 0.6697679170418347,
+      "elapsed_seconds": 34.90149304200031
+    },
+    {
+      "registered": 6,
+      "points": 255,
+      "median_reprojection_px": 0.720194245742394,
+      "elapsed_seconds": 34.94175195800017
+    },
+    {
+      "registered": 7,
+      "points": 293,
+      "median_reprojection_px": 0.7647911879871909,
+      "elapsed_seconds": 34.98554270800014
+    },
+    {
+      "registered": 8,
+      "points": 314,
+      "median_reprojection_px": 0.7680113498482162,
+      "elapsed_seconds": 35.0316538750003
+    },
+    {
+      "registered": 9,
+      "points": 346,
+      "median_reprojection_px": 0.7859606926513862,
+      "elapsed_seconds": 35.0782629170003
+    },
+    {
+      "registered": 10,
+      "points": 353,
+      "median_reprojection_px": 0.6834557933079934,
+      "elapsed_seconds": 35.33664775000034
+    },
+    {
+      "registered": 10,
+      "points": 350,
+      "median_reprojection_px": 0.6324820979851196,
+      "elapsed_seconds": 35.79540083300026
+    }
+  ],
+  "mean_track_length": 2.4
+}

@@ -1,8 +1,8 @@
 /* Read-only research views. Charts consume saved measurements, never demo numbers. */
 (() => {
   const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
-  const names={ours:'Our SfM',colmap:'COLMAP',vggt:'VGGT',car_s1:'Car',fountain_s2:'Fountain',temple_gt:'Temple',low_texture_dino:'Low-texture Dino',glossy_car:'Glossy car',sparse_car_5:'Sparse car · 5 views',blurred_temple:'Blurred Temple'};
-  const colors={ours:'#247b69',colmap:'#bc842e',vggt:'#7582d5'};
+  const names={ours:'Our SfM',colmap:'COLMAP',car_s1:'Car',fountain_s2:'Fountain',temple_gt:'Temple',low_texture_dino:'Low-texture Dino',glossy_car:'Glossy car',sparse_car_5:'Sparse car · 5 views',blurred_temple:'Blurred Temple'};
+  const colors={ours:'#247b69',colmap:'#bc842e'};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const finite=v=>v!==null&&v!==undefined&&typeof v==='number'&&Number.isFinite(v);
   const num=(v,d=3)=>finite(v)?v.toLocaleString(undefined,{maximumFractionDigits:d}):'—';
@@ -71,7 +71,7 @@
     host.querySelectorAll('[data-tip]').forEach(mark=>{['pointerenter','focus'].forEach(event=>mark.addEventListener(event,()=>reading.textContent=mark.dataset.tip));});
     card.append(host,reading);return card;
   }
-  const headings={inference_partially_reused:'VGGT windows reused',pipeline_seconds:'Camera + mesh (s)',geometry_reused:'Saved cameras reused',inference_mode:'Processing mode',scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',triangles:'Mesh triangles',reprojection_statistic:'Residual statistic',depth_backend:'Depth backend',prior_attempts:'Prior attempts',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
+  const headings={pipeline_seconds:'Camera + mesh (s)',geometry_reused:'Saved cameras reused',inference_mode:'Processing mode',scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',triangles:'Mesh triangles',reprojection_statistic:'Residual statistic',depth_backend:'Depth backend',prior_attempts:'Prior attempts',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
   function table(host,rows,columns=null){
     host.replaceChildren();if(!rows.length){host.textContent='No recorded rows for this selection.';return;}
     columns=columns||Object.keys(headings).filter(key=>rows.some(r=>key in r));
@@ -95,7 +95,7 @@
   }
   function csv(id,selector){const a=asset(id,'results.csv'),button=$(selector);if(a){button.href=a.url+'?download=1';button.hidden=false;}else button.hidden=true;}
   function metricCharts(host,rows,line=false){host.replaceChildren(
-    chart('Cameras reconstructed / predicted (%) ↑',rows,'registration',{max:100,unit:'%',line,value:r=>finite(r.registered)&&r.total?r.registered/r.total*100:null,note:'Read registration with pose accuracy; VGGT cameras are predictions.'}),
+    chart('Cameras registered (%) ↑',rows,'registration',{max:100,unit:'%',line,value:r=>finite(r.registered)&&r.total?r.registered/r.total*100:null,note:'Read registration together with pose accuracy.'}),
     chart('Aligned camera ATE (% trajectory extent) ↓',rows,'ate_percent_extent',{unit:'%',line,note:'Only shared cameras; undefined Sim(3) alignment stays unavailable.'}),
     chart('Relative-pose AUC@5 ↑',rows,'auc5',{max:1,line,note:'Range 0–1. Missing camera pairs count as failures.'}),
     chart('End-to-end method time (seconds)',rows,'seconds',{unit:'s',line,note:'Includes loading and export. Available caches and hardware differ.'})
@@ -118,7 +118,7 @@
     $('#mesh-charts').replaceChildren(chart('Surface accuracy (% GT diagonal) ↓',rows,'accuracy_percent_diagonal',{unit:'%'}),chart('Surface completeness (% GT diagonal) ↓',rows,'completeness_percent_diagonal',{unit:'%'}),chart('F-score at 1% of GT diagonal ↑',rows,'f01',{max:1}),chart('Fusion-held-out render coverage (%)',rows,'coverage',{max:100,unit:'%',value:r=>finite(r.coverage)?100*r.coverage:null,note:'Not an unseen-image test. Read beside masked PSNR and SSIM.'}));
     table($('#mesh-table'),rows,['method','status','fused_views','faces','accuracy_percent_diagonal','completeness_percent_diagonal','f005','f01','f02','coverage','psnr_db','ssim','seconds']);
     $('#mesh-comparison').src=asset('M5','side_by_side.png')?.url||'';
-    fillLinks($('#mesh-links'),[['ours','M4'],['colmap','M5'],['vggt','M5']].map(([m,s])=>{const a=asset(s,`${m}/interactive_mesh.html`);return a&&link(label(m)+' · interactive mesh ↗',a.url);}).concat([asset('M5','results.csv')&&link('Mesh measurements CSV ↓',asset('M5','results.csv').url,true)]));
+    fillLinks($('#mesh-links'),[['ours','M4'],['colmap','M5']].map(([m,s])=>{const a=asset(s,`${m}/interactive_mesh.html`);return a&&link(label(m)+' · interactive mesh ↗',a.url);}).concat([asset('M5','results.csv')&&link('Mesh measurements CSV ↓',asset('M5','results.csv').url,true)]));
   }
   function archive(id){
     const selected=stage(id);if(!selected)return;experiment=id;
@@ -146,7 +146,7 @@
       for(const [key,heading] of [['outputs','Outputs'],['calibration','Camera calibration'],['mesh','Dense reconstruction'],['limits','Limits'],['license','License']]){const h=document.createElement('h4'),p=document.createElement('p');h.textContent=heading;p.textContent=method[key];details.append(h,p);}
       details.append(link('Source & documentation ↗',method.source));card.append(pill,title,device,description,steps,details);return card;
     }));
-    const runtime=data.vggt||{},facts=[['Classical runtime','CPU · pycolmap 4.2.1'],['Learned runtime',runtime.device?.toUpperCase()||'Not recorded'],['VGGT preprocessing',runtime.preprocessing||'Not recorded'],['VGGT precision',runtime.precision||'Not recorded'],['Model revision',runtime.model_revision?.slice(0,12)||'Not recorded'],['Recorded validation',data.verification?.tests?.passed?data.verification.tests.passed+' tests passed':'Not recorded']];
+    const facts=[['Reconstruction methods','Our SfM + COLMAP'],['Camera computation','CPU'],['Dense reconstruction','SGBM / monocular + TSDF'],['Recorded validation',data.verification?.tests?.passed?data.verification.tests.passed+' tests passed':'Not recorded']];
     $('#runtime-facts').replaceChildren(...facts.map(([heading,value])=>{const div=document.createElement('div'),dt=document.createElement('span'),dd=document.createElement('strong');dt.textContent=heading;dd.textContent=value;div.append(dt,dd);return div;}));
   }
   async function loadResearch(){
@@ -155,7 +155,7 @@
       const guide=$('#metric-glossary');guide.replaceChildren();data.glossary.forEach(([term,meaning])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=term;dd.textContent=meaning;guide.append(dt,dd);});
       if(!data.available)throw Error('Saved experiment evidence is not installed on this copy. Uploads and the 3D workspace are available; add validation/experiments_* to view the recorded research.');
       $('#benchmark-date').textContent='Recorded · '+data.date;
-      const count=data.experiments.reduce((sum,e)=>sum+e.rows.length,0),summary=[['03','Methods compared'],[String(data.experiments.length).padStart(2,'0'),'Experiment studies'],[String(count),'Recorded conditions¹'],['GT + agreement','Reference types']];
+      const count=data.experiments.reduce((sum,e)=>sum+e.rows.length,0),summary=[[String(data.methods.length).padStart(2,'0'),'Methods compared'],[String(data.experiments.length).padStart(2,'0'),'Experiment studies'],[String(count),'Recorded conditions¹'],['GT + agreement','Reference types']];
       $('#benchmark-summary').replaceChildren(...summary.map(([value,text])=>{const div=document.createElement('div'),n=document.createElement('strong'),p=document.createElement('span');n.textContent=value;p.textContent=text;div.append(n,p);return div;}));
       const note=document.createElement('p');note.className='summary-footnote';note.textContent='¹ Includes reused conditions and failed attempts; method failures are retained.';$('#benchmark-summary').after(note);
       $('#benchmark-notes').replaceChildren(...data.notes.map(text=>{const li=document.createElement('li');li.textContent=text;return li;}));
@@ -170,7 +170,7 @@
     const groups=window.reconstructionWorkbench?.comparisons||[],select=$('#upload-comparison'),previous=select.value;
     const ids=groups.map(g=>g.id).join(',');
     if(select.dataset.ids!==ids){select.replaceChildren(...groups.map(g=>new Option(`${g.name} · ${g.children.length} method runs`,g.id)));select.dataset.ids=ids;if(groups.some(g=>g.id===previous))select.value=previous;}
-    if(!groups.length){$('#upload-comparison-note').textContent='Choose All three in Workspace to reconstruct the same images with all methods.';return;}
+    if(!groups.length){$('#upload-comparison-note').textContent='Choose Compare both in Workspace to reconstruct the same images with both methods.';return;}
     const group=groups.find(g=>g.id===select.value);if(!group)return;
     const signature=JSON.stringify([group.id,group.children.map(j=>[j.id,j.status,j.progress,j.metrics])]);
     if(signature===comparisonSignature&&!force)return;comparisonSignature=signature;const request=++comparisonRequest;
@@ -179,12 +179,12 @@
       $('#upload-comparison-note').textContent=report.scope+' '+report.reference_scope+' '+report.timing_scope+(report.missing_children?' Some method runs have been deleted.':'');
       $('#upload-method-runs').replaceChildren(...report.rows.map(row=>{const card=document.createElement('article');card.className='panel lab-card method-card';card.dataset.method=row.method;const title=document.createElement('h3'),status=document.createElement('p'),button=document.createElement('button');title.textContent=label(row.method);status.textContent=`${row.status} · ${num(row.progress,1)}% · ${num(row.registered,0)}/${row.total} cameras`;button.type='button';button.className='secondary';button.textContent=row.cloud_url||row.mesh_url?'Open interactive result ↗':'Open run / log ↗';button.addEventListener('click',()=>{window.openReconstruction(row.id);showPage('workspace');});if(row.mesh_url){const img=document.createElement('img');img.className='result-thumb';img.src=`/api/jobs/${row.id}/preview`;img.alt=label(row.method)+' mesh, fitted independently';img.loading='lazy';card.append(img);}card.append(title,status,button);if(row.error){const p=document.createElement('p');p.textContent=row.error;card.append(p);}return card;}));
       $('#upload-comparison-charts').replaceChildren(
-        chart('Registered / predicted cameras (%) ↑',report.rows,'registered',{unit:'%',max:100,value:r=>finite(r.registered)?100*r.registered/r.total:null}),
+        chart('Registered cameras (%) ↑',report.rows,'registered',{unit:'%',max:100,value:r=>finite(r.registered)?100*r.registered/r.total:null}),
         chart('Camera solve + current mesh time (seconds)',report.rows,'pipeline_seconds',{unit:'s',note:'Original camera solve plus current mesh stage. Mesh-only rebuilds reuse cameras; preparation and browser export are excluded.'}),
         chart('Camera ATE (%) · COLMAP agreement, not GT',report.rows,'ate_percent_extent',{unit:'%',note:'COLMAP is the reference. Undefined alignment stays unavailable.'}),
         chart('Generated mesh triangles',report.rows,'triangles',{note:'Different depth sources and incomplete surfaces affect this count.'})
       );
-      table($('#upload-comparison-table'),report.rows,['method','status','registered','points','triangles','depth_backend','inference_mode','reprojection_px','reprojection_statistic','ate_percent_extent','auc5','pipeline_seconds','seconds','geometry_reused','inference_partially_reused','peak_rss_mb','prior_attempts','error']);
+      table($('#upload-comparison-table'),report.rows,['method','status','registered','points','triangles','depth_backend','inference_mode','reprojection_px','reprojection_statistic','ate_percent_extent','auc5','pipeline_seconds','seconds','geometry_reused','peak_rss_mb','prior_attempts','error']);
       fillLinks($('#upload-comparison-downloads'),['json','csv','png'].map(ext=>link(ext.toUpperCase()+' comparison ↓',`/api/comparisons/${group.id}/files/comparison.${ext}`,true)));
     }catch(error){if(request===comparisonRequest){$('#upload-comparison-note').textContent=error.message;comparisonSignature='';}}
   }
@@ -200,12 +200,12 @@
     const host=$('#analysis-content');host.textContent='Loading recorded run measurements…';
     try{
       const response=await fetch(`/api/${selected.type==='job'?'jobs':'examples'}/${selected.id}/analysis`);if(!response.ok)throw Error('Details are not available yet.');const result=await response.json();if(request!==analysisRequest)return;
-      host.replaceChildren();const scope=document.createElement('p');scope.className='scope-note';scope.textContent=`${result.method}${result.mesh_backend?' + '+(result.mesh_backend==='vggt'?'native depth':result.mesh_backend.toUpperCase())+' / TSDF':''} · ${result.reference}${result.prior_attempts?' '+result.prior_attempts+' previous attempt(s) retained locally.':''}`;host.append(scope);
+      host.replaceChildren();const scope=document.createElement('p');scope.className='scope-note';scope.textContent=`${result.method}${result.mesh_backend?' + '+result.mesh_backend.toUpperCase()+' / TSDF':''} · ${result.reference}${result.prior_attempts?' '+result.prior_attempts+' previous attempt(s) retained locally.':''}`;host.append(scope);
       const sfm=result.reconstruction||{},mesh=result.mesh||{},stats=mesh.full||{},median=finite(sfm.median_reprojection_px),residual=median?sfm.median_reprojection_px:sfm.mean_reprojection_px;
       const facts=[['Reprojection · '+(median?'median':'mean'),finite(residual)?num(residual)+' px':null],['Mean track length',sfm.mean_track_length],['SfM time',finite(sfm.runtime_seconds)?num(sfm.runtime_seconds,1)+' s':null],['Mesh time',finite(mesh.timing_seconds?.total)?num(mesh.timing_seconds.total,1)+' s':null],['Mesh components',stats.components],['Boundary edges',stats.boundary_edges],['Watertight',stats.watertight===true?'Yes':stats.watertight===false?'No':null],['Total time',finite(result.elapsed_seconds)?num(result.elapsed_seconds,1)+' s':null]];
-      const vggt=sfm.vggt;if(vggt){const windows=vggt.windows||[],peaks=windows.map(w=>w.metadata?.sampled_mps_peak?.driver_bytes).filter(finite);facts.push(['VGGT processing',vggt.mode||'Joint inference'],['Preprocessing',vggt.preprocessing_mode||'crop'],['Largest joint batch',vggt.max_joint_views||sfm.total_images],['VGGT windows',windows.length||1],['Peak GPU driver',peaks.length?num(Math.max(...peaks)/1e9,2)+' GB':vggt.sampled_mps_peak?num(vggt.sampled_mps_peak.driver_bytes/1e9,2)+' GB':null]);}
+      if(result.settings?.camera_prior){const note=document.createElement('p');note.className='scope-note';note.textContent='Lens prior: '+result.settings.camera_prior.source+'. Intrinsics only; previous poses and geometry are not used.';host.append(note);}
+      if(result.diagnostics?.explanation){const note=document.createElement('p');note.className='scope-note';note.textContent=result.diagnostics.explanation;host.append(note);}
       const grid=document.createElement('div');grid.className='fact-grid';facts.forEach(([key,value])=>{const div=document.createElement('div'),span=document.createElement('span'),strong=document.createElement('strong');span.textContent=key;strong.textContent=value==null?'—':String(value);div.append(span,strong);grid.append(div);});host.append(grid);
-      if(vggt?.windows?.some(w=>w.alignment)){const rows=vggt.windows.filter(w=>w.alignment).map((w,i)=>({method:'vggt',variant:'Window '+(i+2),rotation:w.alignment.median_rotation_degrees}));host.append(chart('Shared-camera alignment · median rotation (degrees)',rows,'rotation',{unit:'°',note:'Internal window agreement after alignment to the global overview; not ground-truth pose accuracy.'}));}
       if(result.history?.length){const indices=[...new Set(Array.from({length:Math.min(12,result.history.length)},(_,i)=>Math.round(i*(result.history.length-1)/Math.max(1,Math.min(12,result.history.length)-1))))];const rows=indices.map(i=>({...result.history[i],method:'ours',variant:'Step '+(i+1)}));host.append(chart('Reconstruction growth · registered cameras',rows,'registered',{note:'Up to 12 recorded snapshots shown; all snapshots remain in raw measurements.'}));}
       if(mesh.timing_seconds){const rows=Object.entries(mesh.timing_seconds).filter(([key])=>key!=='total').map(([variant,seconds])=>({method:'ours',variant,seconds}));host.append(chart('Mesh stage timings (seconds)',rows,'seconds',{unit:'s'}));}
       const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent='Configuration, versions & raw measurements';pre.textContent=JSON.stringify(result,null,2);details.append(summary,pre);host.append(details);
