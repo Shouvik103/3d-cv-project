@@ -8,12 +8,12 @@ def package(out,report,demo):
     out=Path(out);report=Path(report);demo=Path(demo)
     if not report.is_file() or not demo.is_file():raise ValueError('Provide an existing PDF report and MP4 demo')
     entries=[]
-    for directory in ['code','configs','tests','sample_data','docs','notebooks','validation/mesh']:
+    for directory in ['code','configs','tests','sample_data','docs','notebooks','validation/mesh','validation/experiments_20261119_classical']:
         for p in (ROOT/directory).rglob('*'):
             if not p.is_file() or p.name.startswith('.') or '__pycache__' in p.parts:continue
             if 'cache' in p.parts and 'depth_mono' not in p.parts:continue
             entries.append((p,p.relative_to(ROOT).as_posix()))
-    for name in ['README.md','requirements.txt','requirements-colmap.txt','requirements-report.txt','NOTES.md','TEAM_CONTRIBUTIONS.md','MESH_ADDON.md']:
+    for name in ['README.md','requirements.txt','requirements-colmap.txt','requirements-report.txt','NOTES.md','TEAM_CONTRIBUTIONS.md','AGENT_PIPELINE.md','MESH_ADDON.md']:
         if (ROOT/name).is_file():entries.append((ROOT/name,name))
     entries.extend([(report,'report.pdf'),(demo,'demo.mp4')])
     sample_bytes=sum(p.stat().st_size for p,n in entries if n.startswith('sample_data/'))

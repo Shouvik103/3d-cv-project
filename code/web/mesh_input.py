@@ -30,8 +30,13 @@ def upload_masks(job,images,target):
 def prepare_mesh_scene(job, long_side):
     job = Path(job)
     target = job / 'mesh_input'
-    prepare(job / 'uploads', target / 'images', long_side)
-    if (job/'foreground.json').exists():
+    metadata=json.loads((job/'job.json').read_text()) if (job/'job.json').exists() else {}
+    quality_mode=metadata.get('quality_profile')=='quality'
+    if quality_mode:
+        from web.quality_input import prepare_quality_input
+        prepare_quality_input(job,long_side,target=target,record=False)
+    else:prepare(job / 'uploads', target / 'images', long_side)
+    if (job/'foreground.json').exists() and not quality_mode:
         # Spend the depth-pixel budget on the object, using precisely the same
         # original crop as matching. K and observations are scaled below.
         crops={row['image']:row['crop_original'] for row in json.loads((job/'foreground.json').read_text())}
@@ -71,8 +76,8 @@ def prepare_mesh_scene(job, long_side):
     (reconstruction / 'observations.json').write_text(json.dumps(observations))
     shutil.copyfile(source / 'points.ply', reconstruction / 'points.ply')
     (target / 'intrinsics.yaml').write_text(yaml.safe_dump(dict(images=records)))
-    masks=upload_masks(job,target/'images',target/'masks')
-    if (job/'foreground.json').exists():
+    masks=target/'masks' if quality_mode else upload_masks(job,target/'images',target/'masks')
+    if (job/'foreground.json').exists() and not quality_mode:
         masks=target/'masks';masks.mkdir(exist_ok=True)
         for name in poses['image_names']:
             with Image.open(job/'input_masks'/(name+'.png')) as mask,Image.open(target/'images'/name) as photo:

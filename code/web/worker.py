@@ -65,10 +65,16 @@ def run_job(job):
         state(stage, message, round(value,1), progress_units=dict(phase=phase,done=done,total=total))
 
     try:
-        object_quality=metadata.get('quality_profile')=='object'
+        object_quality=metadata.get('quality_profile') in ('object','quality')
+        maximum_quality=metadata.get('quality_profile')=='quality'
         reuse_geometry=bool(metadata.get('reuse_geometry',False))
         masks=job/'input_masks' if (job/'input_masks').exists() else None
-        if not reuse_geometry:
+        if maximum_quality and not reuse_geometry:
+            from web.quality_input import prepare_quality_input
+            state('preparing','Preparing full-resolution quality inputs and intrinsic calibration',5)
+            masks=prepare_quality_input(job,metadata['max_side'])
+            artifacts.update(foreground_report='foreground.json',camera_prior='camera_prior.json')
+        elif not reuse_geometry:
             state('preparing', 'Preparing images and camera intrinsics', 5)
             prepare(job / 'uploads', job / 'input/images', metadata['max_side'])
             masks=upload_masks(job,job/'input/images',job/'input_masks')
@@ -105,9 +111,7 @@ def run_job(job):
             logging.info('Reusing saved reconstruction; no camera or model inference in this attempt')
             warnings.append('Saved cameras reused. This attempt rebuilds the mesh; camera-solve measurements belong to the original reconstruction.')
             if (job/'foreground.json').exists():artifacts['foreground_report']='foreground.json'
-            if method=='vggt':
-                artifacts.update(raw_predictions='reconstruction/raw.npz',vggt_metadata='reconstruction/raw.json')
-                warnings.append('Reusing VGGT predictions and their original processing mode; no new model inference.')
+            if (job/'camera_prior.json').exists():artifacts['camera_prior']='camera_prior.json'
         elif method=='ours':
             cfg = yaml.safe_load((ROOT / 'configs/sfm_relaxed.yaml').read_text())
             cfg['export']['save_growth_snapshots'] = False
@@ -122,55 +126,36 @@ def run_job(job):
                 cfg['init']['max_hf_ratio']=.9
                 cfg['ba'].update(max_points_global=2500,max_nfev=40,max_nfev_local=20,global_every=10)
                 cfg['ba']['refine_focal']=not bool(metadata.get('camera_matrix') or metadata.get('focal_px'))
+            if maximum_quality:
+                cfg['quality_feature_masks']=True
+                cfg['matching'].update(bounded_pairs=False,quality_verification=True,ransac_iters=4000)
+                cfg['features']['n_features']=12000
+                cfg['features']['contrast_threshold']=.004
+                cfg['ba'].update(max_points_global=8000,max_nfev=120,max_nfev_local=40,global_every=10)
+                cfg['ba']['refine_focal']=not bool((metadata.get('camera_prior') or {}).get('fixed',False) or metadata.get('camera_matrix') or metadata.get('focal_px'))
             run_sfm(job / 'input/images', job / 'reconstruction', cfg, progress=work_progress)
         elif method=='colmap':
             command=[sys.executable,str(ROOT/'code/web/colmap_job.py'),'--images',str(job/'input/images'),'--out',str(job/'reconstruction')]
             if object_quality:command+=['--object-quality']
+            if maximum_quality:command+=['--maximum-quality']
             process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,env=dict(os.environ,PYTHONUNBUFFERED='1'))
             for line in process.stdout:
                 logging.info('%s',line.rstrip())
                 if line.startswith('WEB_PROGRESS '):work_progress(*json.loads(line.removeprefix('WEB_PROGRESS ')))
             if process.wait()!=0:raise RuntimeError('COLMAP failed; inspect the method run log.')
-        elif method=='vggt':
-            python=ROOT/'outputs/vggt_env/bin/python'
-            if not python.exists():raise RuntimeError('VGGT runtime is not installed. Run .venv/bin/python code/experiments/setup_vggt.py first.')
-            command=[str(python),str(ROOT/'code/web/vggt_job.py'),'--images',str(job/'input/images'),'--out',str(job/'reconstruction')]
-            command+=['--preprocess-mode','pad' if object_quality else 'crop']
-            if masks:command+=['--masks',str(masks)]
-            if metadata.get('vggt_cached_windows'):command+=['--cached-windows',metadata['vggt_cached_windows']]
-            process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,
-                                     env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
-            window_index,window_count=0,1
-            for line in process.stdout:
-                logging.info('%s',line.rstrip())
-                if 'VGGT window ' in line:
-                    import re
-                    found=re.search(r'VGGT window (\d+)/(\d+)',line)
-                    if found:window_index,window_count=int(found[1])-1,int(found[2])
-                    if 'aligning cached predictions' in line:state('reconstructing',f'VGGT: aligning cached window {window_index+1}/{window_count}',round(15+35*(window_index+.7)/window_count,1))
-                if 'aggregator: input shape' in line:state('reconstructing',f'VGGT: aggregating window {window_index+1}/{window_count}',round(15+35*(window_index+.2)/window_count,1))
-                elif 'prediction heads (' in line:state('reconstructing',f'VGGT: predicting window {window_index+1}/{window_count}',round(15+35*(window_index+.7)/window_count,1))
-            if process.wait()!=0:raise RuntimeError('VGGT inference failed; inspect the run log for the model/runtime error.')
-            artifacts.update(raw_predictions='reconstruction/raw.npz',vggt_metadata='reconstruction/raw.json')
-            warnings.append('VGGT cameras are predictions, not feature-verified registrations. The point export is confidence-filtered and capped at 1 million; raw dense arrays are available.')
-            if len(metadata['uploads'])>16:
-                warnings.append('VGGT uses overlapping batches of at most 16 views with checked shared-camera Sim(3) alignment. This bounds memory but can introduce stitching seams; it is not one joint 60-view prediction.')
-                metrics['inference_mode']='Overlapping 16-view batches'
         else:raise ValueError('Unknown reconstruction method')
         summary = json.loads((job / 'reconstruction/summary.json').read_text())
         metrics.update(images=summary['total_images'], registered=summary['registered'],
                        sparse_points=summary['points'], reprojection_px=summary.get('median_reprojection_px',summary.get('mean_reprojection_px')),
                        reprojection_statistic='median' if 'median_reprojection_px' in summary else ('mean' if 'mean_reprojection_px' in summary else None),
                        reconstruction_seconds=0 if reuse_geometry else summary.get('runtime_seconds'),geometry_reused=reuse_geometry,original_reconstruction_seconds=summary.get('runtime_seconds'))
-        if method=='vggt':
-            metrics['dense_points']=summary['points']
-            if summary.get('vggt',{}).get('joint_all_views') is False:metrics['inference_mode']='Global overview + 16-view batches' if 'overview' in summary['vggt'].get('mode','') else 'Overlapping 16-view batches'
-            metrics['inference_partially_reused']=bool(summary.get('vggt',{}).get('partially_reused_predictions'))
-            if metrics['inference_partially_reused']:warnings.append('Saved local VGGT predictions were realigned to a newly inferred global overview. This attempt includes only the overview inference and realignment; original window timings are retained in the model record.')
         artifacts.update(sparse_cloud='reconstruction/points.ply', poses='reconstruction/poses.json',
                          reconstruction_summary='reconstruction/summary.json')
+        from web.diagnostics import inspect_registration
+        diagnostic=inspect_registration(job,summary)
+        artifacts['registration_diagnostics']='registration_diagnostics.json'
         if summary['registered'] < summary['total_images']:
-            warnings.append(f"Only {summary['registered']} of {summary['total_images']} images registered. Some views failed camera/track checks; inspect overlap, blur and calibration.")
+            warnings.append(f"Only {summary['registered']} of {summary['total_images']} images registered. "+diagnostic['explanation'])
         state('point_cloud', 'Preparing the interactive point cloud', 55)
         export_geometry(job / artifacts['sparse_cloud'], job / 'cloud.json', job / artifacts['poses'])
         artifacts['cloud_view'] = 'cloud.json'
@@ -178,19 +163,19 @@ def run_job(job):
         if metadata['make_mesh']:
             try:
                 quality = mesh_quality(metadata)
-                depth_backend='vggt' if method=='vggt' else metadata.get('depth_backend','sgbm')
-                metrics.update(mesh_quality=quality['label'], mesh_depth_side=518 if method=='vggt' else quality['depth_side'],
+                depth_backend=metadata.get('depth_backend','sgbm')
+                metrics.update(mesh_quality=quality['label'], mesh_depth_side=quality['depth_side'],
                                mesh_voxel_div=quality['voxel_div'])
                 state('meshing', f"Preparing {quality['label'].lower()} quality mesh images", 62)
-                mesh_scene = job/'reconstruction/raw.npz' if method=='vggt' else prepare_mesh_scene(job, quality['depth_side'])
-                state('meshing', f"Estimating {depth_backend.upper()} depth · up to {518 if method=='vggt' else quality['depth_side']} px", 65)
+                mesh_scene = prepare_mesh_scene(job, quality['depth_side'])
+                state('meshing', f"Estimating {depth_backend.upper()} depth · up to {quality['depth_side']} px", 65)
                 from mesh.run_mesh import run, merge
                 cfg = merge(yaml.safe_load((ROOT / 'configs/mesh_default.yaml').read_text()),
                             yaml.safe_load((ROOT / 'configs/mesh_object.yaml').read_text()))
                 # This is a user reconstruction, rather than an evaluation run:
                 # every registered view is available for stereo fusion.
                 cfg['heldout']['num_views'] = 0
-                cfg['export_depth_samples']=object_quality and method!='vggt'
+                cfg['export_depth_samples']=object_quality
                 cfg['sgbm']['input_long_side'] = quality['depth_side']
                 cfg['mono']['input_long_side']=quality['depth_side']
                 cfg['tsdf']['voxel_div'] = quality['voxel_div']
@@ -211,19 +196,17 @@ def run_job(job):
                 export_geometry(job / artifacts['mesh_ply'], job / 'mesh.json', job / artifacts['poses'], 'mesh')
                 artifacts['mesh_view'] = 'mesh.json'
                 state('exporting', 'Preparing the dense point cloud', 96)
-                if method!='vggt':
-                    cloud_source=artifacts.get('depth_sample_cloud',artifacts['dense_cloud'])
-                    export_geometry(job / cloud_source, job / 'cloud.json', job / artifacts['poses'])
-                    metrics['cloud_scope']='Accepted depth estimates, capped at 1 million exported samples' if 'depth_sample_cloud' in artifacts else 'TSDF surface cloud'
-                    metrics['tsdf_cloud_points']=mesh.get('tsdf_cloud_points')
-                    metrics['dense_points'] = json.loads((job / 'cloud.json').read_text())['total_points']
+                cloud_source=artifacts.get('depth_sample_cloud',artifacts['dense_cloud'])
+                export_geometry(job / cloud_source, job / 'cloud.json', job / artifacts['poses'])
+                metrics['cloud_scope']='Accepted depth estimates, capped at 1 million exported samples' if 'depth_sample_cloud' in artifacts else 'TSDF surface cloud'
+                metrics['tsdf_cloud_points']=mesh.get('tsdf_cloud_points')
+                metrics['dense_points'] = json.loads((job / 'cloud.json').read_text())['total_points']
             except InterruptedError:
                 raise
             except Exception as exc:
                 logging.exception('Mesh stage failed; retaining the point cloud')
                 warnings.append(f'Mesh could not be completed: {exc}. The point cloud is still available.')
         metrics['peak_rss_mb']=max(float(summary.get('peak_rss_mb',0)),resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**2 if sys.platform=='darwin' else 1024))
-        # Informational VGGT notes do not turn successful results into failures.
         status = 'partial' if summary['registered']<summary['total_images'] or (metadata['make_mesh'] and 'mesh_view' not in artifacts) else 'completed'
         write_state(job, status=status, stage='finished', message='Reconstruction ready', progress=100,
                     artifacts=artifacts, metrics=metrics, warnings=warnings, elapsed_seconds=time.time() - started)

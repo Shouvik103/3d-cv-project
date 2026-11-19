@@ -14,7 +14,7 @@ from runtime import manifest,write_json
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--method',choices=['ours','colmap','vggt'],required=True)
+    parser.add_argument('--method',choices=['ours','colmap'],required=True)
     parser.add_argument('--scene',type=Path,required=True)
     parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--config',type=Path,required=True)
@@ -37,13 +37,6 @@ def main():
         elif args.method=='colmap':
             from baselines.run_colmap import run
             run(args.scene/'images',args.out)
-        else:
-            from baselines.vggt_infer import infer
-            cfg=config['vggt']
-            infer(args.scene/'images',args.out/'raw.npz',device=cfg.get('device','auto'),
-                  model_revision=cfg['model_revision'])
-            from baselines.convert_to_common import export_vggt
-            export_vggt(args.out/'raw.npz',args.out)
         status='completed'
     except Exception as exc:
         error=str(exc);logging.exception('Benchmark method failed')
@@ -51,7 +44,7 @@ def main():
         peak=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**2 if sys.platform=='darwin' else 1024)
         write_json(args.out/'performance.json',dict(manifest(config),method=args.method,status=status,
                    error=error,wall_seconds=time.perf_counter()-started,peak_process_rss_mb=peak,
-                   timing_scope='End-to-end method process, including model loading/export; excludes environment installation and checkpoint download'))
+                   timing_scope='End-to-end method process, including image processing/export; excludes environment installation and checkpoint download'))
     return 0 if status=='completed' else 1
 
 

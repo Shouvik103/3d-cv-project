@@ -15,7 +15,7 @@ from experiments.run_e1 import cloud_agreements,summarize
 from eval.metrics import centers
 from eval.align import transform_points
 
-COLORS=dict(ours='#247b69',colmap='#b17a2e',vggt='#5567a5')
+COLORS=dict(ours='#247b69',colmap='#b17a2e')
 
 
 def report(root):
@@ -36,7 +36,7 @@ def report(root):
                 else:
                     ax.bar(i,value,color=COLORS[method],width=.6)
                     ax.annotate(f'{value:.2f}' if metric!='registered' else f'{int(value)}/{selected[method]["total"]}',(i,value),xytext=(0,4),textcoords='offset points',ha='center',fontsize=8)
-            ax.set_xticks(range(3),methods);ax.set_ylabel(title);ax.set_ylim(0,max([r[metric] or 0 for r in selected.values()]+[1])*1.25)
+            ax.set_xticks(range(len(methods)),methods);ax.set_ylabel(title);ax.set_ylim(0,max([r[metric] or 0 for r in selected.values()]+[1])*1.25)
             ax.spines[['top','right']].set_visible(False);ax.grid(axis='y',alpha=.2);ax.set_axisbelow(True)
             if row_index==0:ax.set_title(scene+'\n'+('GT camera errors' if config['scenes'][scene]['reference_kind']=='gt' else 'COLMAP agreement; no GT'))
     fig.savefig(target/'comparison.png',dpi=180);fig.savefig(target/'comparison.pdf');plt.close(fig)
@@ -69,9 +69,8 @@ def report(root):
               '- Missing registrations count as failures in pose AUC. ATE only evaluates shared registered cameras; registration rate must be read beside it.',
               '- The car subset spans the existing curated views. Both classical algorithms can split/lose coverage; low image reprojection residuals do not demonstrate globally correct camera geometry.',
               '- Our relaxed configuration was previously tuned on Temple; car selection previously used COLMAP poses. This is not an unseen generalization benchmark.',
-              '- Our SfM and COLMAP share fixed calibration. VGGT receives the same photo bytes but uses its own 518px preprocessing and predicted intrinsics.',
-              '- VGGT timing is local Apple MPS when that device is recorded, not a claimed CUDA/T4 result. End-to-end and forward-only timings have different scope.',
-              '- Cloud agreement is measured against COLMAP sparse points, not ground-truth surface geometry. Pixel reprojection error is omitted for VGGT because it does not export observed feature tracks.',
+              '- Our SfM and COLMAP receive identical photos and fixed calibration in this benchmark.',
+              '- Cloud agreement is measured against COLMAP sparse points, not ground-truth surface geometry.',
               '', '## Reproduction','', '```bash',
               '.venv/bin/python code/experiments/run_e1.py',
               '.venv/bin/python code/experiments/report_e1.py','```','',

@@ -1,10 +1,9 @@
-"""Object quality invariants: track preservation, matching budget, VGGT gauge."""
+"""Object quality invariants: track preservation, calibration, matching and depth."""
 from pathlib import Path
 import numpy as np
 import pytest
 from sfm.tracks import build_tracks
 from sfm.pair_selection import select_pairs
-from web.vggt_batches import windows,camera_alignment,transform,centers
 from web.foreground import object_mask
 from PIL import Image
 
@@ -25,33 +24,10 @@ def test_matching_retains_local_coverage_and_bounds_work():
     assert all(0<=a<b<60 for a,b in pairs)
 
 
-def test_vggt_windows_cover_sixty_without_sixty_joint_tokens():
-    batches=windows(60)
-    assert set.union(*(set(b) for b in batches))==set(range(60))
-    assert max(map(len,batches))<=16
-    assert batches[0][0]==0 and batches[0][-1]==59
-    assert max(np.diff(batches[0]))<=4
-    for i in range(1,len(batches)):assert len(set(batches[i])&set.union(*(set(b) for b in batches[:i])))>=6
 
 
-def test_vggt_camera_depth_and_point_transform_share_gauge():
-    rng=np.random.default_rng(4);c=rng.normal(size=(12,3));ext=np.tile(np.c_[np.eye(3),np.zeros(3)],(12,1,1));ext[:,:,3]=-c
-    angle=.7;Q=np.array([[np.cos(angle),-np.sin(angle),0],[np.sin(angle),np.cos(angle),0],[0,0,1.]])
-    s=2.3;shift=np.array([1.,-2.,.5]);points=rng.normal(size=(12,2,2,3));depth=np.ones((12,2,2,1))
-    transformed=transform(dict(extrinsic=ext,depth=depth,world_points=points),s,Q,shift)
-    fitted,R,t,quality=camera_alignment(ext,transformed['extrinsic'])
-    assert np.allclose([fitted],s) and np.allclose(R,Q) and np.allclose(t,shift)
-    assert np.allclose(centers(transformed['extrinsic']),s*c@Q.T+shift)
-    original=np.einsum('nij,nhwj->nhwi',ext[:,:,:3],points)+ext[:,:,3][:,None,None]
-    changed=np.einsum('nij,nhwj->nhwi',transformed['extrinsic'][:,:,:3],transformed['world_points'])+transformed['extrinsic'][:,:,3][:,None,None]
-    assert np.allclose(changed,s*original,atol=2e-6)
-    assert np.allclose(transformed['depth'],s*depth)
-    assert quality['normalized_center_rms']<1e-6
 
 
-def test_vggt_degenerate_overlap_rejected():
-    ext=np.tile(np.c_[np.eye(3),np.zeros(3)],(6,1,1))
-    with pytest.raises(ValueError,match='Degenerate'):camera_alignment(ext,ext)
 
 
 def test_foreground_preserves_alpha_and_opaque_fallback():
@@ -60,16 +36,6 @@ def test_foreground_preserves_alpha_and_opaque_fallback():
     mask,source=object_mask(Image.new('RGB',(40,40),'white'));assert mask.min()==255
 
 
-def test_vggt_padding_preserves_projection_and_excludes_mask_border(tmp_path):
-    from web.vggt_batches import pad_predictions,preprocess_masks
-    data=dict(images=np.zeros((2,392,518,3),'f4'),world_points=np.zeros((2,392,518,3),'f4'),world_points_conf=np.ones((2,392,518),'f4'),depth=np.ones((2,392,518,1),'f4'),depth_conf=np.ones((2,392,518),'f4'),intrinsic=np.tile(np.eye(3),(2,1,1)))
-    padded=pad_predictions(data,518)
-    assert padded['images'].shape==(2,518,518,3)
-    assert np.all(padded['intrinsic'][:,1,2]==63)
-    assert not padded['depth_conf'][:,:63].any()
-    source=tmp_path/'mask.png';Image.new('L',(800,600),255).save(source)
-    mask=preprocess_masks([source],518)
-    assert not mask[:,:63].any() and mask[:,63:455].all() and not mask[:,455:].any()
 
 
 def test_feature_retrieval_recognizes_distant_texture_revisits():
@@ -200,50 +166,75 @@ def test_mesh_only_worker_reuses_cameras_and_exports_real_depth_samples(tmp_path
     assert summary['depth_samples']['available_pixels']>=preview['total_points']
 
 
-def test_vggt_realigns_cached_windows_to_global_overview_without_repeating_models(tmp_path,monkeypatch):
-    import json,shutil
-    from pathlib import Path
-    import web.vggt_batches as batch
-    images=tmp_path/'images';images.mkdir();paths=[]
-    for i in range(24):
-        path=images/f'{i:03}.jpg';Image.new('RGB',(16,12),(i,30,80)).save(path);paths.append(path)
-    def prediction(names):
-        indices=np.array([int(Path(n).stem) for n in names]);angle=indices*2*np.pi/24
-        c=np.c_[np.cos(angle),np.sin(angle),.2*np.sin(2*angle)];ext=np.tile(np.c_[np.eye(3),np.zeros(3)],(len(names),1,1));ext[:,:,3]=-c
-        return dict(image_names=np.array(names),extrinsic=ext,intrinsic=np.tile(np.eye(3),(len(names),1,1)),images=np.full((len(names),2,2,3),.5,'f4'),world_points=np.tile(np.array([.2,.1,2.],'f4'),(len(names),2,2,1)),world_points_conf=np.ones((len(names),2,2),'f4'),depth=np.ones((len(names),2,2,1),'f4'),depth_conf=np.ones((len(names),2,2),'f4'))
-    cache=tmp_path/'cached';plans=[list(range(16)),[0,7,*range(11,24)]]
+
+
+
+
+def test_quality_inputs_repeat_rotation_and_calibration_without_using_poses(tmp_path):
+    import json,yaml
+    from web.quality_input import prepare_quality_input
+    job=tmp_path/'job';(job/'uploads').mkdir(parents=True)
+    rgba=np.full((120,80,4),255,'u1');rgba[:20,:,3]=0;rgba[20:100,20:60,:3]=[20,80,180]
+    Image.fromarray(rgba).save(job/'uploads/a.png');original=(job/'uploads/a.png').read_bytes()
+    K=np.array([[100.,0,40],[0,110.,60],[0,0,1.]])
+    (job/'job.json').write_text(json.dumps(dict(method='ours',camera_matrix=K.tolist())))
+    prepare_quality_input(job,80)
+    record=yaml.safe_load((job/'input/intrinsics.yaml').read_text())['images']['a.jpg'];w,h=record['image_size']
+    assert record['rotation_degrees']==90 and [w,h]==[80,53]
+    point=np.array([.1,.2,3.]);pixel=K@point;pixel=pixel[:2]/pixel[2]
+    expected=np.array([119-pixel[1],pixel[0]])*np.array([w/120,h/80])
     Q=np.array([[0.,-1,0],[1.,0,0],[0,0,1.]])
-    for i,indices in enumerate(plans):
-        folder=cache/f'{i:02}';(folder/'images').mkdir(parents=True)
-        for index in indices:shutil.copyfile(paths[index],folder/'images'/paths[index].name)
-        names=[paths[index].name for index in indices];local=batch.transform(prediction(names),2+i,Q,np.array([1.,-2.,.5]))
-        np.savez_compressed(folder/'raw.npz',**local);(folder/'raw.json').write_text(json.dumps(dict(provenance='Analytic test fixture, not model predictions')))
-    calls=[]
-    def overview_only(command,check):
-        inputs=Path(command[command.index('--images')+1]);out=Path(command[command.index('--out')+1]);names=sorted(p.name for p in inputs.iterdir())
-        calls.append(names);np.savez_compressed(out,**prediction(names));out.with_suffix('.json').write_text(json.dumps(dict(provenance='Analytic test fixture, not model inference')))
-    monkeypatch.setattr(batch.subprocess,'run',overview_only)
-    meta=batch.infer_batched(images,tmp_path/'out/raw.npz',cache)
-    assert len(calls)==1 and len(calls[0])==16 and calls[0][0]=='000.jpg' and calls[0][-1]=='023.jpg'
-    expected=prediction([p.name for p in paths])
-    with np.load(tmp_path/'out/raw.npz',allow_pickle=False) as actual:
-        for key in ('extrinsic','world_points','depth'):assert np.allclose(actual[key],expected[key],atol=2e-6)
-        assert actual['image_names'].tolist()==expected['image_names'].tolist()
-    assert meta['partially_reused_predictions'] and all(s['prediction_reused'] for s in meta['windows'][1:])
-    fresh=batch.infer_batched(images,tmp_path/'fresh/raw.npz')
-    assert not fresh['partially_reused_predictions']
-    with np.load(tmp_path/'fresh/raw.npz',allow_pickle=False) as actual:
-        assert np.allclose(actual['extrinsic'],expected['extrinsic'])
-        assert actual['image_names'].tolist()==expected['image_names'].tolist()
-    with pytest.raises(ValueError,match='preprocessing differs'):batch.validate_cached_inputs(cache/'00',[p.name for p in paths[:16]],paths,preprocess_mode='pad')
-    paths[0].write_bytes(b'different input pixels')
-    with pytest.raises(ValueError,match='pixels differ'):batch.validate_cached_inputs(cache/'00',[p.name for p in paths[:16]],paths)
+    actual=np.array(record['K'])@(Q@point);assert np.allclose(actual[:2]/actual[2],expected)
+    prepare_quality_input(job,60,target=job/'mesh_input',record=False)
+    matching=json.loads((job/'foreground.json').read_text())[0];assert matching['prepared_size']==[80,53]
+    assert (job/'uploads/a.png').read_bytes()==original
+    assert (job/'input/feature_masks/a.jpg.png').exists()
 
 
-def test_vggt_padding_keeps_both_ends_of_portrait_objects(tmp_path):
-    from web.vggt_batches import preprocess_masks
-    mask=np.zeros((800,400),'u1');mask[:,40:360]=255
-    source=tmp_path/'portrait.png';Image.fromarray(mask).save(source)
-    padded=preprocess_masks([source],518,mode='pad')[0]
-    assert padded.shape==(518,518) and padded[0].any() and padded[-1].any()
-    assert not padded[:,:133].any() and not padded[:,385:].any()
+def test_ranked_eight_point_handles_weak_overlap_and_outliers():
+    from sfm.robust_matching import verify_ranked,hypotheses
+    from sfm.geometry import sampson_distance
+    rng=np.random.default_rng(93);X=rng.normal(0,.6,(120,3));X[:,2]+=5
+    K=np.array([[900.,0,400],[0,900.,300],[0,0,1.]])
+    def project(x):
+        q=x@K.T;return q[:,:2]/q[:,2:]
+    a=project(X);b=project(X+[-.5,.02,.04]);a+=rng.normal(0,.15,a.shape);b+=rng.normal(0,.15,b.shape)
+    # Strong descriptor matches occur first, but some of them remain wrong.
+    b[8:14]=rng.uniform([0,0],[800,600],(6,2));b[40:]=rng.uniform([0,0],[800,600],(80,2))
+    F,mask=verify_ranked(a,b,threshold=1,iterations=2000,seed=4)
+    true=np.r_[np.arange(8),np.arange(14,40)]
+    assert mask[true].sum()>=30 and mask[40:].sum()<8
+    assert np.median(sampson_distance(F,a[true],b[true]))<.2
+    Fs,valid=hypotheses(a[true[:8]][None],b[true[:8]][None]);assert valid[0]
+    assert abs(np.linalg.det(Fs[0]))<1e-10
+    again,m2=verify_ranked(a,b,threshold=1,iterations=2000,seed=4)
+    assert np.allclose(again,F) and np.array_equal(m2,mask)
+
+
+def test_partial_diagnostics_separate_track_support_from_sharpness(tmp_path):
+    import json
+    from web.diagnostics import inspect_registration
+    (tmp_path/'reconstruction').mkdir();(tmp_path/'input/images').mkdir(parents=True)
+    names=['a.jpg','b.jpg','c.jpg','d.jpg']
+    for n in names:Image.new('RGB',(20,20),'white').save(tmp_path/'input/images'/n)
+    def save(n,value):(tmp_path/'reconstruction'/n).write_text(json.dumps(value))
+    save('poses.json',dict(image_names=names,registered=names[:2]))
+    save('matching_report.json',dict(checked_pairs=6,verified_pairs=[dict(images=names[:2],inliers=80),dict(images=names[2:],inliers=60)]))
+    save('registration_checks.json',{'c.jpg':dict(shared_3d_tracks=0,reason='Insufficient shared 3D tracks'),'d.jpg':dict(shared_3d_tracks=20,reason='PnP pose check failed')})
+    out=inspect_registration(tmp_path,{})
+    assert list(map(len,out['components']))==[2,2] and out['missing']==names[2:]
+    assert '1 missing views lacked' in out['explanation'] and '1 failed PnP' in out['explanation']
+    assert out['views'][2]['shared_3d_tracks']==0 and out['views'][3]['verified_links_to_registered']==0
+
+
+def test_common_adapter_accepts_explicit_distortion_for_multiple_radial_cameras(tmp_path):
+    import json
+    from mesh.adapters import load_scene
+    from sfm.io_utils import save_ply
+    images=tmp_path/'images';images.mkdir();names=['a.jpg','b.jpg']
+    for n in names:Image.new('RGB',(40,30),'white').save(images/n)
+    K=[[60.,0,20],[0,60.,15],[0,0,1]]
+    poses=dict(image_names=names,registered=names,K={n:K for n in names},R={n:np.eye(3).tolist() for n in names},t={n:[0,0,0] for n in names},distortion={n:[-.02,0,0,0,0] for n in names})
+    (tmp_path/'poses.json').write_text(json.dumps(poses));(tmp_path/'summary.json').write_text(json.dumps(dict(cameras=[dict(model='SIMPLE_RADIAL'),dict(model='SIMPLE_RADIAL')])))
+    save_ply(np.array([[0,0,2],[.1,0,2],[0,.1,2],[.1,.1,2.2]]),None,tmp_path/'points.ply')
+    scene=load_scene(tmp_path);assert len(scene.K)==2 and all(np.isclose(d[0],-.02) for d in scene.distortion)

@@ -23,18 +23,15 @@ def mesh_config():
 
 
 def run_method(root,method,out):
-    config=mesh_config();config['depth_backend']='vggt' if method=='vggt' else 'mono'
+    config=mesh_config();config['depth_backend']='mono'
     out.mkdir(parents=True,exist_ok=True);frozen=out/'config.yaml'
     if frozen.exists() and yaml.safe_load(frozen.read_text())!=config: raise ValueError('Frozen mesh configuration changed')
     frozen.write_text(yaml.safe_dump(config))
     inputs=root/'datasets/fountain_s2';source=root/'E1/fountain_s2'/method
-    if method=='vggt': scene=source/'raw.npz'
-    else:
-        scene=root/'mesh_scenes'/method;scene.mkdir(parents=True,exist_ok=True)
-        write_json(scene/'scene.json',dict(reconstruction=str(source),images=str(inputs/'images'),depth_cache=str(root/'mesh_depth_cache/fountain_s2')))
+    scene=root/'mesh_scenes'/method;scene.mkdir(parents=True,exist_ok=True)
+    write_json(scene/'scene.json',dict(reconstruction=str(source),images=str(inputs/'images'),depth_cache=str(root/'mesh_depth_cache/fountain_s2')))
     write_json(out/'inputs.json',dict(scene='fountain-P11',method=method,scene_path=str(scene),
         input_manifest_sha256=sha256(inputs/'inputs.json'),poses_sha256=sha256(source/'poses.json'),
-        raw_sha256=sha256(scene) if method=='vggt' else None,
         note='Same frozen E1 views; ours/COLMAP share image-only monocular depth cache. Predicted poses/landmarks/K are not replaced by GT.'))
     if not (out/'status.json').exists():
         command=[sys.executable,str(ROOT/'code/mesh/run_mesh.py'),'--scene',str(scene),'--out',str(out),'--config',str(frozen)]
@@ -123,8 +120,7 @@ def report(root,experiment,rows):
         '- GT is the original 26M-face mesh, sampled without geometry simplification. The displayed GT and vertex-error colors use those 200k reference samples, so distances include sampling approximation.',
         '- Completeness covers the full GT mesh, including scan regions that may not be visible in all input images or retained by the reconstruction ROI. No visibility mask is applied; this makes it a strict full-scan comparison.',
         '- Ours and COLMAP use the same pinned Depth Anything V2 Small model, 384px inference, image-only depth cache, affine depth alignment gates, filtering and TSDF parameters (voxel divisor 192). Each uses its own E1 estimated cameras and sparse landmarks. Consequently camera, landmark-alignment and ROI effects are coupled; this is not a pose-only causal experiment.',
-        '- VGGT uses its own jointly predicted cameras, intrinsics and depth, official 518px preprocessing, and the same filtering/TSDF policy; its confidence gate is recorded. Different depth models/resolutions are a confound, not an isolated pose comparison.',
-        '- Same three image names are withheld from fusion when all eleven views register. They participated in SfM/VGGT camera estimation; VGGT also jointly inferred their RGB/depth. These are fusion-held-out rendering diagnostics, not strictly unseen-image reconstruction tests.',
+        '- Same three image names are withheld from fusion when all eleven views register. They participated in SfM camera estimation. These are fusion-held-out rendering diagnostics, not strictly unseen-image reconstruction tests.',
         '- PSNR/SSIM are measured only where geometry renders; coverage is reported so incomplete meshes cannot appear successful from a small good-looking patch. Meshes may be partial and non-watertight.',
         '- GT geometry is used only for evaluation, never for depth alignment, meshing, or selecting reconstruction settings. No parameters were tuned against its scores.',
         '', 'Source: [EPFL original fountain model and research-use notice](https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/multiview/modelFountain.html). Cite Strecha et al., *On Benchmarking Camera Calibration and Multi-View Stereo for High Resolution Imagery*, CVPR 2008.']
@@ -141,9 +137,6 @@ def collect(root,method,out,scene,status):
         from viz.view_mesh_web import export_viewer
         export_viewer(out/'mesh_light.ply',out/'interactive_mesh.html',
                       title=f'Fountain-P11: {method} mesh',poses=root/'E1/fountain_s2'/method/'poses.json')
-        if method=='vggt':
-            summary['heldout']['scope']='RGB and predicted depth from all views participated in joint VGGT inference; held-out maps excluded only from filtering/fusion. Not an unseen-image test.'
-            write_json(out/'summary.json',summary)
         held=summary['heldout']['rows']
         def mean(k):
             values=[v[k] for v in held if v[k] is not None];return float(np.mean(values)) if values else None
@@ -168,14 +161,14 @@ def main():
     else:
         rows=json.loads((root/'M4/results.json').read_text())
         write_json(root/'M5/reuse.json',dict(source='M4/ours',reason='Identical ours mesh; no re-meshing or selection by GT scores'))
-        for method in ['colmap','vggt']:
+        for method in ['colmap']:
             out=root/'M5'/method;scene,status=run_method(root,method,out);rows.append(collect(root,method,out,scene,status));report(root,'M5',rows)
         # Same GT camera, pixels, background and crop for the side-by-side figure.
         from PIL import Image,ImageDraw,ImageFont
         from matplotlib.font_manager import findfont
         font=ImageFont.truetype(findfont('DejaVu Sans'),24)
-        sheet=Image.new('RGB',(1920,932),(245,245,245));draw=ImageDraw.Draw(sheet)
-        for i,method in enumerate(['ours','colmap','vggt']):
+        sheet=Image.new('RGB',(1280,932),(245,245,245));draw=ImageDraw.Draw(sheet)
+        for i,method in enumerate(['ours','colmap']):
             out=root/('M4' if method=='ours' else 'M5')/method
             for j,mode in enumerate(['reconstruction','shaded']):
                 path=out/(mode+'.png')

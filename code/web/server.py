@@ -19,7 +19,7 @@ import uuid
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from web.worker import write_state
 from web.progress import legacy_progress
-from web.settings import mesh_quality,method_settings,METHOD_NAMES,VGGT_MAX_VIEWS
+from web.settings import mesh_quality,method_settings,METHOD_NAMES,MAX_UPLOAD_VIEWS
 from web.research import catalog, asset_path, run_analysis
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,13 +77,13 @@ class Workbench:
             if (folder / 'job.json').exists():
                 state = read_json(folder / 'state.json', {})
                 if state.get('status') in {'queued', 'running'}:
-                    write_state(folder, status='interrupted', message='The server stopped during this run. Upload again to restart.')
+                    write_state(folder, status='interrupted', message='The server stopped during this run. Retry this method to restart.')
 
     def folder(self, job_id):
         if not re.fullmatch(r'[a-f0-9]{32}', job_id):
             raise ValueError('Unknown run')
         folder = self.root / job_id
-        if not (folder / 'job.json').is_file():
+        if not (folder / 'job.json').is_file() or read_json(folder/'job.json').get('method','ours') not in (*METHOD_NAMES,'all'):
             raise ValueError('Unknown run')
         return folder
 
@@ -132,8 +132,8 @@ class Workbench:
         name = str(settings.get('name', 'Untitled reconstruction')).strip()[:80] or 'Untitled reconstruction'
         size = settings.get('max_side', 1200)
         focal = settings.get('focal_px')
-        if size not in (800, 1200, 1600):
-            raise ValueError('Choose 800, 1200 or 1600 pixels')
+        if size not in (800, 1200, 1600, 2400):
+            raise ValueError('Choose 800, 1200, 1600 or 2400 pixels')
         if focal is not None and (isinstance(focal, bool) or not isinstance(focal, (int, float)) or not 50 <= focal <= 100000):
             raise ValueError('Focal length must be between 50 and 100,000 pixels')
         if not isinstance(settings.get('make_mesh', True), bool):
@@ -188,8 +188,6 @@ class Workbench:
             if len(read_json(folder / 'job.json')['uploads']) < 3:
                 raise ValueError('Upload at least three overlapping views; 12–60 are recommended')
             metadata=read_json(folder/'job.json')
-            if metadata.get('method') in ('all','vggt') and len(metadata['uploads'])>VGGT_MAX_VIEWS:
-                raise ValueError(f'VGGT / All three supports at most {VGGT_MAX_VIEWS} views per local run; choose fewer images or a classical method')
             if metadata.get('method')=='all':
                 import shutil
                 children=[]
@@ -203,7 +201,7 @@ class Workbench:
                     child_meta.update(uploads=metadata['uploads'],comparison_id=job_id)
                     save_metadata(child_folder,child_meta);children.append(child['id'])
                 metadata.update(is_comparison=True,children=children);save_metadata(folder,metadata)
-                write_state(folder,status='grouped',stage='finished',message='Three method runs created',progress=0)
+                write_state(folder,status='grouped',stage='finished',message='Two method runs created',progress=0)
                 for child in children:self.start(child)
                 return dict(self.describe(folder),children=children)
             metadata['generation']=uuid.uuid4().hex;save_metadata(folder,metadata)
@@ -219,7 +217,7 @@ class Workbench:
                 children=[]
                 for child in metadata['children']:
                     p=self.root/child
-                    if (p/'job.json').exists():children.append(self.describe(p))
+                    if (p/'job.json').exists() and read_json(p/'job.json').get('method','ours') in METHOD_NAMES:children.append(self.describe(p))
                 if not children:continue
                 groups.append(dict(id=metadata['id'],name=metadata['name'],created_at=metadata['created_at'],children=children,
                                    missing_children=len(metadata['children'])-len(children)))
@@ -232,29 +230,22 @@ class Workbench:
             folder=self.folder(job_id);metadata=read_json(folder/'job.json');state=read_json(folder/'state.json',{})
             if metadata.get('is_comparison') or state.get('status') not in TERMINAL:raise ValueError('Retry an individual finished method run')
             if job_id in self.processes:raise ValueError('The previous worker is still stopping; retry shortly')
-            allowed={'matching_ratio','camera_matrix','focal_px','mesh_quality','depth_backend','reuse_geometry','refresh_vggt_alignment'}
+            allowed={'matching_ratio','camera_matrix','focal_px','mesh_quality','depth_backend','reuse_geometry','quality_profile','max_side','camera_prior'}
             if set(settings)-allowed:raise ValueError('Retry cannot change the method or input photos')
             reuse=settings.get('reuse_geometry',False)
             if not isinstance(reuse,bool):raise ValueError('Invalid geometry reuse option')
             if reuse:
                 if not metadata.get('make_mesh'):raise ValueError('This run was created without mesh output')
-                if any(key in settings and settings[key]!=metadata.get(key) for key in ('matching_ratio','camera_matrix','focal_px')):
+                if any(key in settings and settings[key]!=metadata.get(key) for key in ('matching_ratio','camera_matrix','focal_px','quality_profile','max_side','camera_prior')):
                     raise ValueError('Camera and matching settings must stay unchanged when reusing geometry')
                 if not all((folder/path).exists() for path in ('input/images','input/intrinsics.yaml','reconstruction/poses.json','reconstruction/summary.json','reconstruction/points.ply')):
                     raise ValueError('No complete saved camera reconstruction is available')
-                if metadata.get('method')=='vggt' and not (folder/'reconstruction/raw.npz').exists():raise ValueError('VGGT raw predictions are unavailable')
-            refresh=settings.get('refresh_vggt_alignment',False)
-            if not isinstance(refresh,bool):raise ValueError('Invalid VGGT refresh option')
-            if refresh and (reuse or metadata.get('method')!='vggt' or not (folder/'reconstruction/windows').is_dir()):raise ValueError('Realignment requires a completed VGGT window run and new overview inference')
-            if refresh:
-                window=next((folder/'reconstruction/windows').glob('*/raw.json'),None)
-                if not window or read_json(window,{}).get('preprocessing_mode','crop')!=('pad' if metadata.get('quality_profile')=='object' else 'crop'):raise ValueError('Saved window preprocessing differs; use a full reconstruction retry')
-            updated=dict(metadata,**settings);updated['reuse_geometry']=reuse;updated['vggt_cached_windows']=None;updated['refresh_vggt_alignment']=refresh;updated.update(method_settings(updated));mesh_quality(updated)
+            if settings.get('max_side',metadata['max_side']) not in (800,1200,1600,2400):raise ValueError('Choose a supported photo matching size')
+            updated=dict(metadata,**settings);updated['reuse_geometry']=reuse;updated.update(method_settings(updated));mesh_quality(updated)
             archive=folder/'attempts'/str(time.time_ns());archive.mkdir(parents=True)
-            if refresh:updated['vggt_cached_windows']=str(archive/'reconstruction/windows')
             retained={'attempts','uploads','thumbs'}
             if reuse:
-                retained.update(('reconstruction','input','input_masks','foreground.json'))
+                retained.update(('reconstruction','input','input_masks','foreground.json','camera_prior.json'))
                 def snapshot(source,target):
                     try:return os.link(source,target)
                     except OSError:return shutil.copy2(source,target)
@@ -395,12 +386,11 @@ def make_handler(workbench):
                         return self.file(target)
                     if path == '/api/jobs':
                         with workbench.lock:
-                            jobs = [workbench.describe(p) for p in workbench.root.iterdir() if (p / 'job.json').exists() and not read_json(p/'job.json').get('is_comparison')]
+                            jobs = [workbench.describe(p) for p in workbench.root.iterdir() if (p / 'job.json').exists() and not read_json(p/'job.json').get('is_comparison') and read_json(p/'job.json').get('method','ours') in METHOD_NAMES]
                             examples = workbench.examples()
                         return self.reply(200, dict(jobs=sorted(jobs, key=lambda x: x['created_at'], reverse=True), examples=examples,comparisons=workbench.comparisons()))
                     if path=='/api/capabilities':
-                        return self.reply(200,dict(methods=METHOD_NAMES,vggt_max_views=VGGT_MAX_VIEWS,
-                                                  vggt_ready=(ROOT/'outputs/vggt_env/bin/python').exists()))
+                        return self.reply(200,dict(methods=METHOD_NAMES,max_views=MAX_UPLOAD_VIEWS,comparison_methods=list(METHOD_NAMES)))
                     if len(parts)>=3 and parts[:2]==['api','comparisons']:
                         folder=workbench.folder(parts[2])
                         if not read_json(folder/'job.json').get('is_comparison'):raise ValueError('Unknown comparison')

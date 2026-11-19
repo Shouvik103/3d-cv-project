@@ -1,4 +1,4 @@
-"""E1: identical-input ours/COLMAP/VGGT comparison on three frozen scenes."""
+"""E1: identical-input ours/COLMAP comparison on three frozen scenes."""
 from pathlib import Path
 import argparse
 import csv
@@ -39,7 +39,7 @@ def evaluate(scene, output, reference_kind, performance):
         errors=[reprojection_error(X,xy,np.array(estimate['K'][n]),np.array(estimate['R'][n]),np.array(estimate['t'][n]))
                 for X,track in zip(points,tracks.values()) for n,xy in track.items()]
         result['reprojection']=dict(median_px=float(np.median(errors)),mean_px=float(np.mean(errors)),
-                                    scope='Processed input pixels; VGGT has no matching observed tracks')
+                                    scope='Processed input pixels on observed feature tracks')
         result['mean_track_length']=float(np.mean([len(t) for t in tracks.values()]))
     write_json(output/'evaluation.json',result)
     return result
@@ -48,7 +48,7 @@ def evaluate(scene, output, reference_kind, performance):
 def summarize(root, config):
     rows=[]
     for scene,settings in config['scenes'].items():
-        for method in ['ours','colmap','vggt']:
+        for method in ['ours','colmap']:
             path=root/'E1'/scene/method
             perf=json.loads((path/'performance.json').read_text()) if (path/'performance.json').exists() else {}
             result=json.loads((path/'evaluation.json').read_text()) if (path/'evaluation.json').exists() else {}
@@ -76,7 +76,7 @@ def cloud_agreements(root, config):
         if not (reference/'evaluation.json').exists():continue
         ref=json.loads((reference/'poses.json').read_text())
         points_ref=load_ply(reference/'points.ply')[0]
-        for method in ['ours','colmap','vggt']:
+        for method in ['ours','colmap']:
             folder=base/method;path=folder/'evaluation.json'
             if not path.exists():continue
             result=json.loads(path.read_text());points=load_ply(folder/'points.ply')[0]
@@ -96,7 +96,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out',type=Path,default=ROOT/'results/experiments_20261118')
     parser.add_argument('--config',type=Path,default=ROOT/'configs/experiments.yaml')
-    parser.add_argument('--methods',nargs='+',choices=['ours','colmap','vggt'],default=['ours','colmap','vggt'])
+    parser.add_argument('--methods',nargs='+',choices=['ours','colmap'],default=['ours','colmap'])
     parser.add_argument('--scenes',nargs='+')
     args=parser.parse_args();cfg=yaml.safe_load(args.config.read_text());args.out.mkdir(parents=True,exist_ok=True)
     saved=args.out/'protocol.yaml'
@@ -114,11 +114,11 @@ def main():
             else:
                 out.mkdir(parents=True,exist_ok=True)
                 print('Running E1:',key,method,flush=True)
-                isolated=ROOT/'outputs/vggt_env/bin/python'
-                interpreter=str(isolated) if method=='vggt' and isolated.exists() else sys.executable
+
+                interpreter=sys.executable
                 command=[interpreter,str(ROOT/'code/experiments/worker.py'),'--method',method,'--scene',str(data),'--out',str(out),'--config',str(saved)]
                 with (out/'process.log').open('wb') as stream:
-                    process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
+                    process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1'))
                 if not (out/'performance.json').exists():
                     write_json(out/'performance.json',dict(method=method,status='failed',error=f'Process exited {process.returncode} before a performance record was written'))
             perf=json.loads((out/'performance.json').read_text())

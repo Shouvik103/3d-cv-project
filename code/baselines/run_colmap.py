@@ -10,7 +10,7 @@ from runtime import manifest, write_json
 from baselines.convert_to_common import export_colmap
 
 
-def run(images, out, min_matches=15, progress=None,object_quality=False):
+def run(images, out, min_matches=15, progress=None,object_quality=False,maximum_quality=False):
     import pycolmap
     if (out/'database.db').exists():
         raise ValueError('Output already contains a COLMAP database; choose a fresh output directory')
@@ -25,13 +25,16 @@ def run(images, out, min_matches=15, progress=None,object_quality=False):
     if not shared and not object_quality:
         raise ValueError('This baseline uses a shared PINHOLE camera; supply images with identical K')
     reader = pycolmap.ImageReaderOptions()
-    reader.camera_model = 'PINHOLE'
+    camera_model='SIMPLE_RADIAL' if maximum_quality and all(np.isclose(K[0,0],K[1,1],rtol=.001) for K in Ks) else 'PINHOLE'
+    reader.camera_model = camera_model
     K = Ks[0]; reader.camera_params = ','.join(map(str, [K[0, 0], K[1, 1], K[0, 2], K[1, 2]]))
     extraction = pycolmap.FeatureExtractionOptions(); extraction.num_threads = 4
-    estimated=not all(records[n].get('source','').startswith(('user_','supplied','checkerboard')) for n in names)
+    estimated=not all(records[n].get('calibration_fixed',False) or records[n].get('source','').startswith(('user_','supplied','checkerboard')) for n in names)
     if object_quality:
         extraction.sift.max_num_features=8000
-        masks=images.parent/'masks'
+        if maximum_quality:
+            extraction.sift.max_num_features=12000;extraction.sift.peak_threshold=.002
+        masks=images.parent/('feature_masks' if maximum_quality else 'masks')
         if masks.exists():reader.mask_path=str(masks)
     matching = pycolmap.FeatureMatchingOptions(); matching.num_threads = 4
     if object_quality:matching.guided_matching=True
@@ -48,7 +51,8 @@ def run(images, out, min_matches=15, progress=None,object_quality=False):
         groups=list(by_camera.values())
     for group in groups:
         K=np.asarray(records[group[0]]['K'])
-        reader.camera_params=','.join(map(str,[K[0,0],K[1,1],K[0,2],K[1,2]]))
+        parameters=[K[0,0],K[0,2],K[1,2],0] if camera_model=='SIMPLE_RADIAL' else [K[0,0],K[1,1],K[0,2],K[1,2]]
+        reader.camera_params=','.join(map(str,parameters))
         # Let COLMAP create a consistent camera/rig/frame group at extraction;
         # changing image.camera_id afterwards invalidates COLMAP 4.x frames.
         pycolmap.extract_features(database_path=out/'database.db', image_path=images,image_names=group,
@@ -67,16 +71,21 @@ def run(images, out, min_matches=15, progress=None,object_quality=False):
         options.mapper.init_min_tri_angle=8.
         options.mapper.abs_pose_refine_focal_length=estimated
         options.mapper.abs_pose_refine_extra_params=False
+        if maximum_quality:
+            options.mapper.abs_pose_min_num_inliers=20
+            radial=estimated and camera_model=='SIMPLE_RADIAL' and not all(records[n].get('zero_distortion',False) or records[n].get('undistorted',False) for n in names)
+            options.ba_refine_extra_params=radial;options.mapper.abs_pose_refine_extra_params=radial
     options.min_num_matches = min_matches
     models = pycolmap.incremental_mapping(database_path=out/'database.db', image_path=images, output_path=out/'sparse', options=options)
     if not models: raise RuntimeError('COLMAP did not reconstruct a model')
     model = max(models.values(), key=lambda m: m.num_reg_images())
     poses = export_colmap(model, out, names)
     report('registration',len(poses['registered']),len(names),'COLMAP: largest reconstructed model exported')
-    write_json(out/'summary.json', dict(manifest(dict(camera_model='PINHOLE', fixed_intrinsics=not options.ba_refine_focal_length, device='cpu',object_quality=object_quality,max_sift_features=extraction.sift.max_num_features,guided_matching=matching.guided_matching,num_threads=options.num_threads)),
+    write_json(out/'summary.json', dict(manifest(dict(camera_model=camera_model, maximum_quality=maximum_quality, fixed_intrinsics=not options.ba_refine_focal_length, device='cpu',object_quality=object_quality,max_sift_features=extraction.sift.max_num_features,guided_matching=matching.guided_matching,num_threads=options.num_threads)),
                                        registered=len(poses['registered']), total_images=len(names), points=model.num_points3D(),
                                        runtime_seconds=time.perf_counter()-started, models=len(models),
-                                       mean_reprojection_px=float(model.compute_mean_reprojection_error())))
+                                       model_images=[sorted(m.images[i].name for i in m.reg_image_ids()) for m in models.values()],
+                                       mean_reprojection_px=float(model.compute_mean_reprojection_error()),cameras=[dict(model=c.model_name,params=c.params.tolist(),width=c.width,height=c.height) for c in model.cameras.values()] ))
 
 
 if __name__ == '__main__':

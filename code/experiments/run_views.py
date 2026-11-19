@@ -1,4 +1,4 @@
-"""E3: fixed view-count subsets, identical across all three methods."""
+"""E3: fixed view-count subsets, identical across both methods."""
 from copy import deepcopy
 from pathlib import Path
 import argparse
@@ -36,7 +36,7 @@ def save_report(root,rows):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     fig,axes=plt.subplots(2,2,figsize=(11,7),layout='constrained')
-    colors=dict(ours='#247b69',colmap='#b17a2e',vggt='#5567a5')
+    colors=dict(ours='#247b69',colmap='#b17a2e')
     for j,scene in enumerate(['car_s1','temple_gt']):
         for method,color in colors.items():
             selected=sorted([r for r in rows if r['scene']==scene and r['method']==method],key=lambda r:r['views'])
@@ -58,7 +58,7 @@ def refresh(root):
     for scene,counts in [('car_s1',[5,10,20,30]),('temple_gt',[5,10,16])]:
         for count in counts:
             data=root/'datasets/E3'/f'{scene}_{count}'
-            for method in ['ours','colmap','vggt']:
+            for method in ['ours','colmap']:
                 folder=root/'E3'/scene/f'views_{count}'/method
                 if not (folder/'performance.json').exists():continue
                 performance=json.loads((folder/'performance.json').read_text());evaluation={}
@@ -86,7 +86,7 @@ def main():
             record=prepare_scene(f'{scene}_{count}',spec,config,data)
             original=json.loads((root/'datasets'/scene/'inputs.json').read_text())
             can_reuse=record['prepared_sha256']==original['prepared_sha256']
-            for method in ['ours','colmap','vggt']:
+            for method in ['ours','colmap']:
                 folder=root/'E3'/scene/f'views_{count}'/method
                 previous=root/'E1'/scene/method
                 if not (folder/'performance.json').exists():
@@ -96,11 +96,11 @@ def main():
                                    reason='Identical prepared image hashes, calibration, method settings and view count'))
                     else:
                         folder.mkdir(parents=True,exist_ok=True)
-                        interpreter=str(ROOT/'outputs/vggt_env/bin/python') if method=='vggt' else sys.executable
+                        interpreter=sys.executable
                         command=[interpreter,str(ROOT/'code/experiments/worker.py'),'--method',method,'--scene',str(data),'--out',str(folder),'--config',str(root/'protocol.yaml')]
                         print('E3',scene,count,method,flush=True)
                         with (folder/'process.log').open('wb') as stream:
-                            process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
+                            process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1'))
                         if not (folder/'performance.json').exists():write_json(folder/'performance.json',dict(method=method,status='failed',error=f'Process exited {process.returncode}'))
                 performance=json.loads((folder/'performance.json').read_text());evaluation={}
                 if performance['status']=='completed' and (folder/'poses.json').exists():

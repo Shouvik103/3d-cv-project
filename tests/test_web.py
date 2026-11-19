@@ -74,7 +74,7 @@ def test_research_catalog_keeps_missing_metrics_and_locks_asset_paths(workbench_
     (base/'E1/results.json').write_text(json.dumps(rows))
     (base/'E1/results.csv').write_text('method,auc5\nours,0\n')
     (base/'experiment_status.json').write_text(json.dumps(dict(experiments={'E1':dict(status='completed')})))
-    (base/'evidence_manifest.json').write_text(json.dumps(dict(files=[dict(path='E1/results.json',bytes=100),dict(path='E1/results.csv',bytes=20)])))
+    (base/'evidence_manifest.json').write_text(json.dumps(dict(methods=['ours','colmap'],files=[dict(path='E1/results.json',bytes=100),dict(path='E1/results.csv',bytes=20)])))
     (base/'not-public.txt').write_text('excluded')
     code,payload=request('GET','/api/research');assert code==200 and payload['available']
     actual=payload['experiments'][0]['rows'];assert actual[0]['ate_percent_extent'] is None and actual[0]['auc5']==0
@@ -101,7 +101,7 @@ def test_absent_research_evidence_leaves_methods_and_workspace_available(workben
     import web.server as server
     monkeypatch.setattr(server,'ROOT',tmp_path)
     _,request=workbench_api;code,payload=request('GET','/api/research')
-    assert code==200 and not payload['available'] and len(payload['methods'])==3
+    assert code==200 and not payload['available'] and len(payload['methods'])==2
     assert request('GET','/')[0]==200 and request('POST','/api/jobs',{})[0]==201
 
 
@@ -127,9 +127,9 @@ def test_all_methods_create_independent_queued_jobs_with_identical_uploads(workb
             buffer=io.BytesIO();Image.new('RGB',(24,24),(20+i,40,60)).save(buffer,format='PNG')
             assert request('PUT',f'/api/jobs/{parent["id"]}/images/{i}?name={i}.png',buffer.getvalue())[0]==200
         code,result=request('POST',f'/api/jobs/{parent["id"]}/start',{})
-        assert code==202 and len(result['children'])==3
-        catalog=request('GET','/api/jobs')[1];assert len(catalog['jobs'])==3 and len(catalog['comparisons'])==1
-        assert {j['method'] for j in catalog['jobs']}=={'ours','colmap','vggt'}
+        assert code==202 and len(result['children'])==2
+        catalog=request('GET','/api/jobs')[1];assert len(catalog['jobs'])==2 and len(catalog['comparisons'])==1
+        assert {j['method'] for j in catalog['jobs']}=={'ours','colmap'}
         original=(app.folder(parent['id'])/'uploads/000_0.png').read_bytes()
         for child in result['children']:
             metadata=json.loads((app.folder(child)/'job.json').read_text())
@@ -137,22 +137,11 @@ def test_all_methods_create_independent_queued_jobs_with_identical_uploads(workb
             assert (app.folder(child)/'uploads/000_0.png').read_bytes()==original
             request('POST',f'/api/jobs/{child}/cancel',{})
         report=request('GET',f'/api/comparisons/{parent["id"]}')[1]
-        assert len(report['rows'])==3 and all(r['ate_percent_extent'] is None for r in report['rows'])
+        assert len(report['rows'])==2 and all(r['ate_percent_extent'] is None for r in report['rows'])
         assert request('GET',f'/api/comparisons/{parent["id"]}/files/comparison.csv')[0]==200
     finally:gate.set();blocked.result(timeout=10)
 
 
-def test_method_calibration_and_vggt_limit_are_validated(workbench_api):
-    app,request=workbench_api
-    assert request('POST','/api/jobs',dict(method='pretend'))[0]==400
-    assert request('POST','/api/jobs',dict(matching_ratio=2))[0]==400
-    assert request('POST','/api/jobs',dict(camera_matrix=[[1,2,3]]))[0]==400
-    K=[[800,0,320],[0,810,240],[0,0,1]]
-    assert request('POST','/api/jobs',dict(camera_matrix=K,focal_px=800))[0]==400
-    _,job=request('POST','/api/jobs',dict(method='vggt',camera_matrix=K))
-    folder=app.folder(job['id']);metadata=json.loads((folder/'job.json').read_text());metadata['uploads']=[dict(index=i) for i in range(61)]
-    (folder/'job.json').write_text(json.dumps(metadata))
-    assert request('POST',f'/api/jobs/{job["id"]}/start',{})[0]==400
 
 
 def test_retry_preserves_previous_outputs_and_invalidates_old_queue_generation(workbench_api):
@@ -408,19 +397,63 @@ def test_mesh_only_retry_keeps_saved_geometry_and_rejects_camera_changes(workben
     finally:gate.set()
 
 
-def test_vggt_overview_refresh_keeps_original_windows_in_prior_attempt(workbench_api):
-    app,request=workbench_api;gate=threading.Event();app.pool.submit(gate.wait,20)
+
+
+def test_supported_methods_and_retired_jobs_are_excluded(workbench_api):
+    app,request=workbench_api
+    for method in ['vggt','pretend']:
+        assert request('POST','/api/jobs',dict(method=method))[0]==400
+    code,caps=request('GET','/api/capabilities')
+    assert code==200 and caps['methods']=={'ours':'Our SfM','colmap':'COLMAP'}
+    assert caps['comparison_methods']==['ours','colmap'] and caps['max_views']==200
+    _,old=request('POST','/api/jobs',dict(method='ours'))
+    folder=app.folder(old['id']);metadata=json.loads((folder/'job.json').read_text());metadata['method']='vggt'
+    (folder/'job.json').write_text(json.dumps(metadata))
+    assert old['id'] not in [j['id'] for j in request('GET','/api/jobs')[1]['jobs']]
+    assert request('GET',f'/api/jobs/{old["id"]}')[0]==400
+    assert request('POST',f'/api/jobs/{old["id"]}/retry',{})[0]==400
+    assert (folder/'job.json').exists() # Exclusion does not erase historical data.
+
+
+def test_full_calibration_quality_and_invalid_prior_inputs(workbench_api):
+    _,request=workbench_api
+    prior=dict(focal_ratio=.75,distortion=[-.04,0,0,0,0],source='Measured lens estimate',fixed=True)
+    code,job=request('POST','/api/jobs',dict(method='all',quality_profile='quality',max_side=2400,camera_prior=prior))
+    assert code==201 and job['camera_prior']==prior and job['max_side']==2400
+    assert request('POST','/api/jobs',dict(camera_prior=prior,focal_px=800))[0]==400
+    assert request('POST','/api/jobs',dict(camera_prior=dict(prior,focal_ratio=True)))[0]==400
+    assert request('POST','/api/jobs',dict(camera_prior=dict(prior,distortion=[0])))[0]==400
+    assert request('POST','/api/jobs',dict(depth_backend='vggt'))[0]==400
+
+
+def test_compare_both_accepts_more_than_sixty_photos(workbench_api):
+    app,request=workbench_api;gate=threading.Event();blocked=app.pool.submit(gate.wait,20)
     try:
-        _,job=request('POST','/api/jobs',dict(method='vggt'))
-        folder=app.folder(job['id']);(folder/'reconstruction/windows/00').mkdir(parents=True)
-        (folder/'reconstruction/windows/00/raw.npz').write_bytes(b'original window')
-        (folder/'reconstruction/windows/00/raw.json').write_text(json.dumps(dict(preprocessing_mode='pad')))
-        write_state(folder,status='completed')
-        assert request('POST',f'/api/jobs/{job["id"]}/retry',dict(refresh_vggt_alignment=True,reuse_geometry=True))[0]==400
-        code,retry=request('POST',f'/api/jobs/{job["id"]}/retry',dict(refresh_vggt_alignment=True))
-        assert code==202 and retry['reuse_geometry'] is False
-        cached=Path(retry['vggt_cached_windows'])
-        assert cached.is_relative_to(folder/'attempts') and (cached/'00/raw.npz').read_bytes()==b'original window'
-        assert not (folder/'reconstruction').exists()
-        request('POST',f'/api/jobs/{job["id"]}/cancel',{})
-    finally:gate.set()
+        _,job=request('POST','/api/jobs',dict(method='all',make_mesh=False))
+        b=io.BytesIO();Image.new('RGB',(12,12),'white').save(b,format='PNG')
+        for i in range(61):assert request('PUT',f'/api/jobs/{job["id"]}/images/{i}?name={i}.png',b.getvalue())[0]==200
+        code,result=request('POST',f'/api/jobs/{job["id"]}/start',{})
+        assert code==202 and len(result['children'])==2
+        for jid in result['children']:
+            assert len(request('GET',f'/api/jobs/{jid}')[1]['uploads'])==61
+            request('POST',f'/api/jobs/{jid}/cancel',{})
+    finally:gate.set();blocked.result(timeout=10)
+
+
+def test_research_requires_classical_projection_and_keeps_source_immutable(tmp_path):
+    from web.research import catalog
+    from experiments.classical_evidence import derive
+    source=tmp_path/'validation/experiments_20261118';(source/'E1').mkdir(parents=True)
+    rows=[dict(method='ours',registered=3,total=5,auc5=.2),dict(method='colmap',registered=4,total=5,auc5=.3),dict(method='vggt',registered=5,total=5,auc5=.4)]
+    raw=json.dumps(rows);(source/'E1/results.json').write_text(raw)
+    (source/'evidence_manifest.json').write_text(json.dumps(dict(files=[])))
+    (source/'experiment_status.json').write_text(json.dumps(dict(experiments={})))
+    assert not catalog(tmp_path)['available']
+    destination=tmp_path/'validation/experiments_20261119_classical'
+    derive(source,destination)
+    result=catalog(tmp_path)
+    assert result['available'] and {m['id'] for m in result['methods']}=={'ours','colmap'}
+    assert result['experiments'][0]['rows']==[dict(r,total=r['total']) for r in rows[:2]]
+    assert (source/'E1/results.json').read_text()==raw
+    assert json.loads((destination/'E1/results.json').read_text())==rows[:2]
+    assert (destination/'E1/comparison.png').exists()

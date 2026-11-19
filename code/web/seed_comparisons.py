@@ -34,7 +34,7 @@ def main():
     if a.out.exists():raise ValueError('Seed manifest already exists; use a fresh filename to deliberately create new runs')
     records=[]
     for name,photos,K,note in datasets():
-        settings=dict(name=name+' · fresh three-method comparison',method='all',camera_matrix=K,matching_ratio=.85 if name=='Temple' else .7,depth_backend='mono',max_side=1200,make_mesh=True,mesh_quality='balanced')
+        settings=dict(name=name+' · fresh two-method comparison',method='all',camera_matrix=K,matching_ratio=.85 if name=='Temple' else .7,depth_backend='mono',max_side=1200,make_mesh=True,mesh_quality='balanced')
         job=request(a.url,'/api/jobs',settings,'POST');record=dict(scene=name,id=job['id'],settings=settings,note=note,images=[])
         records.append(record);write_json(a.out,records)
         for i,photo in enumerate(photos):

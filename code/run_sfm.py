@@ -67,7 +67,7 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     fcfg, mcfg = config['features'], config['matching']
     keypoints, descriptors = [], []
     for feature_index, (name, image) in enumerate(zip(names, color_images), 1):
-        mask_path=images.parent/'masks'/(name+'.png')
+        mask_path=images.parent/('feature_masks' if config.get('quality_feature_masks') else 'masks')/(name+'.png')
         mask=cv2.imread(str(mask_path),0) if mask_path.exists() else None
         xy, desc = cached_features(image, images/name, fcfg, images.parent/'cache',mask)
         keypoints.append(xy); descriptors.append(desc)
@@ -81,10 +81,12 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     pair_count = len(pair_list)
     for pair_index, (i, j) in enumerate(pair_list):
         report('matching', pair_index, pair_count, f'Matching views · {pair_index:,}/{pair_count:,} pairs checked')
-        tentative = match_images(descriptors[i], descriptors[j], mcfg['ratio'], mcfg['mutual'], fcfg['detector'] == 'orb')
+        tentative = match_images(descriptors[i], descriptors[j], mcfg['ratio'], mcfg['mutual'], fcfg['detector'] == 'orb',quality=mcfg.get('quality_verification',False))
+        if len(tentative)<mcfg['min_inliers']:
+            continue
         try:
             F, matches = verify_pair(keypoints[i], keypoints[j], tentative, threshold=mcfg['ransac_thresh_px'],
-                                     iterations=mcfg['ransac_iters'], confidence=mcfg['ransac_conf'], seed=config['seed']+i*1000+j)
+                                     iterations=mcfg['ransac_iters'], confidence=mcfg['ransac_conf'], seed=config['seed']+i*1000+j,quality=mcfg.get('quality_verification',False))
         except (ValueError, RuntimeError, np.linalg.LinAlgError):
             continue
         if len(matches) < mcfg['min_inliers']:
@@ -94,6 +96,8 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
         hf[(i, j)] = float(mask.sum()/len(matches)) if mask is not None else 0.
         logger.info('Pair %s/%s: %d inliers, H/F %.2f', names[i], names[j], len(matches), hf[(i, j)])
     report('matching', pair_count, pair_count, f'Matching views · {pair_count:,}/{pair_count:,} pairs checked')
+    write_json(output/'matching_report.json',dict(checked_pairs=pair_count,features={n:len(k) for n,k in zip(names,keypoints)},
+        verified_pairs=[dict(images=[names[i],names[j]],inliers=len(matches)) for (i,j),matches in pairs.items()]))
     if not pairs:
         raise RuntimeError('No image pair passed geometric verification')
     recon = Reconstruction(cameras={i: Camera(i, n, Ks[n], np.eye(3), np.zeros(3), False) for i, n in enumerate(names)})
@@ -135,12 +139,14 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
     snapshot()
     report('initialization', 1, 1, 'Initial camera pair reconstructed')
     report('registration', 2, len(names), f'Estimating camera poses · 2/{len(names)} registered')
+    registration_checks={}
     while True:
         candidates = []
         for i in range(len(names)):
             if recon.cameras[i].registered:
                 continue
             keys = [k for k in recon.points if i in recon.tracks[k]]
+            registration_checks[names[i]]=dict(shared_3d_tracks=len(keys),required_inliers=config['registration']['min_inliers'],reason='Insufficient shared 3D tracks' if len(keys)<config['registration']['min_inliers'] else 'PnP pose check failed')
             candidates.append((len(keys), i, keys))
         logger.info('Registration candidates: %s', [(names[i], count) for count, i, _ in sorted(candidates, reverse=True)])
         success = False
@@ -152,6 +158,7 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
             reg = config['registration']
             ok, rv, tv, inliers = cv2.solvePnPRansac(X, xy, Ks[names[i]], None, reprojectionError=reg['pnp_reproj_px'], iterationsCount=reg['pnp_iters'], flags=cv2.SOLVEPNP_EPNP)
             if not ok or inliers is None or len(inliers) < reg['min_inliers']:
+                registration_checks[names[i]]['pnp_inliers']=0 if inliers is None else len(inliers)
                 logger.info('Deferring %s after PnP failure', names[i]); continue
             sel = inliers[:, 0]
             rv, tv = cv2.solvePnPRefineLM(X[sel], xy[sel], Ks[names[i]], None, rv, tv)
@@ -202,6 +209,7 @@ def run_sfm(images: Path, output: Path, config: dict, max_images=None, progress=
         summary['focal_refinement']=dict(initial_fx=initial_focal,final_fx={c.name:float(c.K[0,0]) for c in recon.cameras.values()},
                                           scope='Shared fx/fy multiplier in global BA with at least four registered views; principal points fixed; per-call multiplier bounded [0.5,2]')
     write_json(output / 'summary.json', summary)
+    write_json(output/'registration_checks.json',{n:registration_checks.get(n,{}) for n in names if n not in [recon.cameras[i].name for i in recon.registered_ids()]})
     report('sfm_export', 1, 1, 'Sparse reconstruction saved')
     return recon
 

@@ -53,7 +53,7 @@ def report(root,rows,conditions):
     import matplotlib.pyplot as plt
     import numpy as np
     labels=list(conditions);fig,axes=plt.subplots(2,1,figsize=(11,7),layout='constrained')
-    colors=dict(ours='#247b69',colmap='#b17a2e',vggt='#5567a5')
+    colors=dict(ours='#247b69',colmap='#b17a2e')
     for i,(method,color) in enumerate(colors.items()):
         selected={r['condition']:r for r in rows if r['method']==method}
         x=np.arange(len(labels))+(i-1)*.24
@@ -96,7 +96,7 @@ def main():
     }
     rows=[]
     for condition,settings in conditions.items():
-        for method in ['ours','colmap','vggt']:
+        for method in ['ours','colmap']:
             folder=root/'E7'/condition/method
             if not (folder/'performance.json').exists():
                 if settings.get('reuse'):
@@ -104,12 +104,12 @@ def main():
                     write_json(folder/'reuse.json',dict(source=str((settings['reuse']/method).relative_to(root)),reason='Exact same input images, calibration and method settings'))
                 else:
                     folder.mkdir(parents=True,exist_ok=True)
-                    python=str(ROOT/'outputs/vggt_env/bin/python') if method=='vggt' else sys.executable
+                    python=sys.executable
                     command=[python,str(ROOT/'code/experiments/worker.py'),'--method',method,'--scene',str(settings['data']),
                              '--out',str(folder),'--config',str(root/'protocol.yaml')]
                     print('E7',condition,method,flush=True)
                     with (folder/'process.log').open('wb') as stream:
-                        process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1',PYTORCH_ENABLE_MPS_FALLBACK='1'))
+                        process=subprocess.run(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONUNBUFFERED='1'))
                     if not (folder/'performance.json').exists():write_json(folder/'performance.json',dict(method=method,status='failed',error=f'Process exited {process.returncode}'))
             performance=json.loads((folder/'performance.json').read_text());evaluation={}
             if performance['status']=='completed' and (folder/'poses.json').exists():evaluation=evaluate(settings['data'],folder,settings['reference'],performance)

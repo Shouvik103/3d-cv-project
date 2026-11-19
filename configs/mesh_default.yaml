@@ -20,7 +20,6 @@ filter:
   roi_percentiles: [5, 95]
   roi_margin_frac: 0.15
 sgbm: {input_long_side: 640, num_disparities: 128, neighbors: 2}
-vggt: {confidence_quantile: 0.5}
 tsdf: {voxel_div: 256, sdf_trunc_voxels: 4}
 poisson: {enabled: false, depth: 8, density_quantile: 0.05}
 clean: {min_component_frac: 0.02, light_target_triangles: 80000}

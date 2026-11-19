@@ -26,9 +26,8 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress
     cfg=copy.deepcopy(config);method=backend or cfg['depth_backend'];cfg['depth_backend']=method
     cfg['cache_only']=bool(cache_only or cfg.get('cache_only',False))
     write_json(out/'run_manifest.json',manifest(cfg));(out/'config.yaml').write_text(yaml.safe_dump(cfg))
-    if method not in ('mono','sgbm','vggt'):raise ValueError('Unknown depth backend')
+    if method not in ('mono','sgbm'):raise ValueError('Unknown depth backend')
     scene=load_scene(scene_path,images);check=check_convention(scene,out)
-    if method=='vggt' and scene.vggt_path is None:raise ValueError('VGGT fusion requires its raw NPZ with its own poses, RGB, depth and confidence')
     registered=[i for i,v in enumerate(scene.registered) if v];rng=np.random.default_rng(cfg['heldout'].get('seed',cfg['seed']))
     n=min(cfg['heldout']['num_views'],max(0,len(registered)-3));heldout=sorted(rng.choice(registered,n,replace=False).tolist()) if n else [];training=[i for i in registered if i not in heldout]
     roi=roi_bounds(scene.points,cfg['filter']['roi_percentiles'],cfg['filter']['roi_margin_frac']);predictor=MonoDepth(cfg['mono']);frames=[];records=[];depth_time=0.;align_time=0.
@@ -48,12 +47,6 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress
             elif method=='sgbm':
                 from mesh.depth_sgbm import estimate
                 frame,report=estimate(scene,i,training,cfg['sgbm']);depth_time+=time.perf_counter()-tick;record.update(report)
-            else:
-                with np.load(scene.vggt_path,allow_pickle=False) as d:
-                    depth=np.squeeze(d['depth'][i]).astype('f4');confidence=np.squeeze(d['depth_conf'][i]) if 'depth_conf' in d else None
-                    if confidence is not None:depth=np.where(confidence>=np.quantile(confidence,cfg['vggt']['confidence_quantile']),depth,0)
-                h,w=depth.shape;rgb=scene.image(i);K=scene.K[i].copy();K[0]*=w/rgb.shape[1];K[1]*=h/rgb.shape[0]
-                frame=dict(index=i,color=cv2.resize(rgb,(w,h)),depth=depth,K=K,R=scene.R[i],t=scene.t[i]);depth_time+=time.perf_counter()-tick
             frame['depth']=filter_depth(frame,roi,cfg['filter'],scene.mask(i));record['pixels_before_consistency']=int((frame['depth']>0).sum())
             if record['pixels_before_consistency']<30:raise ValueError('Too few valid foreground depth pixels')
             frames.append(frame);record['status']='accepted'
@@ -98,7 +91,7 @@ def run(scene_path,out,config,images=None,backend=None,cache_only=False,progress
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--scene',type=Path,required=True);p.add_argument('--images',type=Path);p.add_argument('--out',type=Path,required=True);p.add_argument('--config',type=Path,default=ROOT/'configs/mesh_default.yaml');p.add_argument('--backend',choices=['mono','sgbm','vggt']);p.add_argument('--cache-only',action='store_true');p.add_argument('--heldout',type=int)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--scene',type=Path,required=True);p.add_argument('--images',type=Path);p.add_argument('--out',type=Path,required=True);p.add_argument('--config',type=Path,default=ROOT/'configs/mesh_default.yaml');p.add_argument('--backend',choices=['mono','sgbm']);p.add_argument('--cache-only',action='store_true');p.add_argument('--heldout',type=int)
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True);logging.basicConfig(level=logging.INFO,handlers=[logging.StreamHandler(),logging.FileHandler(a.out/'run.log')],format='%(asctime)s %(message)s')
     cfg=merge(yaml.safe_load((ROOT/'configs/mesh_default.yaml').read_text()),yaml.safe_load(a.config.read_text()) or {})
     if a.heldout is not None:
