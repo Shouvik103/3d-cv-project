@@ -38,6 +38,11 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
 .run-inspector .collapsible-chart>summary{display:list-item;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.6}.collapsible-chart>summary:focus-visible{outline:2px solid var(--green);outline-offset:4px}.collapsible-chart[open]>summary{margin-bottom:12px}
+.run-inspector .collapsible-chart svg {
+  /* Match the 600-unit viewBox so its labels stay at the UI's 11–12px scale. */
+  max-width: 600px;
+  margin-inline: auto;
+}
 
 #experiment-records { display: grid; gap: 8px; margin: 12px 0 0; }
 #experiment-records > details { border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }

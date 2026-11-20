@@ -143,6 +143,8 @@ def build(output):
                         f'data-gallery-url="data/{manifest_name}">')
     lab_revision = hashlib.sha256((STATIC / 'lab.js').read_bytes()).hexdigest()[:12]
     page = page.replace('src="static/lab.js"', f'src="static/lab.js?v={lab_revision}"')
+    chart_style_revision = hashlib.sha256((STATIC / 'lab.css').read_bytes()).hexdigest()[:12]
+    page = page.replace('href="static/lab.css"', f'href="static/lab.css?v={chart_style_revision}"')
     script_revision = hashlib.sha256((HERE / 'gallery.js').read_bytes()).hexdigest()[:12]
     page = page.replace('<script defer src="static/app.js"></script>',
                         '<link rel="stylesheet" href="static/gallery.css">\n'
