@@ -1,0 +1,36 @@
+name: Publish reconstruction gallery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'code/web/pages/**'
+      - 'code/web/static/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Build static gallery
+        run: python3 code/web/pages/build_gallery.py build dist/gallery
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/gallery
+      - uses: actions/deploy-pages@v4
+        id: deployment

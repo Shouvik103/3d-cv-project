@@ -22,27 +22,68 @@
       if (visible(host) && inView && host.dataset.motionActive !== 'false') animation.resume();
       else animation.pause();
     });
-    if (document.hidden || reduced.matches || !$('#workspace-panel').getClientRects().length) settleProgress();
+    if (document.hidden || reduced.matches || !$('#workspace-panel').getClientRects().length) window.workbenchMotion?.settleProgress();
     if (reduced.matches) {finite.forEach(animation => animation.complete()); finite.clear();}
   }
-  const area = $('#progress-area'), bar = $('#run-progress'), output = $('#run-percent');
-  output.setAttribute('aria-live', 'off');
-  const processing = document.createElement('div');
-  processing.className = 'processing-scene'; processing.setAttribute('aria-hidden', 'true');
-  processing.innerHTML = `<div class="processing-signal">${'<i></i>'.repeat(18)}</div>`;
-  $('.progress-caption').insertBefore(processing, $('.progress-actions'));
-  const track = document.createElement('div'), fill = document.createElement('div'), sheen = document.createElement('i');
-  track.className = 'motion-track'; track.setAttribute('aria-hidden', 'true');
-  fill.className = 'motion-fill'; sheen.className = 'motion-sheen';
-  fill.append(sheen); track.append(fill); bar.after(track); area.classList.add('has-motion-track');
-  const runner = document.createElement('i'); runner.className = 'motion-runner'; fill.append(runner);
-  loop(processing.querySelectorAll('.processing-signal i'), {scaleY: [.15, 1], opacity: [.35, .95], duration: 600,
-    delay: stagger(70, {from: 'center'}), alternate: true, ease: 'inOutSine'}, area);
-  loop(runner, {left: ['0%', '100%'], scale: [.6, 1.3, .6], duration: 2400, ease: 'inOut(3)'}, area);
-  const stagePulse = {opacity: 1};
-  loop(stagePulse, {opacity: [1, .45], alternate: true, duration: 1100, ease: 'inOutSine',
-    onUpdate: () => {const active = $('.stage-list .active'); if (active) active.style.setProperty('--stage-pulse', stagePulse.opacity);}}, area);
-  loop(sheen, {translateX: ['-100%', '100%'], duration: 1300, ease: 'linear'}, area);
+  function setupProgress() {
+    const area = $('#progress-area'), bar = $('#run-progress'), output = $('#run-percent');
+    output.setAttribute('aria-live', 'off');
+    const processing = document.createElement('div');
+    processing.className = 'processing-scene'; processing.setAttribute('aria-hidden', 'true');
+    processing.innerHTML = `<div class="processing-signal">${'<i></i>'.repeat(18)}</div>`;
+    $('.progress-caption').insertBefore(processing, $('.progress-actions'));
+    const track = document.createElement('div'), fill = document.createElement('div'), sheen = document.createElement('i');
+    track.className = 'motion-track'; track.setAttribute('aria-hidden', 'true');
+    fill.className = 'motion-fill'; sheen.className = 'motion-sheen';
+    fill.append(sheen); track.append(fill); bar.after(track); area.classList.add('has-motion-track');
+    const runner = document.createElement('i'); runner.className = 'motion-runner'; fill.append(runner);
+    loop(processing.querySelectorAll('.processing-signal i'), {scaleY: [.15, 1], opacity: [.35, .95], duration: 600,
+      delay: stagger(70, {from: 'center'}), alternate: true, ease: 'inOutSine'}, area);
+    loop(runner, {left: ['0%', '100%'], scale: [.6, 1.3, .6], duration: 2400, ease: 'inOut(3)'}, area);
+    const stagePulse = {opacity: 1};
+    loop(stagePulse, {opacity: [1, .45], alternate: true, duration: 1100, ease: 'inOutSine',
+      onUpdate: () => {const active = $('.stage-list .active'); if (active) active.style.setProperty('--stage-pulse', stagePulse.opacity);}}, area);
+    loop(sheen, {translateX: ['-100%', '100%'], duration: 1300, ease: 'linear'}, area);
+    const workspacePanel = $('.result-panel');
+    workspacePanel.dataset.motionActive = 'false';
+    loop(workspacePanel, {'--edge-angle': ['0deg', '360deg'], duration: 9500, ease: 'linear'}, workspacePanel);
+    let key = null, lastStatus = null, target = 0, value = {percent: 0}, progressAnimation = null, completedKey = null;
+    function paint() {fill.style.width = value.percent + '%'; output.textContent = Math.round(value.percent * 10) / 10 + '%';}
+    function settleProgress() {progressAnimation?.cancel(); progressAnimation = null; value.percent = target; paint();}
+    function resetProgress() {
+      settleProgress(); key = null; completedKey = null; lastStatus = null; target = 0;
+      value.percent = 0; paint(); area.dataset.motionActive = 'false'; workspacePanel.dataset.motionActive = 'false'; sync();
+    }
+    function progress(job, stage) {
+      const nextKey = job.id + ':' + (job.prior_attempts || 0), changed = key !== nextKey;
+      const running = ['queued', 'running', 'uploading'].includes(job.status);
+      const justCompleted = !changed && ['queued', 'running'].includes(lastStatus) && job.status === 'completed';
+      if (changed) {settleProgress(); key = nextKey; completedKey = null;}
+      if (justCompleted) completedKey = key;
+      const previousTarget = target;
+      target = job.status === 'completed' ? 100 : Math.max(0, Math.min(100, Number(job.progress) || 0));
+      bar.value = target; bar.setAttribute('aria-valuetext', target + '% · ' + (job.message || job.status));
+      area.dataset.motionStatus = job.status; area.dataset.motionActive = String(running);
+      workspacePanel.dataset.motionActive = String(['queued', 'running'].includes(job.status));
+      if (completedKey === key && job.status === 'completed') area.hidden = false;
+      if ((changed && running) || (!running && justCompleted)) entrance(processing, {opacity: [0, 1], y: [12, 0], duration: 650});
+      document.querySelectorAll('[data-stage]').forEach((el, i) => {
+        el.classList.toggle('done', job.status === 'completed' || (stage >= 0 && i < stage));
+        el.classList.toggle('active', running && i === Math.max(0, stage));
+        el.style.removeProperty('--stage-pulse');
+        if (running && i === Math.max(0, stage)) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
+      });
+      if (changed || (!running && !justCompleted) || !visible(area) || !window.anime) settleProgress();
+      else if (previousTarget !== target) {
+        progressAnimation?.cancel();
+        progressAnimation = animate(value, {percent: target, duration: justCompleted ? 650 : 800, ease: 'out(3)', onUpdate: paint,
+        onComplete: () => {paint(); if (justCompleted) entrance(track, {opacity: [1, .4, 1], scaleX: [.96, 1], y: 0, duration: 700});}});
+      }
+      lastStatus = job.status; sync();
+    }
+    return {progress, resetProgress, settleProgress};
+  }
+  if ($('#progress-area')) window.workbenchMotion = setupProgress();
   loop($('.empty-orbits'), {y: [-4, 4], duration: 4200, alternate: true, ease: 'inOutSine'}, $('#viewer-empty'));
   loop($('.empty-cube'), {rotateX: -22, rotateY: [0, 360], duration: 24000, ease: 'linear'}, $('#viewer-empty'));
   loop($('.empty-orbits').querySelectorAll(':scope>i>b'), {rotate: [0, 360], duration: 16000, delay: stagger(1500), ease: 'linear'}, $('#viewer-empty'));
@@ -75,44 +116,7 @@
   }
   heroMotion.append(wave); $('.intro').append(heroMotion); drawWave();
   loop(waveState, {phase: [0, 1], duration: 11000, ease: 'linear', onUpdate: drawWave}, heroMotion);
-  const workspacePanel = $('.result-panel');
-  workspacePanel.dataset.motionActive = 'false';
-  loop(workspacePanel, {'--edge-angle': ['0deg', '360deg'], duration: 9500, ease: 'linear'}, workspacePanel);
-  let key = null, lastStatus = null, target = 0, value = {percent: 0}, progressAnimation = null, completedKey = null;
-  function paint() {fill.style.width = value.percent + '%'; output.textContent = Math.round(value.percent * 10) / 10 + '%';}
-  function settleProgress() {progressAnimation?.cancel(); progressAnimation = null; value.percent = target; paint();}
-  function resetProgress() {
-    settleProgress(); key = null; completedKey = null; lastStatus = null; target = 0;
-    value.percent = 0; paint(); area.dataset.motionActive = 'false'; workspacePanel.dataset.motionActive = 'false'; sync();
-  }
-  function progress(job, stage) {
-    const nextKey = job.id + ':' + (job.prior_attempts || 0), changed = key !== nextKey;
-    const running = ['queued', 'running', 'uploading'].includes(job.status);
-    const justCompleted = !changed && ['queued', 'running'].includes(lastStatus) && job.status === 'completed';
-    if (changed) {settleProgress(); key = nextKey; completedKey = null;}
-    if (justCompleted) completedKey = key;
-    const previousTarget = target;
-    target = job.status === 'completed' ? 100 : Math.max(0, Math.min(100, Number(job.progress) || 0));
-    bar.value = target; bar.setAttribute('aria-valuetext', target + '% · ' + (job.message || job.status));
-    area.dataset.motionStatus = job.status; area.dataset.motionActive = String(running);
-    workspacePanel.dataset.motionActive = String(['queued', 'running'].includes(job.status));
-    if (completedKey === key && job.status === 'completed') area.hidden = false;
-    if ((changed && running) || (!running && justCompleted)) entrance(processing, {opacity: [0, 1], y: [12, 0], duration: 650});
-    document.querySelectorAll('[data-stage]').forEach((el, i) => {
-      el.classList.toggle('done', job.status === 'completed' || (stage >= 0 && i < stage));
-      el.classList.toggle('active', running && i === Math.max(0, stage));
-      el.style.removeProperty('--stage-pulse');
-      if (running && i === Math.max(0, stage)) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
-    });
-    if (changed || (!running && !justCompleted) || !visible(area) || !window.anime) settleProgress();
-    else if (previousTarget !== target) {
-      progressAnimation?.cancel();
-      progressAnimation = animate(value, {percent: target, duration: justCompleted ? 650 : 800, ease: 'out(3)', onUpdate: paint,
-      onComplete: () => {paint(); if (justCompleted) entrance(track, {opacity: [1, .4, 1], scaleX: [.96, 1], y: 0, duration: 700});}});
-    }
-    lastStatus = job.status; sync();
-  }
-  window.workbenchMotion = {progress, resetProgress};
+
   const observer = new MutationObserver(records => {
     records.forEach(({target: el, oldValue}) => {
       if (oldValue !== null && !el.hidden && el.matches('[role=tabpanel]')) {

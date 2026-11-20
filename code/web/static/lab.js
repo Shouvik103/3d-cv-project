@@ -151,7 +151,7 @@
   }
   async function loadResearch(){
     try{
-      const response=await fetch('/api/research');if(!response.ok)throw Error('Saved experiment data could not be loaded.');data=await response.json();methodCards();
+      const response=await fetch(document.body.dataset.researchUrl || '/api/research');if(!response.ok)throw Error('Saved experiment data could not be loaded.');data=await response.json();methodCards();
       const guide=$('#metric-glossary');guide.replaceChildren();data.glossary.forEach(([term,meaning])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=term;dd.textContent=meaning;guide.append(dt,dd);});
       if(!data.available)throw Error('Saved experiment evidence is not installed on this copy. Uploads and the 3D workspace are available; add validation/experiments_* to view the recorded research.');
       $('#benchmark-date').textContent='Recorded · '+data.date;
@@ -188,9 +188,11 @@
       fillLinks($('#upload-comparison-downloads'),['json','csv','png'].map(ext=>link(ext.toUpperCase()+' comparison ↓',`/api/comparisons/${group.id}/files/comparison.${ext}`,true)));
     }catch(error){if(request===comparisonRequest){$('#upload-comparison-note').textContent=error.message;comparisonSignature='';}}
   }
-  $('#upload-comparison').addEventListener('change',()=>uploadComparison(true));$('#refresh-comparison').addEventListener('click',()=>uploadComparison(true));
-  window.addEventListener('reconstruction-library',()=>{if(!$('#uploads-panel').hidden)uploadComparison();});
-  $('#subtab-uploads').addEventListener('click',()=>uploadComparison(true));
+  if ($('#uploads-panel')) {
+    $('#upload-comparison').addEventListener('change',()=>uploadComparison(true));$('#refresh-comparison').addEventListener('click',()=>uploadComparison(true));
+    window.addEventListener('reconstruction-library',()=>{if(!$('#uploads-panel').hidden)uploadComparison();});
+    $('#subtab-uploads').addEventListener('click',()=>uploadComparison(true));
+  }
 
   async function inspect(force=false){
     const selected=window.reconstructionWorkbench?.selected,section=$('#run-analysis');
@@ -199,7 +201,7 @@
     if(signature===analysisSignature&&!force)return;analysisSignature=signature;const request=++analysisRequest;section.hidden=false;
     const host=$('#analysis-content');host.textContent='Loading recorded run measurements…';
     try{
-      const response=await fetch(`/api/${selected.type==='job'?'jobs':'examples'}/${selected.id}/analysis`);if(!response.ok)throw Error('Details are not available yet.');const result=await response.json();if(request!==analysisRequest)return;
+      const response=await fetch(selected.analysis || `/api/${selected.type==='job'?'jobs':'examples'}/${selected.id}/analysis`);if(!response.ok)throw Error('Details are not available yet.');const result=await response.json();if(request!==analysisRequest)return;
       host.replaceChildren();const scope=document.createElement('p');scope.className='scope-note';scope.textContent=`${result.method}${result.mesh_backend?' + '+result.mesh_backend.toUpperCase()+' / TSDF':''} · ${result.reference}${result.prior_attempts?' '+result.prior_attempts+' previous attempt(s) retained locally.':''}`;host.append(scope);
       const sfm=result.reconstruction||{},mesh=result.mesh||{},stats=mesh.full||{},median=finite(sfm.median_reprojection_px),residual=median?sfm.median_reprojection_px:sfm.mean_reprojection_px;
       const facts=[['Reprojection · '+(median?'median':'mean'),finite(residual)?num(residual)+' px':null],['Mean track length',sfm.mean_track_length],['SfM time',finite(sfm.runtime_seconds)?num(sfm.runtime_seconds,1)+' s':null],['Mesh time',finite(mesh.timing_seconds?.total)?num(mesh.timing_seconds.total,1)+' s':null],['Mesh components',stats.components],['Boundary edges',stats.boundary_edges],['Watertight',stats.watertight===true?'Yes':stats.watertight===false?'No':null],['Total time',finite(result.elapsed_seconds)?num(result.elapsed_seconds,1)+' s':null]];
@@ -208,9 +210,9 @@
       const grid=document.createElement('div');grid.className='fact-grid';facts.forEach(([key,value])=>{const div=document.createElement('div'),span=document.createElement('span'),strong=document.createElement('strong');span.textContent=key;strong.textContent=value==null?'—':String(value);div.append(span,strong);grid.append(div);});host.append(grid);
       if(result.history?.length){const indices=[...new Set(Array.from({length:Math.min(12,result.history.length)},(_,i)=>Math.round(i*(result.history.length-1)/Math.max(1,Math.min(12,result.history.length)-1))))];const rows=indices.map(i=>({...result.history[i],method:'ours',variant:'Step '+(i+1)}));host.append(chart('Reconstruction growth · registered cameras',rows,'registered',{collapsible:true,note:'Up to 12 recorded snapshots shown; all snapshots remain in raw measurements.'}));}
       if(mesh.timing_seconds){const rows=Object.entries(mesh.timing_seconds).filter(([key])=>key!=='total').map(([variant,seconds])=>({method:'ours',variant,seconds}));host.append(chart('Mesh stage timings (seconds)',rows,'seconds',{unit:'s',collapsible:true}));}
-      const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent='Configuration, versions & raw measurements';pre.textContent=JSON.stringify(result,null,2);details.append(summary,pre);host.append(details);
+      const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent=document.body.dataset.researchUrl?'Exported measurements':'Configuration, versions & raw measurements';pre.textContent=JSON.stringify(result,null,2);details.append(summary,pre);host.append(details);
     }catch(error){if(request===analysisRequest){host.textContent=error.message;analysisSignature='';}}
   }
-  $('#refresh-analysis').addEventListener('click',()=>inspect(true));window.addEventListener('reconstruction-selection',()=>inspect());
+  $('#refresh-analysis')?.addEventListener('click',()=>inspect(true));window.addEventListener('reconstruction-selection',()=>inspect());
   loadResearch();inspect();
 })();

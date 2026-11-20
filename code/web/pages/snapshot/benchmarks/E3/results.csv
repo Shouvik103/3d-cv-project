@@ -1,0 +1,15 @@
+scene,views,method,status,registered,reference,ate_percent_extent,auc5,seconds,reused,error
+car_s1,5,ours,failed,0,colmap,,0.0,2.21660541700021,False,Initialization yielded too few usable 3D points
+car_s1,5,colmap,failed,0,colmap,,0.0,1.2988089579998814,False,COLMAP did not reconstruct a model
+car_s1,10,ours,failed,0,colmap,,0.0,9.20749595899997,False,Initialization yielded too few usable 3D points
+car_s1,10,colmap,completed,5,colmap,0.5203379358575494,0.09891386104467301,2.0586132909998014,False,
+car_s1,20,ours,completed,10,colmap,11.307149331612504,0.0,67.21524654199993,True,
+car_s1,20,colmap,completed,10,colmap,0.3444359359013744,0.14118866938623292,8.628646082999694,True,
+car_s1,30,ours,completed,2,colmap,,0.0,73.43640529200002,False,
+car_s1,30,colmap,completed,14,colmap,0.41129196166247234,0.11934545241826935,5.560793791999913,False,
+temple_gt,5,ours,completed,2,gt,,0.05803343388548067,2.907171874999676,False,
+temple_gt,5,colmap,failed,0,gt,,0.0,0.688541792000251,False,COLMAP did not reconstruct a model
+temple_gt,10,ours,completed,5,gt,0.05101548664618009,0.19597321181089816,10.574490959000286,False,
+temple_gt,10,colmap,completed,3,gt,,0.04319858169139172,1.004421583000294,False,
+temple_gt,16,ours,completed,16,gt,0.2702830038539459,0.8640056625328606,57.56715566699995,True,
+temple_gt,16,colmap,completed,13,gt,0.09384655163810714,0.606050124498821,2.958962708999934,True,

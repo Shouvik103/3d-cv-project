@@ -1,0 +1,1 @@
+{"method":"COLMAP","mesh_backend":"sgbm","reference":"Saved 60-view reconstruction. No ground-truth surface was supplied.","mesh":{"timing_seconds":{"depth":10.153111794992583,"alignment":0.0,"filtering":2.471799334001844,"fusion":0.3449298329942394,"clean_export":0.34022920799907297,"total":17.78082541699405}}}
