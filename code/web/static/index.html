@@ -5,9 +5,16 @@
   <title>Reconstruction Lab · Images to 3D</title>
   <script src="/static/theme.js"></script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath fill='%231c7869' d='M20 2 37 12v17L20 39 3 29V12z'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="/static/theme.css">
   <link rel="stylesheet" href="/static/lab.css">
+  <link rel="stylesheet" href="/static/studio.css">
+  <link rel="stylesheet" href="/static/palette.css">
+  <script defer src="/static/vendor/anime.umd.min.js"></script>
+  <script defer src="/static/motion.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script defer src="/static/viewer.js"></script>
@@ -15,7 +22,7 @@
   <script defer src="/static/lab.js"></script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/" aria-label="Reconstruction Lab home"><span class="brand-mark">◈</span> Reconstruction<span class="brand-light">Lab</span></a><div class="header-actions"><span class="local-badge"><i></i> Running locally</span><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg><span>Dark mode</span></button></div></header>
+  <header class="topbar"><a class="brand" href="/" aria-label="Reconstruction Lab home"><span class="brand-mark" aria-hidden="true"><i class="logo-ring"><b></b></i><i class="logo-ring"><b></b></i><i class="logo-ring"><b></b></i><span class="logo-core"><i></i><i></i><i></i></span></span> Reconstruction<span class="brand-light">Lab</span></a><div class="header-actions"><span class="local-badge"><i></i> Running locally</span><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false" title="Switch to dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg><span>Dark mode</span></button></div></header>
   <main>
     <nav class="lab-nav" role="tablist" aria-label="Reconstruction Lab sections">
       <button id="tab-workspace" role="tab" aria-selected="true" aria-controls="workspace-panel" data-page="workspace"><span>01</span> Workspace</button>
@@ -49,8 +56,8 @@
         <div class="result-heading"><div><div class="eyebrow">LIVE WORKSPACE</div><h2 id="result-title">Your next perspective</h2></div><span id="result-status" class="status-pill">Ready to begin</span></div>
         <div class="viewer-toolbar"><div class="view-tabs" role="group" aria-label="Geometry type"><button type="button" id="cloud-tab" class="active" disabled>Point cloud</button><button type="button" id="mesh-tab" disabled>Triangle mesh</button></div><div class="viewer-actions"><label id="point-size-control" class="point-size-control" hidden><span>Point size</span><input id="point-size" aria-label="Point size" type="range" min="0.3" max="3" step="0.1" value="1"><output id="point-size-value" for="point-size">1.0×</output></label><label for="appearance" class="sr-only">Appearance</label><select id="appearance" disabled><option value="colored">Photo colors</option><option value="shaded">Shaded surface</option><option value="wireframe">Wireframe</option><option value="normals">Surface normals</option></select><button id="fit-view" type="button" title="Fit geometry in view" disabled>Fit view ↗</button></div></div>
         <div id="viewer-stage" class="viewer-stage"><div id="canvas-host"></div>
-          <div id="viewer-empty" class="viewer-empty"><div class="empty-object" aria-hidden="true"><span></span><span></span><span></span></div><strong>A new dimension is waiting.</strong><p>Your interactive reconstruction appears here.<br>Or open a finished example below.</p></div>
-          <div id="viewer-loading" class="viewer-loading" hidden><span class="spinner"></span><span id="loading-text">Loading geometry…</span></div>
+          <div id="viewer-empty" class="viewer-empty"><div class="empty-orbits" aria-hidden="true"><i><b></b></i><i><b></b></i><div class="empty-cube"><span></span><span></span><span></span><span></span><span></span><span></span></div></div><strong>Your photos. A new perspective.</strong><p>Upload overlapping photos to create a 3D reconstruction,<br>or explore a saved result below.</p></div>
+          <div id="viewer-loading" class="viewer-loading" hidden><span class="loading-wireframe" aria-hidden="true"><i></i><i></i><i></i></span><span id="loading-text">Loading geometry…</span></div>
           <div class="canvas-corner"><span id="geometry-label">3D VIEWPORT</span><span id="geometry-count"></span></div>
           <div id="hover-coordinates" class="hover-coordinates" hidden></div>
           <div class="canvas-bottom"><span id="viewer-hint">Drag to orbit · Scroll to zoom · Right-drag to pan</span><label><input id="axes" type="checkbox" checked> XYZ axes</label></div>

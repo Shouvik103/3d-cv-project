@@ -2,7 +2,7 @@
 (() => {
   const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
   const names={ours:'Our SfM',colmap:'COLMAP',car_s1:'Car',fountain_s2:'Fountain',temple_gt:'Temple',low_texture_dino:'Low-texture Dino',glossy_car:'Glossy car',sparse_car_5:'Sparse car · 5 views',blurred_temple:'Blurred Temple'};
-  const colors={ours:'#247b69',colmap:'#bc842e'};
+  const colors={get ours(){return getComputedStyle(document.documentElement).getPropertyValue('--series-ours').trim()||'#d4af37';},get colmap(){return getComputedStyle(document.documentElement).getPropertyValue('--series-colmap').trim()||'#9baec8';}};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const finite=v=>v!==null&&v!==undefined&&typeof v==='number'&&Number.isFinite(v);
   const num=(v,d=3)=>finite(v)?v.toLocaleString(undefined,{maximumFractionDigits:d}):'—';
@@ -35,9 +35,9 @@
   const initial=location.hash.slice(1).split('/');if(/^E[1-7]$|^M[45]$/.test(initial[1]||''))experiment=initial[1];showPage(initial[0]);
   window.addEventListener('hashchange',()=>showPage(location.hash.slice(1).split('/')[0]));
 
-  function chart(title,rows,key,{unit='',max=null,value=null,line=false,note=''}={}){
-    const card=document.createElement('figure');card.className='panel chart-card';
-    const head=document.createElement('figcaption');head.textContent=title;card.append(head);
+  function chart(title,rows,key,{unit='',max=null,value=null,line=false,note='',collapsible=false}={}){
+    const card=document.createElement(collapsible?'details':'figure');card.className='panel chart-card'+(collapsible?' collapsible-chart':'');
+    const head=document.createElement(collapsible?'summary':'figcaption');head.textContent=title;card.append(head);
     const reading=document.createElement('p');reading.className='chart-readout';reading.textContent=note||'Hover or focus a mark to inspect its value.';
     const get=r=>value?value(r):r[key];
     if(!rows.length){const p=document.createElement('p');p.className='muted chart-empty';p.textContent='No methods selected or no recorded values.';card.append(p);return card;}
@@ -206,8 +206,8 @@
       if(result.settings?.camera_prior){const note=document.createElement('p');note.className='scope-note';note.textContent='Lens prior: '+result.settings.camera_prior.source+'. Intrinsics only; previous poses and geometry are not used.';host.append(note);}
       if(result.diagnostics?.explanation){const note=document.createElement('p');note.className='scope-note';note.textContent=result.diagnostics.explanation;host.append(note);}
       const grid=document.createElement('div');grid.className='fact-grid';facts.forEach(([key,value])=>{const div=document.createElement('div'),span=document.createElement('span'),strong=document.createElement('strong');span.textContent=key;strong.textContent=value==null?'—':String(value);div.append(span,strong);grid.append(div);});host.append(grid);
-      if(result.history?.length){const indices=[...new Set(Array.from({length:Math.min(12,result.history.length)},(_,i)=>Math.round(i*(result.history.length-1)/Math.max(1,Math.min(12,result.history.length)-1))))];const rows=indices.map(i=>({...result.history[i],method:'ours',variant:'Step '+(i+1)}));host.append(chart('Reconstruction growth · registered cameras',rows,'registered',{note:'Up to 12 recorded snapshots shown; all snapshots remain in raw measurements.'}));}
-      if(mesh.timing_seconds){const rows=Object.entries(mesh.timing_seconds).filter(([key])=>key!=='total').map(([variant,seconds])=>({method:'ours',variant,seconds}));host.append(chart('Mesh stage timings (seconds)',rows,'seconds',{unit:'s'}));}
+      if(result.history?.length){const indices=[...new Set(Array.from({length:Math.min(12,result.history.length)},(_,i)=>Math.round(i*(result.history.length-1)/Math.max(1,Math.min(12,result.history.length)-1))))];const rows=indices.map(i=>({...result.history[i],method:'ours',variant:'Step '+(i+1)}));host.append(chart('Reconstruction growth · registered cameras',rows,'registered',{collapsible:true,note:'Up to 12 recorded snapshots shown; all snapshots remain in raw measurements.'}));}
+      if(mesh.timing_seconds){const rows=Object.entries(mesh.timing_seconds).filter(([key])=>key!=='total').map(([variant,seconds])=>({method:'ours',variant,seconds}));host.append(chart('Mesh stage timings (seconds)',rows,'seconds',{unit:'s',collapsible:true}));}
       const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent='Configuration, versions & raw measurements';pre.textContent=JSON.stringify(result,null,2);details.append(summary,pre);host.append(details);
     }catch(error){if(request===analysisRequest){host.textContent=error.message;analysisSignature='';}}
   }

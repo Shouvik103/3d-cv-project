@@ -76,7 +76,7 @@
     return state.viewer;
   }
   function message(text,isError=false){$('#result-message').textContent=text;$('#result-message').hidden=!text;$('#result-message').dataset.error=String(isError);}
-  function resetSelection(){state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
+  function resetSelection(){window.workbenchMotion?.resetProgress();state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
   function selectJob(job){
     const changed=state.selected?.id!==job.id||state.selected?.type!=='job'||state.selected?.job?.prior_attempts!==job.prior_attempts;
     if(changed){resetSelection();state.kind=state.preferredKind||'cloud';}
@@ -85,16 +85,16 @@
   }
   function renderJob(job){
     $('#result-title').textContent=job.name;$('#result-status').textContent=methodNames[job.method||'ours']+' · '+(job.depth_backend==='mono'?'monocular':'SGBM')+' · '+statusLabel(job);$('#result-status').dataset.status=job.status;
-    const running=activeStatuses.has(job.status);$('#progress-area').hidden=!(running||job.status==='uploading');$('#stage-message').textContent=job.message||'';$('#run-progress').value=job.progress||0;
+    const running=activeStatuses.has(job.status);$('#progress-area').hidden=!(running||job.status==='uploading');$('#stage-message').textContent=job.message||'';
     $('#retry-controls').hidden=running||job.status==='uploading';
     const retryKey=job.id+'-'+(job.prior_attempts||0);
     if($('#retry-controls').dataset.key!==retryKey){
       const method=job.method||'ours';$('#retry-controls').dataset.key=retryKey;$('#retry-ratio').value=job.matching_ratio??.85;$('#retry-ratio').disabled=method!=='ours';
       $('#retry-depth').value=job.depth_backend||'sgbm';$('#retry-quality').value=job.mesh_quality||'balanced';$('#retry-reuse').checked=false;$('#retry-reuse').disabled=!job.make_mesh||!job.artifacts?.poses;
     }
-    $('#run-percent').textContent=percent(job)+'%';
     const stages=['preparing','reconstructing','meshing','finished'];let stage=stages.indexOf(job.stage);if(job.stage==='point_cloud')stage=1;if(job.stage==='exporting')stage=2;
-    document.querySelectorAll('[data-stage]').forEach((el,i)=>el.classList.toggle('done',i<=stage));
+    if(window.workbenchMotion)window.workbenchMotion.progress(job,stage);
+    else{$('#run-progress').value=percent(job);$('#run-percent').textContent=percent(job)+'%';document.querySelectorAll('[data-stage]').forEach((el,i)=>el.classList.toggle('done',i<=stage));}
     const m=job.metrics||{};renderMetrics(m.images||job.uploads.length,m.registered,m.dense_points||m.sparse_points,m.triangles);
     const artifacts=job.artifacts||{};const cloud=!!artifacts.cloud_view,mesh=!!artifacts.mesh_view;
     $('#cloud-tab').disabled=!cloud;$('#mesh-tab').disabled=!mesh;

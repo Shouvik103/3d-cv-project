@@ -1,0 +1,138 @@
+/* Obsidian & Champagne Gold. Light mode keeps a complementary warm treatment. */
+:root{--page:#f5f1e9;--paper:#fffdf8;--ink:#242118;--muted:#706755;--line:#e0d8c8;--green:#866719;--pale:#eee6d3;--series-ours:#866719;--series-colmap:#526985}
+:root[data-theme=dark]{--page:#0b0c0e;--paper:#1a1d24;--ink:#f5dec9;--muted:#b7ad9f;--line:#34353b;--green:#d4af37;--pale:#29271e;--series-ours:#d4af37;--series-colmap:#9baec8}
+.topbar,[data-theme=dark] .topbar{background:var(--page)}
+.intro-note,[data-theme=dark] .intro-note,.step-pill,[data-theme=dark] .step-pill{color:var(--muted)}
+.local-badge i,[data-theme=dark] .local-badge i{background:var(--green);box-shadow:0 0 0 4px var(--pale)}
+.theme-toggle[aria-pressed=true]{border-color:var(--line)}
+input[type=text],input[type=number],select,[data-theme=dark] input[type=text],[data-theme=dark] input[type=number],[data-theme=dark] select{background:var(--page);color:var(--ink)}
+input::placeholder,[data-theme=dark] input::placeholder{color:var(--muted)}
+#dropzone,[data-theme=dark] #dropzone{background:var(--page);border-color:var(--line)}
+#dropzone:hover,#dropzone.dragover,[data-theme=dark] #dropzone:hover,[data-theme=dark] #dropzone.dragover{background:var(--pale);border-color:var(--green)}
+#dropzone small,[data-theme=dark] #dropzone small{color:var(--muted)}
+.upload-icon,[data-theme=dark] .upload-icon{background:var(--pale);border-color:var(--line)}
+.primary,[data-theme=dark] .primary{background:var(--green);color:var(--paper)}
+[data-theme=dark] .primary{color:#0b0c0e}
+.primary:hover:enabled,[data-theme=dark] .primary:hover:enabled{background:color-mix(in srgb,var(--green) 85%,var(--ink))}
+.secondary,.downloads a,[data-theme=dark] .secondary,[data-theme=dark] .downloads a{background:var(--pale);color:var(--green)}
+.secondary:hover,.downloads a:hover,[data-theme=dark] .secondary:hover,[data-theme=dark] .downloads a:hover{background:color-mix(in srgb,var(--pale) 80%,var(--green))}
+.view-tabs,[data-theme=dark] .view-tabs{background:var(--page)}
+.view-tabs button.active,[data-theme=dark] .view-tabs button.active{background:var(--pale);color:var(--green);box-shadow:none}
+.viewer-actions button,[data-theme=dark] .viewer-actions button{background:var(--paper);color:var(--muted)}
+.status-pill,[data-theme=dark] .status-pill{background:var(--pale);color:var(--muted);border-color:var(--line)}
+.status-pill[data-status=running],.status-pill[data-status=queued],[data-theme=dark] .status-pill[data-status=running],[data-theme=dark] .status-pill[data-status=queued],.status-pill[data-status=completed],[data-theme=dark] .status-pill[data-status=completed]{background:var(--pale);color:var(--green);border-color:var(--line)}
+.viewer-stage{background-color:#0b0c0e;background-image:radial-gradient(#d4af371c .8px,transparent .8px),radial-gradient(ellipse at 50% 40%,#222127,#0b0c0e 85%);color:#f5dec9}
+.empty-orbits>i{border-color:#d4af3766}.empty-orbits>i:nth-child(2){border-color:#d4af3740}
+.empty-orbits>i>b:after{background:#e8cd7c;box-shadow:0 0 8px #d4af3755}
+.empty-cube span{border-color:#d4af37aa;background:#d4af370b}
+.viewer-empty strong{color:#f5dec9}.viewer-empty p{color:#c1b39f}
+.canvas-corner,.canvas-bottom{color:#b4a68f}.canvas-bottom input{accent-color:#d4af37}
+.viewer-loading{background:#0b0c0ee8}.loading-wireframe i{border-color:#d4af37}
+.hover-coordinates{border-color:#d4af3766;background:#0b0c0eeb;color:#f5dec9}
+.metrics span,.stage-list,.progress-note,[data-theme=dark] .metrics span,[data-theme=dark] .stage-list,[data-theme=dark] .progress-note{color:var(--muted)}
+.card-preview,[data-theme=dark] .card-preview{background:var(--pale)}
+.card-preview.empty,[data-theme=dark] .card-preview.empty{color:var(--green)}
+.card-info p,footer,[data-theme=dark] .card-info p,[data-theme=dark] footer{color:var(--muted)}
+pre,[data-theme=dark] pre{background:var(--page)}
+progress,progress::-webkit-progress-bar,[data-theme=dark] progress,[data-theme=dark] progress::-webkit-progress-bar{background:var(--pale)}
+progress::-webkit-progress-value,[data-theme=dark] progress::-webkit-progress-value{background:var(--green)}
+progress::-moz-progress-bar,[data-theme=dark] progress::-moz-progress-bar{background:var(--green)}
+.method-dot{background:var(--series-ours)}.method-dot.colmap{background:var(--series-colmap)}
+.method-card{border-top-color:var(--series-ours)}.method-card[data-method=colmap]{border-top-color:var(--series-colmap)}
+[data-theme=dark] .method-card .device-label{color:var(--green)}
+button:focus-visible,a:focus-visible,summary:focus-visible,[role=button]:focus-visible,input:focus-visible,select:focus-visible{outline-color:var(--green)}
+
+/* The mark rotates independently; its soft halo leaves the wordmark steady. */
+.brand-mark{display:inline-grid;place-items:center;width:42px;height:42px;line-height:1;flex-shrink:0;position:relative;transform-origin:50% 50%}
+.brand-mark:before{content:'';position:absolute;inset:7px;border-radius:50%;background:var(--green);filter:blur(11px);opacity:var(--brand-halo,.1);pointer-events:none}
+@media(max-width:800px){.brand-mark{width:34px;height:34px}}
+@media(prefers-reduced-motion:reduce){.brand-mark:before{animation:none;opacity:.1}}
+
+/* Minimal header texture, retaining the existing three-column alignment. */
+.hero-motion{grid-template-columns:repeat(6,5px);gap:17px;justify-content:center;align-content:center;min-height:80px}
+.hero-motion i{width:5px;height:5px;border-radius:50%;opacity:.2}
+/* A masked highlight traces only the panel edge; it never covers the viewer. */
+.result-panel{position:relative;isolation:isolate;--edge-angle:0deg}
+.result-panel:after{content:'';position:absolute;inset:0;z-index:10;border-radius:inherit;padding:1.5px;pointer-events:none;opacity:0;background:conic-gradient(from var(--edge-angle),transparent 0deg,transparent 280deg,color-mix(in srgb,var(--green) 16%,transparent) 310deg,var(--green) 338deg,color-mix(in srgb,var(--ink) 75%,var(--green)) 345deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;transition:opacity .6s ease}
+.result-panel[data-motion-active=true]:after{opacity:.8}
+@media(prefers-reduced-motion:reduce){.hero-motion i{opacity:.2}.result-panel[data-motion-active=true]:after{background:var(--green);opacity:.45}}
+
+/* Orbital brand mark: nested circular paths with three independent satellites. */
+.brand-mark{width:42px;height:42px;font-size:0}
+.logo-ring{position:absolute;inset:1px;border:1px solid color-mix(in srgb,var(--green) 55%,transparent);border-radius:50%}
+.logo-ring:nth-child(2){inset:7px}.logo-ring:nth-child(3){inset:13px}
+.logo-ring>b{position:absolute;inset:0;display:block;border-radius:50%}
+.logo-ring>b:after{content:'';position:absolute;width:4px;height:4px;left:50%;top:-2px;border-radius:50%;background:var(--green)}
+.logo-core{position:absolute;width:12px;height:12px;left:15px;top:15px}
+.logo-core>i{position:absolute;inset:0;border:1px solid var(--green);border-radius:35%;background:color-mix(in srgb,var(--green) 10%,transparent);transform:rotate(30deg)}
+.logo-core>i:nth-child(2){transform:rotate(90deg)}.logo-core>i:nth-child(3){transform:rotate(150deg)}
+/* Replace the header dot matrix with the workspace's quiet floating geometry. */
+.hero-motion{display:flex;justify-content:center;align-items:center;width:178px;min-height:160px;gap:0}
+.hero-motion .empty-orbits{width:160px;height:140px;perspective:600px;transform-style:preserve-3d}
+.hero-motion .empty-orbits>i{width:auto;height:auto;background:transparent;border-radius:50%;opacity:1}
+.hero-motion .empty-orbits>i>b{border-radius:50%}
+.hero-motion .empty-cube{width:48px;height:48px}
+@media(max-width:1100px){.hero-motion{display:none}}
+@media(max-width:800px){.brand-mark{width:34px;height:34px}.logo-ring:nth-child(2){inset:6px}.logo-ring:nth-child(3){inset:11px}.logo-core{width:10px;height:10px;left:12px;top:12px}}
+
+/* Light flows along two quiet sinusoidal paths between the text columns. */
+.intro{grid-template-columns:minmax(440px,1.4fr) minmax(178px,1fr) max-content;column-gap:32px}
+.hero-motion{width:100%;height:100px;min-height:100px;display:flex;overflow:hidden;pointer-events:none}
+.hero-motion svg{display:block;width:100%;height:100px;overflow:visible}
+.hero-wave-path{fill:none;stroke:var(--green);stroke-width:1;stroke-opacity:.18;vector-effect:non-scaling-stroke}
+.hero-wave-path:nth-child(2){stroke-opacity:.09}
+.hero-wave-dot{fill:var(--green);filter:drop-shadow(0 0 3px color-mix(in srgb,var(--green) 45%,transparent))}
+@media(max-width:1100px){.intro{grid-template-columns:minmax(0,1fr);column-gap:0}.hero-motion{display:none}}
+
+/* Align the right-hand visuals to the headline row, excluding supporting copy. */
+@media(min-width:1101px){
+  .intro{grid-template-rows:auto auto auto auto;row-gap:0;align-items:center}
+  .intro>div:first-child{display:contents}
+  .intro>div:first-child>.eyebrow{grid-column:1;grid-row:1}
+  .intro>div:first-child>h1{grid-column:1;grid-row:2}
+  .intro>div:first-child>p{grid-column:1;grid-row:3}
+  .intro>div:first-child>.secondary{grid-column:1;grid-row:4;justify-self:start}
+  .intro>.hero-motion{grid-column:2;grid-row:2;align-self:center;margin-bottom:15px}
+  .intro>.intro-note{grid-column:3;grid-row:2;align-self:center;margin-bottom:15px}
+}
+
+/* Full-width atmospheric wave behind the intro, independent of text layout. */
+.intro{position:relative;isolation:isolate;overflow:hidden;grid-template-columns:minmax(0,1fr) max-content}
+.intro>div:first-child{position:relative;z-index:1}
+.intro>div:first-child>*{position:relative;z-index:1}
+.intro>.intro-note{position:relative;z-index:1;grid-column:2}
+.intro>.hero-motion{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;min-height:0;margin:0;opacity:.6;pointer-events:none;grid-column:auto;grid-row:auto;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.intro>.hero-motion svg{width:100%;height:100%;overflow:hidden}
+.intro .hero-wave-dot{r:1.1px}
+@media(max-width:1100px){.intro{grid-template-columns:minmax(0,1fr)}.intro>.hero-motion{display:block;opacity:.4}}
+
+/* Lower the capture list without shifting the headline or background wave. */
+.intro>.intro-note{top:16px}
+
+/* Page-wide atmosphere stays underneath opaque cards and the 3D viewport. */
+body{isolation:isolate}
+body>.topbar,body>main{position:relative;z-index:1}
+.page-atmosphere{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;user-select:none;contain:strict}
+.page-atmosphere svg{position:absolute;inset:-6%;width:112%;height:112%;overflow:visible}
+.page-atmosphere path{fill:none;stroke:var(--green);stroke-width:1;stroke-opacity:.14;vector-effect:non-scaling-stroke}
+.page-atmosphere path:nth-child(2){stroke-opacity:.11}
+.page-atmosphere path:nth-child(3){stroke-opacity:.12}
+.page-atmosphere path:nth-child(4){stroke-opacity:.1}
+.ambient-glow{position:absolute;left:18%;top:5%;width:75vw;height:85vh;background:radial-gradient(ellipse,var(--green),transparent 65%);opacity:.025}
+@media(max-width:800px){.page-atmosphere path{stroke-opacity:.1}.ambient-glow{width:100vw;left:0}}
+@media(prefers-reduced-motion:reduce){.page-atmosphere{display:none}}
+
+/* Combined point-cloud shimmer and flowing contours. */
+.ambient-shimmer{position:absolute;inset:0;pointer-events:none}
+.ambient-shimmer i{position:absolute;width:2px;height:2px;background:var(--green);border-radius:50%;opacity:.18;box-shadow:0 0 6px color-mix(in srgb,var(--green) 28%,transparent)}
+.ambient-shimmer i:nth-child(4n){width:3px;height:3px}
+@media(max-width:650px){.topbar{height:auto;min-height:84px;flex-wrap:wrap;gap:12px;padding-top:16px;padding-bottom:16px}.header-actions{gap:10px}}
+
+/* Editorial display typography; the working interface stays in DM Sans. */
+:root{--font-display:'Cormorant Garamond',Georgia,serif;--font-ui:'DM Sans',system-ui,sans-serif;font-family:var(--font-ui)}
+.brand,h2,.metrics strong,.summary-grid strong,.fact-grid strong,#run-percent,.experiment-nav b,.archive-content>.section-row h3,.viewer-empty strong{font-family:var(--font-ui)}
+.intro h1,.page-heading .page-title{font-family:var(--font-display);font-weight:400;letter-spacing:-.6px;font-synthesis:none}
+.intro h1{font-size:clamp(42px,4.3vw,62px);line-height:1.08}
+.page-heading .page-title{font-size:clamp(36px,3.8vw,52px);line-height:1.15}
+@media(max-width:800px){.intro h1{font-size:46px}.page-heading .page-title{font-size:38px}}
+@media(max-width:450px){.intro h1{font-size:40px}.page-heading .page-title{font-size:34px}}
