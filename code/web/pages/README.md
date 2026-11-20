@@ -14,6 +14,6 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory dist/gallery
 
 To refresh the snapshot locally, run `build_gallery.py snapshot` with the project's
 Python environment and a fresh output directory. It reads completed runs from
-`outputs/web_ui` and the car and chair examples. Review the generated assets
+`outputs/web_ui`. Review the generated assets
 before replacing `code/web/pages/snapshot`. The Pages workflow publishes the
 bundle on `main` after the repository's Pages source is set to GitHub Actions.

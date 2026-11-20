@@ -95,7 +95,7 @@
     const name = document.createElement('strong');
     name.textContent = item.name;
     const label = document.createElement('p');
-    label.textContent = `${item.label === 'Saved example' ? 'Example · ' : ''}${number(item.metrics.images)} photos`;
+    label.textContent = `${number(item.metrics.images)} photos`;
     details.append(name, label);
     button.append(preview, details);
     button.addEventListener('click', () => select(item));

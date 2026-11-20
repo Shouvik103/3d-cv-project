@@ -50,9 +50,7 @@ def archive_item(output, slug, name, label, cloud, mesh, glb, preview, metrics, 
 
 def create_snapshot(output):
     sys.path.insert(0, str(ROOT / 'code'))
-    from web.geometry import export_geometry
     from web.research import catalog, evidence_root, run_analysis
-    from web.server import EXAMPLES, example_cache, example_source
 
     history = ROOT / 'outputs/web_ui'
     items = []
@@ -84,23 +82,6 @@ def create_snapshot(output):
         items.append(archive_item(output, f'run-{i:02d}', f'Run {i:02d} · {label}', label,
                                   *sources, preview, metrics, analysis))
 
-    for slug, example in EXAMPLES.items():
-        source_dir = ROOT / 'results/mesh' / example['folder']
-        paths = []
-        for kind in ('cloud', 'mesh'):
-            cached = example_cache(history, slug, example, kind)
-            if not cached.is_file():
-                cached = output.parent / f'{slug}-{kind}-export.json'
-                export_geometry(example_source(example, kind), cached, ROOT / example['poses'], kind)
-            paths.append(cached)
-        summary = read(source_dir / 'summary.json')
-        timing = summary.get('timing_seconds', {})
-        metrics = {'images': 60, 'registered': summary.get('registered_views', 60)}
-        analysis = {'method': 'COLMAP', 'mesh_backend': 'sgbm', 'reference':
-                    'Saved 60-view reconstruction. No ground-truth surface was supplied.',
-                    'mesh': {'timing_seconds': timing}}
-        items.append(archive_item(output, slug, example['name'], 'Saved example', *paths,
-                                  source_dir / 'mesh_light.glb', source_dir / 'preview.png', metrics, analysis))
     write(output / 'gallery.json', items)
 
     research = catalog(ROOT)
