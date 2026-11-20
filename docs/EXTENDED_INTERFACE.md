@@ -1,6 +1,6 @@
 # Extended reconstruction interface
 
-Branch: `codex/extended-reconstruction-interface`. Active reconstruction methods:
+The interface is integrated into `main`. Active reconstruction methods:
 **Our SfM** and **CPU COLMAP**. Workspace offers either method or **Compare both**,
 which creates exactly two independent, serially queued jobs from identical uploads.
 
@@ -8,7 +8,7 @@ which creates exactly two independent, serially queued jobs from identical uploa
 
 | View | Contents | Source |
 | --- | --- | --- |
-| Workspace | Uploads, progress %, cancel/delete, cloud/mesh, point size, XYZ hover, downloads, saved Car/Chair | Local jobs and existing geometry |
+| Workspace | Uploads, progress %, cancel/delete, cloud/mesh, point size, XYZ hover, downloads, saved runs and original-photo reference | Local jobs and existing geometry |
 | Run inspector | Residuals, tracks, calibration provenance, per-view registration diagnostics, topology and stage times | The selected run's own summaries |
 | Pipeline & methods | Two camera pipelines, SGBM / monocular depth, TSDF, limitations | Current implementation |
 | Performance / Your comparisons | Same-upload jobs, previews, 3D links, tables, graphs and CSV/JSON/PNG downloads | Compare both uploads |
@@ -51,8 +51,12 @@ cannot establish correct global geometry. Mesh scoring is not the official EPFL
 visibility-aware scorer. Fusion-held-out photos participated in camera estimation.
 
 Uploads have no supplied GT cameras or surfaces, so their inspector does not
-invent GT scores. Existing saved 60-view Car/Chair results are explicitly labelled
-COLMAP + SGBM, distinct from benchmark subsets and Our SfM results.
+invent GT scores. The current local library contains Chair and Hotdog runs from Our SfM and COLMAP,
+each with 200 photos and SGBM depth. The removed 60-view Car/Chair example cards
+are historical outputs. The public archive retains four selected snapshot runs.
+Your comparisons lists linked Compare both uploads. With no linked groups, its
+selector is disabled and explains how to create one. Independently saved runs
+remain in Workspace. The local Reference button previews an original uploaded photo chosen for the run.
 
 ## API
 

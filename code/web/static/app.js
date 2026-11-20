@@ -76,7 +76,41 @@
     return state.viewer;
   }
   function message(text,isError=false){$('#result-message').textContent=text;$('#result-message').hidden=!text;$('#result-message').dataset.error=String(isError);}
-  function resetSelection(){window.workbenchMotion?.resetProgress();state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
+  const referenceDialog = document.createElement('dialog');
+  referenceDialog.className = 'reference-dialog';
+  referenceDialog.setAttribute('aria-labelledby', 'reference-title');
+  referenceDialog.innerHTML = '<div class="reference-heading"><h2 id="reference-title">Original photo</h2><button type="button" class="secondary" aria-label="Close reference photo">Close ×</button></div><img alt=""><p role="status"></p>';
+  document.body.append(referenceDialog);
+  const referenceImage = referenceDialog.querySelector('img');
+  const referenceCaption = referenceDialog.querySelector('p');
+  referenceDialog.querySelector('button').addEventListener('click', () => referenceDialog.close());
+  referenceDialog.addEventListener('click', event => {
+    if (event.target !== referenceDialog) return;
+    const bounds = referenceDialog.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) referenceDialog.close();
+  });
+  referenceDialog.addEventListener('close', () => referenceImage.removeAttribute('src'));
+  referenceImage.addEventListener('load', () => {
+    referenceImage.hidden = false;
+    referenceCaption.textContent = referenceImage.dataset.filename || 'Original uploaded photo';
+  });
+  referenceImage.addEventListener('error', () => {
+    referenceImage.hidden = true;
+    referenceCaption.textContent = 'This photo could not be displayed in your browser. The original upload is available in Run details.';
+  });
+  $('#reference-photo').addEventListener('click', () => {
+    const selected = state.selected;
+    const uploads = selected?.job?.uploads || [];
+    const photo = uploads.find(item => item.index === selected?.job?.reference_image_index) || uploads[0];
+    if (selected?.type !== 'job' || !photo) return;
+    referenceImage.hidden = true;
+    referenceImage.alt = 'Original uploaded photo of ' + selected.job.name;
+    referenceImage.dataset.filename = photo.name;
+    referenceCaption.textContent = 'Loading original photo…';
+    referenceDialog.showModal();
+    referenceImage.src = `/api/jobs/${selected.id}/images/${photo.index}`;
+  });
+  function resetSelection(){referenceDialog.close();$('#reference-photo').hidden=true;window.workbenchMotion?.resetProgress();state.request++;state.loadedKey=null;state.loadingKey=null;state.viewer?.clear();$('#viewer-empty').hidden=false;$('#viewer-loading').hidden=true;$('#geometry-count').textContent='';$('#appearance').disabled=true;$('#point-size-control').hidden=true;$('#fit-view').disabled=true;$('#downloads').replaceChildren();delete $('#downloads').dataset.signature;$('#downloads').hidden=true;$('#run-log').textContent='';$('#retry-controls').hidden=true;}
   function selectJob(job){
     const changed=state.selected?.id!==job.id||state.selected?.type!=='job'||state.selected?.job?.prior_attempts!==job.prior_attempts;
     if(changed){resetSelection();state.kind=state.preferredKind||'cloud';}
@@ -84,6 +118,7 @@
     if(changed)requestAnimationFrame(()=>$('#result-title').scrollIntoView({behavior:'smooth',block:'start'}));
   }
   function renderJob(job){
+    $('#reference-photo').hidden=!job.uploads.length;
     $('#result-title').textContent=job.name;$('#result-status').textContent=methodNames[job.method||'ours']+' · '+(job.depth_backend==='mono'?'monocular':'SGBM')+' · '+statusLabel(job);$('#result-status').dataset.status=job.status;
     const running=activeStatuses.has(job.status);$('#progress-area').hidden=!(running||job.status==='uploading');$('#stage-message').textContent=job.message||'';
     $('#retry-controls').hidden=running||job.status==='uploading';

@@ -186,7 +186,19 @@
     const groups=window.reconstructionWorkbench?.comparisons||[],select=$('#upload-comparison'),previous=select.value;
     const ids=groups.map(g=>g.id).join(',');
     if(select.dataset.ids!==ids){select.replaceChildren(...groups.map(g=>new Option(`${g.name} · ${g.children.length} method runs`,g.id)));select.dataset.ids=ids;if(groups.some(g=>g.id===previous))select.value=previous;}
-    if(!groups.length){$('#upload-comparison-note').textContent='Choose Compare both in Workspace to reconstruct the same images with both methods.';return;}
+    select.disabled = !groups.length;
+    $('#refresh-comparison').disabled = !groups.length;
+    if (!groups.length) {
+      select.replaceChildren(new Option('No comparisons available', ''));
+      delete select.dataset.ids;
+      comparisonSignature = '';
+      comparisonRequest++;
+      for (const id of ['upload-method-runs', 'upload-comparison-charts', 'upload-comparison-table', 'upload-comparison-downloads']) {
+        $('#' + id).replaceChildren();
+      }
+      $('#upload-comparison-note').textContent = 'No linked comparisons are saved. Choose Compare both in Workspace to run Our SfM and COLMAP on the same photos. Individually saved runs appear in Your reconstructions.';
+      return;
+    }
     const group=groups.find(g=>g.id===select.value);if(!group)return;
     const signature=JSON.stringify([group.id,group.children.map(j=>[j.id,j.status,j.progress,j.metrics])]);
     if(signature===comparisonSignature&&!force)return;comparisonSignature=signature;const request=++comparisonRequest;

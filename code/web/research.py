@@ -49,7 +49,7 @@ GLOSSARY = [
     ('ATE (%) ↓', 'Camera-center RMSE after Sim(3), divided by reference trajectory extent. Uses shared cameras only; undefined alignment stays missing.'),
     ('Pose AUC@5 ↑', 'Relative-pose accuracy integrated up to 5°. Missing camera pairs are penalized. Range 0–1.'),
     ('Pose AUC@10 / AUC@30 ↑', 'The same relative-pose measure at more permissive cutoffs. Rotation and translation columns report median pairwise angular errors in degrees.'),
-    ('Reprojection (px) ↓', 'Median pixel residual on observed feature tracks at processed image resolution; not a full 3D accuracy measure.'),
+    ('Reprojection (px) ↓', 'Pixel residual on observed feature tracks at processed image resolution. Benchmark tables report median residuals; upload inspectors identify median or mean for each method.'),
     ('Accuracy / completeness ↓', 'Mean estimate→GT / GT→estimate surface distance, as a percentage of the GT mesh diagonal.'),
     ('F-score ↑', 'Precision/recall balance at 0.5%, 1% or 2% of the GT diagonal. Range 0–1; not an object-completeness percentage.'),
     ('Coverage', 'Fraction of held-out image pixels hit by rendered geometry. Read beside masked PSNR/SSIM; small patches can score well.'),
