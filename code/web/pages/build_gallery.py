@@ -1,5 +1,6 @@
 """Export a read-only snapshot and build the GitHub Pages edition."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -113,6 +114,11 @@ def replace_once(page, pattern, replacement):
 
 def build(output):
     shutil.copytree(SNAPSHOT, output / 'data')
+    manifest = output / 'data/gallery.json'
+    revision = hashlib.sha256(manifest.read_bytes()).hexdigest()[:12]
+    manifest_name = f'gallery-{revision}.json'
+    # Keep the unversioned manifest current for tabs running the previous script.
+    copy(manifest, manifest.with_name(manifest_name))
     files = ('theme.js', 'style.css', 'theme.css', 'lab.css', 'studio.css', 'palette.css',
              'motion.js', 'viewer.js', 'lab.js', 'vendor/anime.umd.min.js', 'vendor/anime.LICENSE.md')
     for name in files:
@@ -122,9 +128,12 @@ def build(output):
 
     page = (STATIC / 'index.html').read_text()
     page = page.replace('"/static/', '"static/').replace('href="/"', 'href="./"')
-    page = page.replace('<body>', '<body class="gallery-edition" data-research-url="data/research.json">')
+    page = page.replace('<body>', '<body class="gallery-edition" data-research-url="data/research.json" '
+                        f'data-gallery-url="data/{manifest_name}">')
+    script_revision = hashlib.sha256((HERE / 'gallery.js').read_bytes()).hexdigest()[:12]
     page = page.replace('<script defer src="static/app.js"></script>',
-                        '<link rel="stylesheet" href="static/gallery.css">\n  <script defer src="static/gallery.js"></script>')
+                        '<link rel="stylesheet" href="static/gallery.css">\n'
+                        f'  <script defer src="static/gallery.js?v={script_revision}"></script>')
     page = page.replace('Running locally', 'Read-only archive').replace('> Workspace</button>', '> Gallery</button>')
     page = page.replace('YOUR PHOTOS, ANOTHER DIMENSION', 'RECONSTRUCTION ARCHIVE')
     page = page.replace('Upload overlapping photos of an object. Reconstruct its shape, explore it in 3D, and take the results with you.',

@@ -8,8 +8,8 @@
   let request = 0;
   window.reconstructionWorkbench = state;
 
-  async function read(url) {
-    const response = await fetch(url);
+  async function read(url, options) {
+    const response = await fetch(url, options);
     if (!response.ok) throw new Error(`Could not load ${url} (${response.status}).`);
     return response.json();
   }
@@ -112,7 +112,9 @@
     $('#point-size-value').textContent = `${size.toFixed(1)}×`;
     state.viewer?.pointSize(size);
   });
-  read('data/gallery.json').then(items => {
+  const manifest = document.body.dataset.galleryUrl;
+  // A cached page may still point to a manifest retired by a later deploy.
+  read(manifest).catch(() => read('data/gallery.json', {cache: 'no-store'})).then(items => {
     $('#run-library').replaceChildren(...items.map(card));
     if (items.length) select(items[0]);
   }).catch(error => { $('#run-library').textContent = error.message; });
