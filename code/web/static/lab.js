@@ -71,7 +71,7 @@
     host.querySelectorAll('[data-tip]').forEach(mark=>{['pointerenter','focus'].forEach(event=>mark.addEventListener(event,()=>reading.textContent=mark.dataset.tip));});
     card.append(host,reading);return card;
   }
-  const headings={pipeline_seconds:'Camera + mesh (s)',geometry_reused:'Saved cameras reused',inference_mode:'Processing mode',scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',triangles:'Mesh triangles',reprojection_statistic:'Residual statistic',depth_backend:'Depth backend',prior_attempts:'Prior attempts',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
+  const headings={image:'Image',verified_links:'Verified links',verified_inliers:'Strongest verified inliers',shared_tracks:'Shared 3D tracks',pnp_inliers:'PnP inliers',pipeline_seconds:'Camera + mesh (s)',geometry_reused:'Saved cameras reused',inference_mode:'Processing mode',scene:'Scene',condition:'Condition',method:'Method',variant:'Variant',status:'Run status',registered:'Cameras',total:'Input views',views:'Views',reference:'Reference',ate_percent_extent:'ATE % ↓',auc5:'AUC@5 ↑',auc10:'AUC@10 ↑',auc30:'AUC@30 ↑',median_rotation_deg:'Rotation error ° ↓',median_translation_deg:'Translation error ° ↓',median_reprojection_px:'Reproj. px ↓',reprojection_px:'Reproj. px ↓',points:'Exported points',mean_track_length:'Track length',cloud_chamfer_agreement:'Cloud agreement distance ↓',cloud_fscore_agreement:'Cloud agreement F ↑',seconds:'Seconds',triangles:'Mesh triangles',reprojection_statistic:'Residual statistic',depth_backend:'Depth backend',prior_attempts:'Prior attempts',peak_rss_mb:'Peak RSS MB',error:'Failure reason',reused:'Reused run',initial_fx:'Initial fx',final_fx:'Final fx',fused_views:'Fused views',faces:'Full faces',accuracy_percent_diagonal:'Accuracy % ↓',completeness_percent_diagonal:'Completeness % ↓',f005:'F@0.5% ↑',f01:'F@1% ↑',f02:'F@2% ↑',coverage:'Coverage',psnr_db:'PSNR dB ↑',ssim:'SSIM ↑'};
   function table(host,rows,columns=null){
     host.replaceChildren();if(!rows.length){host.textContent='No recorded rows for this selection.';return;}
     columns=columns||Object.keys(headings).filter(key=>rows.some(r=>key in r));
@@ -83,6 +83,7 @@
       if(key==='registered')value=finite(row.registered)?`${row.registered}/${row.total??'?'}`:'—';
       else if(key==='status'){value=row.status==='completed'&&finite(row.total)&&row.registered<row.total?'Completed · partial cameras':label(value);cell.className='status-cell';}
       else if(key==='reference')value=value==='gt'?'Ground truth':value==='colmap'?'COLMAP agreement':value;
+      else if(key==='coverage'&&finite(value))value=num(value*100,1)+'%';
       else if(typeof value==='number')value=num(value);
       else if(typeof value==='boolean')value=value?'Yes':'No';
       else if(['method','scene','condition','variant'].includes(key))value=label(value);
@@ -104,7 +105,7 @@
     const scene=$('#comparison-scene').value,selected=new Set($$('#method-filters input:checked').map(x=>x.value));
     const rows=rowsFor('E1',scene).filter(r=>selected.has(r.method));
     $('#comparison-reference').textContent=scene==='temple_gt'?'Temple · supplied GT cameras. All methods received the same 16 images. ATE alone can favor a method that reconstructs fewer views.':`${label(scene)} · agreement with an existing full-data COLMAP pseudo-reference. These camera errors are not independent ground-truth accuracy.`;
-    metricCharts($('#comparison-charts'),rows);table($('#comparison-table'),rows,['method','status','registered','ate_percent_extent','auc5','median_reprojection_px','points','seconds','peak_rss_mb']);csv('E1','#comparison-csv');
+    metricCharts($('#comparison-charts'),rows);table($('#comparison-table'),rows,['method','status','registered','ate_percent_extent','auc5','auc10','auc30','median_rotation_deg','median_translation_deg','median_reprojection_px','mean_track_length','points','cloud_chamfer_agreement','cloud_fscore_agreement','seconds','peak_rss_mb','error']);csv('E1','#comparison-csv');
   }
   function ablations(reset=false){
     const selected=stage($('#ablation-study').value);if(!selected)return;
@@ -114,16 +115,20 @@
     metricCharts($('#ablation-charts'),rows,selected.id==='E3');table($('#ablation-table'),rows);csv(selected.id,'#ablation-csv');
   }
   function meshes(){
-    const rows=stage('M5')?.rows||[];
+    const selected=stage($('#mesh-study').value),rows=selected?.rows||[];
+    $('#mesh-finding').textContent=selected?.finding||'';
     $('#mesh-charts').replaceChildren(chart('Surface accuracy (% GT diagonal) ↓',rows,'accuracy_percent_diagonal',{unit:'%'}),chart('Surface completeness (% GT diagonal) ↓',rows,'completeness_percent_diagonal',{unit:'%'}),chart('F-score at 1% of GT diagonal ↑',rows,'f01',{max:1}),chart('Fusion-held-out render coverage (%)',rows,'coverage',{max:100,unit:'%',value:r=>finite(r.coverage)?100*r.coverage:null,note:'Not an unseen-image test. Read beside masked PSNR and SSIM.'}));
     table($('#mesh-table'),rows,['method','status','fused_views','faces','accuracy_percent_diagonal','completeness_percent_diagonal','f005','f01','f02','coverage','psnr_db','ssim','seconds']);
-    $('#mesh-comparison').src=asset('M5','side_by_side.png')?.url||'';
-    fillLinks($('#mesh-links'),[['ours','M4'],['colmap','M5']].map(([m,s])=>{const a=asset(s,`${m}/interactive_mesh.html`);return a&&link(label(m)+' · interactive mesh ↗',a.url);}).concat([asset('M5','results.csv')&&link('Mesh measurements CSV ↓',asset('M5','results.csv').url,true)]));
+    const image=asset('M5','side_by_side.png'),figure=$('#mesh-comparison').closest('figure');
+    figure.hidden=!image||selected?.id!=='M5';
+    if(image)$('#mesh-comparison').src=image.url;
+    fillLinks($('#mesh-links'),[['ours','M4'],['colmap','M5']].map(([m,s])=>{const a=asset(s,`${m}/interactive_mesh.html`);return a&&link(label(m)+' · interactive mesh ↗',a.url);}).concat([selected&&asset(selected.id,'results.csv')&&link('Mesh measurements CSV ↓',asset(selected.id,'results.csv').url,true)]));
   }
   function archive(id){
     const selected=stage(id);if(!selected)return;experiment=id;
     $$('#experiment-nav button').forEach(b=>{const active=b.dataset.experiment===id;b.setAttribute('aria-current',active?'true':'false');});
     $('#experiment-status').textContent=id+' · '+selected.status;$('#experiment-title').textContent=selected.title;$('#experiment-description').textContent=selected.description;
+    const finding=$('#experiment-finding');finding.textContent=selected.finding||'';finding.hidden=!selected.finding;
     table($('#experiment-table'),selected.rows);
     fillLinks($('#experiment-downloads'),['csv','json'].map(ext=>{const a=asset(id,'results.'+ext);return a&&link(ext.toUpperCase()+' ↓',a.url,true);}));
     const gallery=$('#experiment-plots');gallery.replaceChildren();
@@ -132,7 +137,16 @@
       const img=document.createElement('img');img.src=a.url;img.loading='lazy';img.alt=label(a.path.replace(id+'/','').replace('.png',''));anchor.append(img);
       const caption=document.createElement('figcaption');caption.textContent=img.alt+' · Open original ↗';const pdf=selected.assets.find(p=>p.path===a.path.replace('.png','.pdf'));if(pdf)caption.append(' ',link('PDF ↓',pdf.url,true));figure.append(anchor,caption);gallery.append(figure);
     });
-    fillLinks($('#experiment-records'),selected.assets.filter(a=>/\.(json|md|yaml|html)$/.test(a.path)).map(a=>link(a.path.slice(id.length+1),a.url,!a.path.endsWith('.html'))));
+    const records=$('#experiment-records'),groups=new Map();
+    selected.assets.filter(a=>/\.(json|md|yaml|html)$/.test(a.path)).forEach(a=>{
+      const path=a.path.slice(id.length+1),split=path.lastIndexOf('/'),group=split<0?'Study records':path.slice(0,split);
+      if(!groups.has(group))groups.set(group,[]);
+      groups.get(group).push(link(path.slice(split+1),a.url,!path.endsWith('.html')));
+    });
+    records.replaceChildren(...Array.from(groups,([name,links])=>{
+      const group=document.createElement('details'),summary=document.createElement('summary'),files=document.createElement('div');
+      summary.textContent=name.replaceAll('_',' ');files.className='asset-links';files.append(...links);group.append(summary,files);return group;
+    }));
     if(!$('#experiments-panel').hidden)history.replaceState(null,'','#experiments/'+id);
   }
   function methodCards(){
@@ -146,7 +160,7 @@
       for(const [key,heading] of [['outputs','Outputs'],['calibration','Camera calibration'],['mesh','Dense reconstruction'],['limits','Limits'],['license','License']]){const h=document.createElement('h4'),p=document.createElement('p');h.textContent=heading;p.textContent=method[key];details.append(h,p);}
       details.append(link('Source & documentation ↗',method.source));card.append(pill,title,device,description,steps,details);return card;
     }));
-    const facts=[['Reconstruction methods','Our SfM + COLMAP'],['Camera computation','CPU'],['Dense reconstruction','SGBM / monocular + TSDF'],['Recorded validation',data.verification?.tests?.passed?data.verification.tests.passed+' tests passed':'Not recorded']];
+    const facts=[['Reconstruction methods','Our SfM + COLMAP'],['Camera computation','CPU'],['Dense reconstruction','SGBM / monocular + TSDF'],['Results validation snapshot',data.verification?.tests?.passed?data.verification.tests.passed+' tests passed':'Not recorded']];
     $('#runtime-facts').replaceChildren(...facts.map(([heading,value])=>{const div=document.createElement('div'),dt=document.createElement('span'),dd=document.createElement('strong');dt.textContent=heading;dd.textContent=value;div.append(dt,dd);return div;}));
   }
   async function loadResearch(){
@@ -158,12 +172,14 @@
       const count=data.experiments.reduce((sum,e)=>sum+e.rows.length,0),summary=[[String(data.methods.length).padStart(2,'0'),'Methods compared'],[String(data.experiments.length).padStart(2,'0'),'Experiment studies'],[String(count),'Recorded conditions¹'],['GT + agreement','Reference types']];
       $('#benchmark-summary').replaceChildren(...summary.map(([value,text])=>{const div=document.createElement('div'),n=document.createElement('strong'),p=document.createElement('span');n.textContent=value;p.textContent=text;div.append(n,p);return div;}));
       const note=document.createElement('p');note.className='summary-footnote';note.textContent='¹ Includes reused conditions and failed attempts; method failures are retained.';$('#benchmark-summary').after(note);
+      fillLinks($('#benchmark-artifacts'),(data.artifacts||[]).map(a=>link(a.path,a.url,true)));
       $('#benchmark-notes').replaceChildren(...data.notes.map(text=>{const li=document.createElement('li');li.textContent=text;return li;}));
       $('#ablation-study').replaceChildren(...data.experiments.filter(e=>/^E[2-7]$/.test(e.id)).map(e=>new Option(`${e.id} · ${e.title}`,e.id)));
       $('#experiment-nav').replaceChildren(...data.experiments.map(e=>{const button=document.createElement('button');button.type='button';button.dataset.experiment=e.id;const number=document.createElement('b'),span=document.createElement('span');number.textContent=e.id;span.textContent=e.title;button.append(number,span);button.addEventListener('click',()=>archive(e.id));return button;}));
       comparison();ablations(true);meshes();archive(experiment);
     }catch(error){const status=$('#research-status');status.hidden=false;status.replaceChildren();const message=document.createElement('p'),retry=document.createElement('button');message.textContent=error.message;retry.className='secondary';retry.textContent='Retry loading';retry.addEventListener('click',()=>{status.hidden=true;loadResearch();});status.append(message,retry);}
   }
+  $('#mesh-study').addEventListener('change',meshes);
   $('#comparison-scene').addEventListener('change',comparison);$('#method-filters').addEventListener('change',comparison);$('#ablation-study').addEventListener('change',()=>ablations(true));$('#ablation-scene').addEventListener('change',()=>ablations());
 
   async function uploadComparison(force=false){
@@ -208,6 +224,23 @@
       if(result.settings?.camera_prior){const note=document.createElement('p');note.className='scope-note';note.textContent='Lens prior: '+result.settings.camera_prior.source+'. Intrinsics only; previous poses and geometry are not used.';host.append(note);}
       if(result.diagnostics?.explanation){const note=document.createElement('p');note.className='scope-note';note.textContent=result.diagnostics.explanation;host.append(note);}
       const grid=document.createElement('div');grid.className='fact-grid';facts.forEach(([key,value])=>{const div=document.createElement('div'),span=document.createElement('span'),strong=document.createElement('strong');span.textContent=key;strong.textContent=value==null?'—':String(value);div.append(span,strong);grid.append(div);});host.append(grid);
+      const diagnostic=result.diagnostics;
+      if(diagnostic?.views?.length){
+        const details=document.createElement('details'),summary=document.createElement('summary'),scope=document.createElement('p'),viewTable=document.createElement('div');
+        summary.textContent='Calibration and per-view registration diagnostics';
+        scope.className='scope-note';
+        const sources=diagnostic.calibration_sources?.join(', ')||'Unrecorded';
+        const focal=diagnostic.initial_focal_range?.map(value=>num(value,1)).join('–');
+        scope.textContent=`Calibration sources: ${sources}. ${focal?`Initial focal range: ${focal} px. `:''}${diagnostic.scope||''}`;
+        viewTable.className='table-frame';
+        const rows=diagnostic.views.map(view=>({
+          image:view.image, status:view.registered?'Registered':'Missing',
+          verified_links:view.verified_links_to_registered, verified_inliers:view.strongest_verified_inliers,
+          shared_tracks:view.shared_3d_tracks, pnp_inliers:view.pnp_inliers, error:view.registered?null:view.reason,
+        }));
+        table(viewTable,rows,['image','status','verified_links','verified_inliers','shared_tracks','pnp_inliers','error']);
+        details.append(summary,scope,viewTable);host.append(details);
+      }
       if(result.history?.length){const indices=[...new Set(Array.from({length:Math.min(12,result.history.length)},(_,i)=>Math.round(i*(result.history.length-1)/Math.max(1,Math.min(12,result.history.length)-1))))];const rows=indices.map(i=>({...result.history[i],method:'ours',variant:'Step '+(i+1)}));host.append(chart('Reconstruction growth · registered cameras',rows,'registered',{collapsible:true,note:'Up to 12 recorded snapshots shown; all snapshots remain in raw measurements.'}));}
       if(mesh.timing_seconds){const rows=Object.entries(mesh.timing_seconds).filter(([key])=>key!=='total').map(([variant,seconds])=>({method:'ours',variant,seconds}));host.append(chart('Mesh stage timings (seconds)',rows,'seconds',{unit:'s',collapsible:true}));}
       const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent=document.body.dataset.researchUrl?'Exported measurements':'Configuration, versions & raw measurements';pre.textContent=JSON.stringify(result,null,2);details.append(summary,pre);host.append(details);

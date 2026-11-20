@@ -14,6 +14,17 @@ STAGES = {
     'M4': ('Ground-truth mesh', 'Original fountain-P11 scan, camera-only Sim(3), GT-box crop and 200k surface samples.'),
     'M5': ('Mesh source comparison', 'Our SfM and COLMAP cameras with the same mono depth backend.'),
 }
+FINDINGS = {
+    'E1': 'On Temple, Our SfM registered 16/16 cameras (0.270% ATE, 0.864 AUC@5). COLMAP registered 13/16 (0.094% ATE, 0.606 AUC@5). COLMAP ran faster on all three inputs. ATE measures only shared cameras.',
+    'E2': 'On Temple, local and global BA reduced ATE from 0.377% to 0.270%. On the car, lower reprojection error did not resolve incorrect global geometry or missing cameras.',
+    'E3': 'More views did not always improve registration. Our SfM registered 10/20 car views but only 2/30 on the independently sampled 30-view set. Global ATE is unavailable for the two-camera result.',
+    'E4': 'ORB failed to initialize on the car but registered all 11 fountain cameras. The detector choice depended on the scene.',
+    'E5': 'Temple ATE was 0.270% with supplied calibration, 6.970% with approximate intrinsics, and 8.297% after shared-focal BA. The real run did not recover true calibration. The separate synthetic recovery test passed.',
+    'E6': 'A ratio of 0.7 reduced car ATE against the COLMAP reference to 0.935%, while retaining only 10/20 cameras. The frozen E1 baseline still uses its original threshold.',
+    'E7': 'Both methods failed on the five-view car and deliberately blurred Temple. On Dino, Our SfM registered 4/16 cameras and COLMAP registered 6/16.',
+    'M4': 'The Our SfM mesh fused eight views and achieved 3.205% surface accuracy error, 10.087% completeness error, and 0.059 F-score at 1% of the GT diagonal. The score includes unseen scan regions.',
+    'M5': 'With the shared monocular depth and fusion policy, COLMAP had lower accuracy and completeness errors and higher F@1% (0.098 vs. 0.059). Both surfaces were incomplete. Camera poses, sparse landmarks, and ROI effects are coupled.',
+}
 METHODS = [
     dict(id='ours', name='Our SfM', label='Geometry, step by step', device='CPU',
          description='Incremental structure from motion built from feature correspondences, triangulation and bundle adjustment.',
@@ -37,6 +48,7 @@ GLOSSARY = [
     ('Registration', 'Cameras reconstructed / input views.'),
     ('ATE (%) ↓', 'Camera-center RMSE after Sim(3), divided by reference trajectory extent. Uses shared cameras only; undefined alignment stays missing.'),
     ('Pose AUC@5 ↑', 'Relative-pose accuracy integrated up to 5°. Missing camera pairs are penalized. Range 0–1.'),
+    ('Pose AUC@10 / AUC@30 ↑', 'The same relative-pose measure at more permissive cutoffs. Rotation and translation columns report median pairwise angular errors in degrees.'),
     ('Reprojection (px) ↓', 'Median pixel residual on observed feature tracks at processed image resolution; not a full 3D accuracy measure.'),
     ('Accuracy / completeness ↓', 'Mean estimate→GT / GT→estimate surface distance, as a percentage of the GT mesh diagonal.'),
     ('F-score ↑', 'Precision/recall balance at 0.5%, 1% or 2% of the GT diagonal. Range 0–1; not an object-completeness percentage.'),
@@ -81,12 +93,14 @@ def catalog(project):
         rows=read(base/key/'results.json',[])
         # Missing values remain null. Failures and partial cameras are not dropped.
         rows=[dict(row,method=row.get('method','ours'),total=row.get('total',row.get('views'))) for row in rows if row.get('method','ours') in ('ours','colmap')]
-        output['experiments'].append(dict(id=key,title=title,description=description,status=ledger.get(key,{}).get('status','unavailable'),
+        finding = FINDINGS[key] if base.name == 'experiments_20261119_classical' else ''
+        output['experiments'].append(dict(id=key,title=title,description=description,finding=finding,status=ledger.get(key,{}).get('status','unavailable'),
             rows=rows,assets=[a for a in assets if a['path'].startswith(key+'/')]))
     output.update(collection=base.name,date='18 November 2026 · classical projection 19 November 2026',
                   verification=read(base/'verification.json',{}),
+                  artifacts=[a for a in assets if '/' not in a['path'] or a['path'].startswith('datasets/')],
                   notes=[
-                      'The benchmark tabs show recorded development experiments. Your comparisons shows fresh same-upload runs; method selection is available in Workspace.',
+                      'The active two-method collection retains the 18 November development measurements. The 19 November projection removed retired method rows and regenerated plots without rerunning reconstruction.',
                       'Car curation previously used COLMAP poses; the relaxed SfM configuration was tuned on Temple. These are not unseen generalization results.',
                       'E5 uses calibrated Temple as approved because no real car checkerboard calibration was available. Shared-focal BA did not recover the true calibration.',
                       'Mesh scores use the full fountain GT scan without visibility masking. Missing or unseen scan regions affect completeness; this is not the official EPFL scorer.',

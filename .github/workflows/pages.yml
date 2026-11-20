@@ -6,6 +6,8 @@ on:
     paths:
       - 'code/web/pages/**'
       - 'code/web/static/**'
+      - 'code/web/research.py'
+      - 'validation/experiments_*/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 

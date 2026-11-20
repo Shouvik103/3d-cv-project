@@ -2,7 +2,8 @@
 
 The read-only edition uses the workbench's existing viewer and benchmark UI. The
 published snapshot contains browser geometry, GLB downloads, mesh previews,
-selected measurements, and benchmark evidence. It leaves out original uploads,
+and selected measurements. Each build also reads the current two-method benchmark
+collection from `validation/experiments_*` using the same catalog as the workbench. It leaves out original uploads,
 the workbench database and job records, raw logs, and intermediate caches.
 
 Build and preview the checked-in snapshot from the repository root:

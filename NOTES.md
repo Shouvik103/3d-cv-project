@@ -1,5 +1,9 @@
 # Implementation and validation notes
 
+These entries are historical, including the retired VGGT development runs. The
+active implementation is [Our SfM and CPU COLMAP](docs/ACTIVE_PIPELINE.md), and
+the [current experiment results](docs/EXPERIMENT_RESULTS.md) cover those two methods.
+
 ## Fresh same-upload comparisons
 
 The extended branch now runs Our SfM, COLMAP, VGGT, or All three for uploaded

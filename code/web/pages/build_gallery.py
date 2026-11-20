@@ -51,7 +51,7 @@ def archive_item(output, slug, name, label, cloud, mesh, glb, preview, metrics, 
 
 def create_snapshot(output):
     sys.path.insert(0, str(ROOT / 'code'))
-    from web.research import catalog, evidence_root, run_analysis
+    from web.research import run_analysis
 
     history = ROOT / 'outputs/web_ui'
     items = []
@@ -85,23 +85,29 @@ def create_snapshot(output):
 
     write(output / 'gallery.json', items)
 
+
+def export_research(output):
+    sys.path.insert(0, str(ROOT / 'code'))
+    from web.research import asset_path, catalog
+
     research = catalog(ROOT)
-    base = evidence_root(ROOT)
-    if not base:
+    if not research['available']:
         raise FileNotFoundError('Benchmark evidence is missing')
-    research['notes'][0] = 'Benchmarks are recorded development experiments. The gallery contains a separate snapshot of saved reconstructions.'
-    for experiment in research['experiments']:
-        published = []
-        for asset in experiment['assets']:
-            relative = Path(asset['path'])
-            if len(relative.parts) != 2 or relative.suffix not in {'.csv', '.json', '.png', '.pdf', '.md'}:
-                continue
-            if relative.suffix == '.json' and relative.name != 'results.json':
-                continue
-            asset['url'] = f'data/benchmarks/{relative.as_posix()}'
-            copy(base / relative, output / 'benchmarks' / relative)
-            published.append(asset)
-        experiment['assets'] = published
+    for asset in research['artifacts'] + [a for e in research['experiments'] for a in e['assets']]:
+        relative = Path(asset['path'])
+        source = asset_path(ROOT, asset['path'])
+        target = output / 'benchmarks' / relative
+        if relative.name == 'summary.json':
+            summary = read(source)
+            scene = summary.get('scene')
+            if isinstance(scene, str) and Path(scene).is_absolute():
+                summary['scene'] = Path(scene).name
+                write(target, summary)
+            else:
+                copy(source, target)
+        else:
+            copy(source, target)
+        asset.update(url=f'data/benchmarks/{relative.as_posix()}', bytes=target.stat().st_size)
     write(output / 'research.json', research)
 
 
@@ -113,7 +119,12 @@ def replace_once(page, pattern, replacement):
 
 
 def build(output):
-    shutil.copytree(SNAPSHOT, output / 'data')
+    data = output / 'data'
+    shutil.copytree(SNAPSHOT, data)
+    export_research(data)
+    research_manifest = data / 'research.json'
+    research_name = f'research-{hashlib.sha256(research_manifest.read_bytes()).hexdigest()[:12]}.json'
+    copy(research_manifest, data / research_name)
     manifest = output / 'data/gallery.json'
     revision = hashlib.sha256(manifest.read_bytes()).hexdigest()[:12]
     manifest_name = f'gallery-{revision}.json'
@@ -128,8 +139,10 @@ def build(output):
 
     page = (STATIC / 'index.html').read_text()
     page = page.replace('"/static/', '"static/').replace('href="/"', 'href="./"')
-    page = page.replace('<body>', '<body class="gallery-edition" data-research-url="data/research.json" '
+    page = page.replace('<body>', f'<body class="gallery-edition" data-research-url="data/{research_name}" '
                         f'data-gallery-url="data/{manifest_name}">')
+    lab_revision = hashlib.sha256((STATIC / 'lab.js').read_bytes()).hexdigest()[:12]
+    page = page.replace('src="static/lab.js"', f'src="static/lab.js?v={lab_revision}"')
     script_revision = hashlib.sha256((HERE / 'gallery.js').read_bytes()).hexdigest()[:12]
     page = page.replace('<script defer src="static/app.js"></script>',
                         '<link rel="stylesheet" href="static/gallery.css">\n'
